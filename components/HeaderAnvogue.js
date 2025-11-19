@@ -72,13 +72,13 @@ export default function HeaderAnvogue() {
                 <div className="menu-main h-full max-lg:hidden">
                   <ul className="flex items-center gap-8 h-full">
                     <li className="h-full relative group">
-                      <Link href="/" className="text-button-uppercase duration-300 h-full flex items-center justify-center hover:text-black">
+                      <Link href="/" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
                         Accueil
                       </Link>
                     </li>
 
                     <li className="h-full relative group">
-                      <Link href="/formations" className="text-button-uppercase duration-300 h-full flex items-center justify-center gap-1 hover:text-black">
+                      <Link href="/formations" className="text-button-uppercase duration-300 h-full flex items-center justify-center gap-1 text-black hover:text-purple">
                         Formations
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
@@ -114,7 +114,7 @@ export default function HeaderAnvogue() {
                     </li>
 
                     <li className="h-full relative group">
-                      <Link href="/categories" className="text-button-uppercase duration-300 h-full flex items-center justify-center gap-1 hover:text-black">
+                      <Link href="/categories" className="text-button-uppercase duration-300 h-full flex items-center justify-center gap-1 text-black hover:text-purple">
                         Catégories
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
@@ -150,19 +150,13 @@ export default function HeaderAnvogue() {
                     </li>
 
                     <li className="h-full">
-                      <Link href="/formateurs" className="text-button-uppercase duration-300 h-full flex items-center justify-center hover:text-black">
+                      <Link href="/formateurs" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
                         Formateurs
                       </Link>
                     </li>
 
                     <li className="h-full">
-                      <Link href="/blog" className="text-button-uppercase duration-300 h-full flex items-center justify-center hover:text-black">
-                        Blog
-                      </Link>
-                    </li>
-
-                    <li className="h-full">
-                      <Link href="/contact" className="text-button-uppercase duration-300 h-full flex items-center justify-center hover:text-black">
+                      <Link href="/contact" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
                         Contact
                       </Link>
                     </li>

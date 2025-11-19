@@ -223,15 +223,17 @@ export default function HomeAnvogue() {
                 <Link
                   key={index}
                   href={`/categories/${category.slug}`}
-                  className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer group"
+                  className="collection-item block relative rounded-3xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
                 >
                   <div className="bg-img aspect-square bg-surface relative overflow-hidden">
-                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 group-hover:scale-110 transition-transform duration-500"></div>
+                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 group-hover:scale-125 transition-all duration-700 ease-out"></div>
+                    {/* Overlay gradient au hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple/0 to-blue/0 group-hover:from-purple/20 group-hover:to-blue/20 transition-all duration-700"></div>
                   </div>
-                  <div className="collection-name heading5 text-center sm:bottom-8 bottom-4 lg:w-[200px] md:w-[160px] w-[100px] md:py-3 py-1.5 bg-white rounded-xl duration-500 absolute left-1/2 -translate-x-1/2">
+                  <div className="collection-name font-semibold text-center sm:bottom-8 bottom-4 lg:w-[200px] md:w-[160px] w-[100px] md:py-3 py-1.5 bg-white rounded-xl duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-xl">
                     {category.name}
                   </div>
-                  <div className="absolute top-3 right-3 caption1 bg-white text-secondary px-2 py-1 rounded-full">
+                  <div className="absolute top-3 right-3 text-xs font-bold bg-white text-purple px-3 py-1.5 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
                     {category.count}+
                   </div>
                 </Link>
