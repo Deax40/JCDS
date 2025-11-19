@@ -157,7 +157,7 @@ export default function HomeAnvogue() {
                         </Link>
                       </div>
                       <div className="sub-img absolute sm:w-1/2 w-3/5 2xl:-right-[60px] -right-[16px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-green to-blue-500 rounded-tl-full"></div>
+                        <div className="w-full h-full bg-gradient-to-br from-green to-blue rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export default function HomeAnvogue() {
                         </Link>
                       </div>
                       <div className="sub-img absolute w-1/2 2xl:-right-[60px] -right-[0] sm:-bottom-[60px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-red to-orange-500 rounded-tl-full"></div>
+                        <div className="w-full h-full bg-gradient-to-br from-red to-orange rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ export default function HomeAnvogue() {
                         </Link>
                       </div>
                       <div className="sub-img absolute sm:w-1/2 w-2/3 2xl:-right-[60px] -right-[36px] sm:bottom-0 -bottom-[30px] opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-tl-full"></div>
+                        <div className="w-full h-full bg-gradient-to-br from-purple to-pink rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>

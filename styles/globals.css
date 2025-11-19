@@ -118,7 +118,7 @@
   }
 
   .progress-sold {
-    @apply absolute left-0 top-0 h-full bg-red-500;
+    @apply absolute left-0 top-0 h-full bg-red;
   }
 
   /* Menu Styles */

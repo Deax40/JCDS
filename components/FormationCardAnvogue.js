@@ -33,9 +33,9 @@ export default function FormationCardAnvogue({ formation }) {
 
     for (let i = 1; i <= 5; i++) {
       if (i <= fullStars) {
-        stars.push(<i key={i} className="ph-fill ph-star text-yellow-400"></i>);
+        stars.push(<i key={i} className="ph-fill ph-star text-yellow"></i>);
       } else if (i === fullStars + 1 && hasHalfStar) {
-        stars.push(<i key={i} className="ph-fill ph-star-half text-yellow-400"></i>);
+        stars.push(<i key={i} className="ph-fill ph-star-half text-yellow"></i>);
       } else {
         stars.push(<i key={i} className="ph ph-star text-gray-300"></i>);
       }

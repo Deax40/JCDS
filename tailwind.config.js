@@ -17,6 +17,9 @@ module.exports = {
         'green': '#22c55e',
         'yellow': '#fbbf24',
         'purple': '#a855f7',
+        'blue': '#3b82f6',
+        'orange': '#f97316',
+        'pink': '#ec4899',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
