@@ -82,6 +82,35 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    return res.status(500).json({ message: 'Erreur lors de la création du compte' });
+
+    // Messages d'erreur plus détaillés
+    if (error.message?.includes('DATABASE_URL')) {
+      return res.status(500).json({
+        message: 'Base de données non configurée. Consultez SETUP_DATABASE.md'
+      });
+    }
+
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({
+        message: 'Impossible de se connecter à la base de données. Vérifiez DATABASE_URL dans .env'
+      });
+    }
+
+    if (error.code === '28P01') {
+      return res.status(500).json({
+        message: 'Mot de passe incorrect dans DATABASE_URL. Vérifiez votre configuration Supabase'
+      });
+    }
+
+    if (error.code === '42P01') {
+      return res.status(500).json({
+        message: 'Table "users" non trouvée. Exécutez le fichier database/schema.sql dans Supabase'
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Erreur lors de la création du compte',
+      details: process.env.NODE_ENV !== 'production' ? error.message : undefined
+    });
   }
 }
