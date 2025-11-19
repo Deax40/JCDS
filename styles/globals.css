@@ -69,7 +69,7 @@
 
   /* Product Card Styles */
   .product-item {
-    @apply relative overflow-hidden cursor-pointer group;
+    @apply relative overflow-hidden cursor-pointer;
   }
 
   .product-img {
