@@ -130,7 +130,7 @@ export default function HomeAnvogue() {
 
         {/* Hero Slider */}
         <div id="header" className="relative w-full">
-          <div className="slider-block style-one bg-linear xl:h-[860px] lg:h-[800px] md:h-[580px] sm:h-[500px] h-[350px] w-full">
+          <div className="slider-block style-one bg-linear xl:h-[900px] lg:h-[840px] md:h-[640px] sm:h-[540px] h-[420px] w-full">
             <div className="slider-main h-full w-full">
               <Swiper
                 modules={[Pagination, Autoplay]}
@@ -145,14 +145,14 @@ export default function HomeAnvogue() {
                   <div className="slider-item h-full w-full relative">
                     <div className="container w-full h-full flex items-center relative">
                       <div className="text-content basis-1/2 z-10">
-                        <div className="text-sub-display text-secondary2">Nouvelle Saison d'Apprentissage!</div>
-                        <div className="text-display md:mt-5 mt-2 text-5xl md:text-7xl font-bold">
-                          Développez Vos Compétences
-                        </div>
-                        <p className="text-lg mt-4 text-secondary max-w-xl">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d'Apprentissage</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Développez Vos<br />Compétences
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
                           Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd'hui!
                         </p>
-                        <Link href="/formations" className="button-main md:mt-8 mt-3">
+                        <Link href="/formations" className="button-main">
                           Découvrir les Formations
                         </Link>
                       </div>
@@ -167,14 +167,14 @@ export default function HomeAnvogue() {
                   <div className="slider-item h-full w-full relative">
                     <div className="container w-full h-full flex items-center relative">
                       <div className="text-content basis-1/2 z-10">
-                        <div className="text-sub-display text-secondary2">Promotions Exceptionnelles!</div>
-                        <div className="text-display md:mt-5 mt-2 text-5xl md:text-7xl font-bold">
-                          Jusqu'à -50%
-                        </div>
-                        <p className="text-lg mt-4 text-secondary max-w-xl">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Promotions Exceptionnelles</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Jusqu'à<br />-50%
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
                           Profitez de réductions exceptionnelles sur une sélection de formations premium.
                         </p>
-                        <Link href="/formations?filter=promo" className="button-main md:mt-8 mt-3">
+                        <Link href="/formations?filter=promo" className="button-main">
                           Voir les Promos
                         </Link>
                       </div>
@@ -189,14 +189,14 @@ export default function HomeAnvogue() {
                   <div className="slider-item h-full w-full relative">
                     <div className="container w-full h-full flex items-center relative">
                       <div className="text-content basis-1/2 z-10">
-                        <div className="text-sub-display text-secondary2">Partagez Votre Expertise!</div>
-                        <div className="text-display md:mt-5 mt-2 text-5xl md:text-7xl font-bold">
-                          Devenez Formateur
-                        </div>
-                        <p className="text-lg mt-4 text-secondary max-w-xl">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Partagez Votre Expertise</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Devenez<br />Formateur
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
                           Créez et vendez vos formations. Rejoignez notre communauté de formateurs experts.
                         </p>
-                        <Link href="/devenir-formateur" className="button-main md:mt-8 mt-3">
+                        <Link href="/devenir-formateur" className="button-main">
                           Commencer Maintenant
                         </Link>
                       </div>
@@ -212,13 +212,13 @@ export default function HomeAnvogue() {
         </div>
 
         {/* Collections Block */}
-        <div className="collection-block md:pt-20 pt-10">
+        <div className="collection-block md:pt-28 pt-16 md:pb-16 pb-8">
           <div className="container">
-            <div className="heading flex flex-col items-center text-center">
-              <div className="heading3">Parcourir par Catégorie</div>
-              <div className="text-secondary mt-3">Trouvez la formation qui vous correspond</div>
+            <div className="heading flex flex-col items-center text-center mb-12">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Parcourir par Catégorie</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Trouvez la formation qui vous correspond parmi nos catégories</p>
             </div>
-            <div className="list-collection grid lg:grid-cols-6 grid-cols-3 sm:gap-[30px] gap-[16px] md:mt-10 mt-6">
+            <div className="list-collection grid lg:grid-cols-6 grid-cols-3 sm:gap-8 gap-4">
               {categories.map((category, index) => (
                 <Link
                   key={index}
@@ -241,21 +241,21 @@ export default function HomeAnvogue() {
         </div>
 
         {/* What's New Section with Tabs */}
-        <div className="what-new-block md:pt-20 pt-10">
+        <div className="what-new-block md:pt-28 pt-16 md:pb-16 pb-8">
           <div className="container">
-            <div className="heading flex flex-col items-center text-center">
-              <div className="heading3">Formations Populaires</div>
-              <div className="text-secondary mt-3">Découvrez les formations les plus demandées</div>
+            <div className="heading flex flex-col items-center text-center mb-12">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Formations Populaires</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Découvrez les formations les plus demandées par notre communauté</p>
             </div>
 
-            <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-[30px] gap-4 md:mt-10 mt-6">
+            <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
               {formations.map((formation) => (
                 <FormationCardAnvogue key={formation.id} formation={formation} />
               ))}
             </div>
 
-            <div className="flex items-center justify-center md:mt-10 mt-6">
-              <Link href="/formations" className="button-main">
+            <div className="flex items-center justify-center mt-16">
+              <Link href="/formations" className="button-main text-base px-8 py-4">
                 Voir Toutes les Formations
               </Link>
             </div>
@@ -263,36 +263,40 @@ export default function HomeAnvogue() {
         </div>
 
         {/* Benefits Section */}
-        <div className="benefit-block md:pt-20 pt-10 md:pb-20 pb-10">
+        <div className="benefit-block md:pt-28 pt-16 md:pb-28 pb-16 bg-surface">
           <div className="container">
-            <div className="list-benefit grid xl:grid-cols-4 sm:grid-cols-2 gap-[30px]">
-              <div className="benefit-item flex flex-col items-center justify-center bg-surface rounded-2xl p-8 text-center group hover:bg-black transition-colors duration-300">
-                <i className="ph-bold ph-rocket-launch text-5xl mb-4 group-hover:text-white"></i>
-                <div className="heading6 group-hover:text-white">Accès Immédiat</div>
-                <div className="caption1 text-secondary mt-2 group-hover:text-gray-300">
+            <div className="heading flex flex-col items-center text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Pourquoi FormationPlace ?</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Les avantages qui font la différence</p>
+            </div>
+            <div className="list-benefit grid xl:grid-cols-4 sm:grid-cols-2 gap-8">
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-rocket-launch text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Accès Immédiat</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
                   Commencez à apprendre instantanément après l'achat
-                </div>
+                </p>
               </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-surface rounded-2xl p-8 text-center group hover:bg-black transition-colors duration-300">
-                <i className="ph-bold ph-certificate text-5xl mb-4 group-hover:text-white"></i>
-                <div className="heading6 group-hover:text-white">Certificats</div>
-                <div className="caption1 text-secondary mt-2 group-hover:text-gray-300">
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-certificate text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Certificats</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
                   Obtenez des certificats reconnus à la fin de chaque formation
-                </div>
+                </p>
               </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-surface rounded-2xl p-8 text-center group hover:bg-black transition-colors duration-300">
-                <i className="ph-bold ph-headset text-5xl mb-4 group-hover:text-white"></i>
-                <div className="heading6 group-hover:text-white">Support 24/7</div>
-                <div className="caption1 text-secondary mt-2 group-hover:text-gray-300">
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-headset text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Support 24/7</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
                   Assistance disponible à tout moment pour vous aider
-                </div>
+                </p>
               </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-surface rounded-2xl p-8 text-center group hover:bg-black transition-colors duration-300">
-                <i className="ph-bold ph-shield-check text-5xl mb-4 group-hover:text-white"></i>
-                <div className="heading6 group-hover:text-white">Satisfait ou Remboursé</div>
-                <div className="caption1 text-secondary mt-2 group-hover:text-gray-300">
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-shield-check text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Satisfait ou Remboursé</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
                   Garantie de remboursement sous 30 jours
-                </div>
+                </p>
               </div>
             </div>
           </div>

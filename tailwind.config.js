@@ -34,7 +34,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Poppins', 'Inter', 'sans-serif'],
+        display: ['Sora', 'Poppins', 'sans-serif'],
       },
       fontSize: {
         'display1': ['64px', { lineHeight: '1.2', fontWeight: '600' }],

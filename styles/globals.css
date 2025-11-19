@@ -13,6 +13,14 @@
 
   body {
     @apply font-sans text-secondary bg-white;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+    letter-spacing: -0.02em;
   }
 
   a {
@@ -21,6 +29,10 @@
 
   button {
     @apply cursor-pointer;
+  }
+
+  p {
+    @apply leading-relaxed;
   }
 }
 
@@ -60,7 +72,7 @@
 
   /* Button Styles */
   .button-main {
-    @apply px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300 inline-block text-center font-medium;
+    @apply px-8 py-4 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300 inline-block text-center font-semibold shadow-lg hover:shadow-2xl hover:-translate-y-0.5 text-sm tracking-wide;
   }
 
   .button-white {

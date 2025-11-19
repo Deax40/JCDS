@@ -7,9 +7,13 @@ export default function Document() {
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" />
 
-        {/* Google Fonts - Inter */}
+        {/* Google Fonts - Poppins & Sora pour un look premium */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
 
         {/* Phosphor Icons - Modern Icon Library */}
         <script src="https://unpkg.com/@phosphor-icons/web"></script>
