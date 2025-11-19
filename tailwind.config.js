@@ -18,8 +18,20 @@ module.exports = {
         'yellow': '#fbbf24',
         'purple': '#a855f7',
         'blue': '#3b82f6',
+        'cyan': {
+          500: '#06b6d4'
+        },
         'orange': '#f97316',
         'pink': '#ec4899',
+        'emerald': {
+          500: '#10b981'
+        },
+        'teal': {
+          500: '#14b8a6'
+        },
+        'indigo': {
+          500: '#6366f1'
+        },
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

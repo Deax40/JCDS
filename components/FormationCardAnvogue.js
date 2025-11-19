@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import FormationIllustration from './FormationIllustration';
 
 export default function FormationCardAnvogue({ formation }) {
   const {
@@ -72,17 +73,11 @@ export default function FormationCardAnvogue({ formation }) {
             </div>
           </div>
 
-          {/* Images with Hover Effect */}
+          {/* Formation Illustration */}
           <div className="product-img w-full h-full aspect-[3/4]">
-            <img
-              className="w-full h-full object-cover duration-700"
-              src={cover_image_url || '/assets/formations/default.jpg'}
-              alt={title}
-            />
-            <img
-              className="w-full h-full object-cover duration-700 absolute top-0 left-0 opacity-0 group-hover:opacity-100"
-              src={cover_image_hover || cover_image_url || '/assets/formations/default-hover.jpg'}
-              alt={`${title} - hover`}
+            <FormationIllustration
+              category={category_name}
+              className="w-full h-full transition-transform duration-700 group-hover:scale-105"
             />
           </div>
 

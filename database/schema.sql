@@ -10,7 +10,7 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   first_name VARCHAR(100),
   last_name VARCHAR(100),
-  role VARCHAR(20) NOT NULL DEFAULT 'buyer', -- 'buyer' ou 'seller'
+  roles TEXT[] DEFAULT ARRAY['buyer'], -- Tableau de rôles: 'buyer', 'seller' - Un utilisateur peut avoir les deux
   avatar_url TEXT,
   bio TEXT,
   phone VARCHAR(50),
@@ -147,6 +147,21 @@ CREATE TABLE subscriptions (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Table: password_reset_tokens (tokens de réinitialisation de mot de passe)
+-- Système sécurisé pour la réinitialisation de mot de passe
+CREATE TABLE password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(255) UNIQUE NOT NULL, -- Token aléatoire sécurisé (UUID ou crypto.randomBytes)
+  expires_at TIMESTAMP NOT NULL, -- Date d'expiration (typiquement 1 heure après création)
+  is_used BOOLEAN DEFAULT FALSE, -- Marquer le token comme utilisé après réinitialisation
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index pour optimiser la recherche de tokens
+CREATE INDEX idx_password_reset_tokens_token ON password_reset_tokens(token);
+CREATE INDEX idx_password_reset_tokens_user ON password_reset_tokens(user_id);
+
 -- ===========================================
 -- INDEX POUR OPTIMISER LES PERFORMANCES
 -- ===========================================
@@ -229,5 +244,5 @@ INSERT INTO categories (name, slug, description) VALUES
 
 -- Utilisateur admin de test (mot de passe: admin123)
 -- ATTENTION: À supprimer ou changer en production !
-INSERT INTO users (email, password_hash, first_name, last_name, role, is_email_verified) VALUES
-('admin@formationplace.com', '$2a$10$YourHashedPasswordHere', 'Admin', 'FormationPlace', 'seller', TRUE);
+INSERT INTO users (email, password_hash, first_name, last_name, roles, is_email_verified) VALUES
+('admin@formationplace.com', '$2a$10$YourHashedPasswordHere', 'Admin', 'FormationPlace', ARRAY['buyer', 'seller'], TRUE);
