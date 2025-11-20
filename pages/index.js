@@ -5,6 +5,7 @@ import FormationCardAnvogue from '../components/FormationCardAnvogue';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import Link from 'next/link';
+import { getAllCategories } from '../data/categories';
 
 export default function HomeAnvogue() {
   // Sample formations data
@@ -79,44 +80,8 @@ export default function HomeAnvogue() {
     },
   ];
 
-  const categories = [
-    {
-      name: 'Développement Web',
-      slug: 'developpement-web',
-      image: '/assets/categories/dev-web.jpg',
-      count: 245
-    },
-    {
-      name: 'Business & Marketing',
-      slug: 'business-marketing',
-      image: '/assets/categories/business.jpg',
-      count: 128
-    },
-    {
-      name: 'Design',
-      slug: 'design',
-      image: '/assets/categories/design.jpg',
-      count: 89
-    },
-    {
-      name: 'Photographie',
-      slug: 'photographie',
-      image: '/assets/categories/photo.jpg',
-      count: 67
-    },
-    {
-      name: 'Développement Personnel',
-      slug: 'developpement-personnel',
-      image: '/assets/categories/dev-perso.jpg',
-      count: 156
-    },
-    {
-      name: 'Langues',
-      slug: 'langues',
-      image: '/assets/categories/langues.jpg',
-      count: 94
-    },
-  ];
+  // Récupérer les vraies données de catégories
+  const categories = getAllCategories();
 
   return (
     <>
@@ -218,23 +183,37 @@ export default function HomeAnvogue() {
               <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Parcourir par Catégorie</h2>
               <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Trouvez la formation qui vous correspond parmi nos catégories</p>
             </div>
-            <div className="list-collection grid lg:grid-cols-6 grid-cols-3 sm:gap-8 gap-4">
+            <div className="list-collection grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-8 gap-4">
               {categories.map((category, index) => (
                 <Link
                   key={index}
                   href={`/categories/${category.slug}`}
                   className="collection-item block relative rounded-3xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
                 >
-                  <div className="bg-img aspect-square bg-surface relative overflow-hidden">
-                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 group-hover:scale-125 transition-all duration-700 ease-out"></div>
+                  <div className="bg-img aspect-square relative overflow-hidden">
+                    {/* Gradient de fond avec le thème de la catégorie */}
+                    <div className={`w-full h-full bg-gradient-to-br ${category.gradient} group-hover:scale-110 transition-all duration-700 ease-out`}></div>
+
+                    {/* Icône principale */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <i className={`ph-bold ${category.icon} text-white opacity-30 group-hover:opacity-50 transition-all duration-500`} style={{ fontSize: '120px' }}></i>
+                    </div>
+
+                    {/* Icône secondaire en arrière-plan */}
+                    <div className="absolute top-4 right-4">
+                      <i className={`ph-bold ${category.secondaryIcon} text-white opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:rotate-12`} style={{ fontSize: '60px' }}></i>
+                    </div>
+
                     {/* Overlay gradient au hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple/0 to-blue/0 group-hover:from-purple/20 group-hover:to-blue/20 transition-all duration-700"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-black/0 group-hover:from-white/10 group-hover:to-black/20 transition-all duration-700"></div>
                   </div>
-                  <div className="collection-name font-semibold text-center sm:bottom-8 bottom-4 lg:w-[200px] md:w-[160px] w-[100px] md:py-3 py-1.5 bg-white rounded-xl duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-xl">
+
+                  <div className="collection-name font-semibold text-center sm:bottom-8 bottom-4 w-[90%] md:py-3 py-2 px-2 bg-white rounded-xl duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-xl text-sm md:text-base">
                     {category.name}
                   </div>
+
                   <div className="absolute top-3 right-3 text-xs font-bold bg-white text-purple px-3 py-1.5 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
-                    {category.count}+
+                    {category.count === 0 ? '0' : `${category.count}+`}
                   </div>
                 </Link>
               ))}
