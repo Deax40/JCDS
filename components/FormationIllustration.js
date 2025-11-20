@@ -16,19 +16,63 @@
 export default function FormationIllustration({ category, className = "" }) {
   // Mapping des catégories vers leurs configurations visuelles
   const categoryConfig = {
+    // Nouvelles catégories principales
+    'développement web': {
+      gradient: 'from-blue to-cyan-500',
+      icon: 'ph-code',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-brackets-curly',
+      pattern: 'grid'
+    },
+    'développement personnel & mindset': {
+      gradient: 'from-purple to-pink',
+      icon: 'ph-brain',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-lightbulb',
+      pattern: 'dots'
+    },
+    'argent, business & indépendance': {
+      gradient: 'from-emerald-500 to-teal-500',
+      icon: 'ph-currency-dollar',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-chart-line-up',
+      pattern: 'grid'
+    },
+    'langues': {
+      gradient: 'from-orange to-yellow',
+      icon: 'ph-translate',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-globe',
+      pattern: 'dots'
+    },
+    'droit': {
+      gradient: 'from-indigo-500 to-purple',
+      icon: 'ph-scales',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-gavel',
+      pattern: 'lines'
+    },
+    'fitness, bien-être & santé': {
+      gradient: 'from-red to-pink',
+      icon: 'ph-heart',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-activity',
+      pattern: 'grid'
+    },
+    'carrière & compétences professionnelles': {
+      gradient: 'from-blue to-indigo-500',
+      icon: 'ph-briefcase',
+      iconColor: 'text-white',
+      secondaryIcon: 'ph-user-focus',
+      pattern: 'dots'
+    },
+    // Anciennes catégories (compatibilité)
     'entrepreneuriat': {
       gradient: 'from-purple to-pink',
       icon: 'ph-rocket-launch',
       iconColor: 'text-white',
       secondaryIcon: 'ph-trend-up',
       pattern: 'dots'
-    },
-    'développement web': {
-      gradient: 'from-blue to-cyan-500',
-      icon: 'ph-code',
-      iconColor: 'text-white',
-      secondaryIcon: 'ph-terminal-window',
-      pattern: 'grid'
     },
     'codage': {
       gradient: 'from-blue to-cyan-500',
@@ -51,13 +95,6 @@ export default function FormationIllustration({ category, className = "" }) {
       secondaryIcon: 'ph-users-three',
       pattern: 'lines'
     },
-    'gestion d\'entreprise': {
-      gradient: 'from-orange to-red',
-      icon: 'ph-chart-line',
-      iconColor: 'text-white',
-      secondaryIcon: 'ph-strategy',
-      pattern: 'lines'
-    },
     'business & marketing': {
       gradient: 'from-green to-emerald-500',
       icon: 'ph-megaphone',
@@ -78,13 +115,6 @@ export default function FormationIllustration({ category, className = "" }) {
       iconColor: 'text-white',
       secondaryIcon: 'ph-aperture',
       pattern: 'radial'
-    },
-    'langues': {
-      gradient: 'from-indigo-500 to-purple',
-      icon: 'ph-translate',
-      iconColor: 'text-white',
-      secondaryIcon: 'ph-globe',
-      pattern: 'dots'
     },
     'développement personnel': {
       gradient: 'from-teal-500 to-green',

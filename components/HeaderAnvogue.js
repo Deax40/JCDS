@@ -105,30 +105,30 @@ export default function HeaderAnvogue() {
                         Formations
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
-                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute top-full bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                         <ul className="w-full">
                           <li>
-                            <Link href="/formations" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Toutes les formations
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=populaires" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=populaires" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Formations populaires
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=mieux-notees" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=mieux-notees" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Mieux notées
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=nouvelles" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=nouvelles" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Nouvelles formations
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=promo" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=promo" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               En promotion
                             </Link>
                           </li>
@@ -141,31 +141,41 @@ export default function HeaderAnvogue() {
                         Catégories
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
-                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute top-full bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                         <ul className="w-full">
                           <li>
-                            <Link href="/categories/developpement-web" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/categories/developpement-web" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Développement Web
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/business-marketing" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Business & Marketing
+                            <Link href="/categories/developpement-personnel-mindset" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Développement Personnel & Mindset
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/design" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Design
+                            <Link href="/categories/argent-business-independance" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Argent, Business & Indépendance
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/photographie" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Photographie
+                            <Link href="/categories/langues" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Langues
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/developpement-personnel" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Développement Personnel
+                            <Link href="/categories/droit" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Droit
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/categories/fitness-bien-etre-sante" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Fitness, Bien-être & Santé
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/categories/carriere-competences-professionnelles" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Carrière & Compétences Professionnelles
                             </Link>
                           </li>
                         </ul>
