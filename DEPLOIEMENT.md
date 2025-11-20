@@ -2,6 +2,20 @@
 
 ## Déploiement Automatique avec Vercel
 
+### ⚠️ IMPORTANT : Configuration vercel.json
+
+**Le fichier `vercel.json` doit être MINIMAL :**
+```json
+{
+  "framework": "nextjs"
+}
+```
+
+**NE PAS mettre dans vercel.json :**
+- ❌ `rewrites` (casse le routing Next.js et le chargement CSS/JS)
+- ❌ `buildCommand` (Vercel détecte automatiquement Next.js)
+- ❌ `env` (mettre dans Dashboard à la place)
+
 ### Configuration initiale
 
 1. **Connecter le projet à Vercel**
@@ -11,22 +25,26 @@
    - Vercel détectera automatiquement Next.js
 
 2. **Configurer les variables d'environnement**
-   Dans les settings Vercel, ajoute ces variables:
+   Dans Vercel Dashboard → Project → Settings → Environment Variables, ajoute :
+
    ```
-   DATABASE_URL=postgresql://...
-   NEXTAUTH_SECRET=ton_secret_aleatoire
-   NEXTAUTH_URL=https://ton-site.vercel.app
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USER=ton_email@gmail.com
-   SMTP_PASSWORD=ton_mot_de_passe
-   SMTP_FROM=noreply@formationplace.com
+   DATABASE_URL = postgresql://postgres:[PASSWORD]@db.xxx.supabase.co:5432/postgres
+   NEXTAUTH_SECRET = [générer avec: openssl rand -base64 32]
+   NEXTAUTH_URL = https://ton-site.vercel.app
+   SMTP_HOST = smtp.gmail.com
+   SMTP_PORT = 587
+   SMTP_USER = ton_email@gmail.com
+   SMTP_PASSWORD = ton_mot_de_passe_app
+   SMTP_FROM = noreply@formationplace.com
    ```
 
-3. **Activer le déploiement automatique**
-   - Dans Vercel → Settings → Git
-   - Assure-toi que "Production Branch" est sur `main`
-   - Active "Automatic deployments from Git"
+   **Important :** Sélectionne "Production", "Preview" et "Development" pour chaque variable.
+
+3. **Vérifier les Build Settings**
+   - Framework Preset : **Next.js** (auto-détecté)
+   - Build Command : Laisser vide (auto-detect)
+   - Output Directory : Laisser vide (auto-detect)
+   - Install Command : Laisser vide (auto-detect)
 
 ### Comment ça marche maintenant
 
