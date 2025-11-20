@@ -24,7 +24,7 @@ export default function MonCompte() {
     return null;
   }
 
-  const handleUpdatePseudo = () => {
+  const handleUpdatePseudo = async () => {
     setError('');
     setSuccess('');
 
@@ -33,7 +33,7 @@ export default function MonCompte() {
       return;
     }
 
-    const result = updatePseudo(newPseudo);
+    const result = await updatePseudo(newPseudo);
     if (result.success) {
       setSuccess('Pseudo mis à jour avec succès');
       setIsEditingPseudo(false);

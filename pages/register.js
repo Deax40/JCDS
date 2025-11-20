@@ -95,7 +95,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const result = register(formData);
+      const result = await register(formData);
 
       if (result.success) {
         // Inscription réussie - rediriger vers le profil

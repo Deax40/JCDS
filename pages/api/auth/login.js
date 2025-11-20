@@ -22,9 +22,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer l'utilisateur
+    // Récupérer l'utilisateur avec tous les champs
     const result = await query(
-      `SELECT id, email, password_hash, first_name, last_name, roles, is_active
+      `SELECT id, email, password_hash, first_name, last_name, phone, pseudo, genre, roles, avatar_url, is_active, created_at
        FROM users
        WHERE email = $1`,
       [email.toLowerCase()]
@@ -48,15 +48,21 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    // TODO: Créer une session (avec NextAuth, JWT, ou cookies sécurisés)
-    // Pour l'instant, retourner les données de l'utilisateur
+    // Retourner les données complètes de l'utilisateur
     return res.status(200).json({
       message: 'Connexion réussie',
       user: {
         id: user.id,
         email: user.email,
-        name: `${user.first_name} ${user.last_name}`.trim(),
-        roles: user.roles,
+        nom: user.last_name,
+        prenom: user.first_name,
+        pseudo: user.pseudo,
+        telephone: user.phone,
+        genre: user.genre,
+        role: user.roles[0],
+        avatar: user.avatar_url,
+        createdAt: user.created_at,
+        purchases: [], // À charger depuis une table purchases si besoin
       },
     });
   } catch (error) {

@@ -31,51 +31,33 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Inscription
-  const register = (userData) => {
+  const register = async (userData) => {
     try {
-      // Récupérer tous les utilisateurs
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          telephone: userData.telephone,
+          nom: userData.nom,
+          prenom: userData.prenom,
+          pseudo: userData.pseudo,
+          password: userData.password,
+          genre: userData.genre,
+          role: userData.role || 'acheteur'
+        }),
+      });
 
-      // Vérifier si l'email existe déjà
-      if (users.find(u => u.email === userData.email)) {
-        return { success: false, message: 'Cet email est déjà utilisé' };
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.message };
       }
-
-      // Vérifier si le pseudo existe déjà
-      if (users.find(u => u.pseudo === userData.pseudo)) {
-        return { success: false, message: 'Ce pseudo est déjà utilisé' };
-      }
-
-      // Générer un ID unique numérique
-      const userId = users.length > 0
-        ? Math.max(...users.map(u => u.id)) + 1
-        : 100001;
-
-      // Créer le nouvel utilisateur
-      const newUser = {
-        id: userId,
-        email: userData.email,
-        telephone: userData.telephone,
-        nom: userData.nom,
-        prenom: userData.prenom,
-        pseudo: userData.pseudo,
-        password: userData.password, // En production, hasher le mot de passe
-        genre: userData.genre, // 'homme' ou 'femme'
-        role: userData.role || 'acheteur', // 'acheteur' ou 'vendeur'
-        createdAt: new Date().toISOString(),
-        purchases: [],
-        avatar: userData.genre === 'femme'
-          ? '/assets/avatars/femme.png'
-          : '/assets/avatars/homme.png'
-      };
-
-      // Ajouter l'utilisateur
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
 
       // Connecter automatiquement l'utilisateur
-      const userToSave = { ...newUser };
-      delete userToSave.password; // Ne pas stocker le mot de passe dans le user actif
+      const userToSave = { ...data.user, purchases: [] };
       setUser(userToSave);
       localStorage.setItem('user', JSON.stringify(userToSave));
 
@@ -87,21 +69,27 @@ export function AuthProvider({ children }) {
   };
 
   // Connexion
-  const login = (email, password) => {
+  const login = async (email, password) => {
     try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === email && u.password === password);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (!user) {
-        return { success: false, message: 'Email ou mot de passe incorrect' };
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.message };
       }
 
-      const userToSave = { ...user };
-      delete userToSave.password;
-      setUser(userToSave);
-      localStorage.setItem('user', JSON.stringify(userToSave));
+      // Sauvegarder l'utilisateur en session
+      setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
 
-      return { success: true, user: userToSave };
+      return { success: true, user: data.user };
     } catch (error) {
       console.error('Erreur connexion:', error);
       return { success: false, message: 'Erreur lors de la connexion' };
@@ -119,25 +107,28 @@ export function AuthProvider({ children }) {
   };
 
   // Mettre à jour le pseudo
-  const updatePseudo = (newPseudo) => {
+  const updatePseudo = async (newPseudo) => {
     try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const response = await fetch('/api/auth/update-pseudo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          newPseudo: newPseudo
+        }),
+      });
 
-      // Vérifier si le pseudo existe déjà
-      if (users.find(u => u.pseudo === newPseudo && u.id !== user.id)) {
-        return { success: false, message: 'Ce pseudo est déjà utilisé' };
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.message };
       }
 
-      // Mettre à jour l'utilisateur
-      const updatedUsers = users.map(u =>
-        u.id === user.id ? { ...u, pseudo: newPseudo } : u
-      );
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-
-      // Mettre à jour l'utilisateur connecté
-      const updatedUser = { ...user, pseudo: newPseudo };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      // Mettre à jour l'utilisateur en session
+      setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
 
       return { success: true };
     } catch (error) {

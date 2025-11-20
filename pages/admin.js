@@ -16,11 +16,24 @@ export default function Admin() {
   const ADMIN_PASSWORD = 'admin123';
 
   useEffect(() => {
-    // Charger les utilisateurs depuis localStorage
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    setUsers(storedUsers);
-    setFilteredUsers(storedUsers);
-  }, []);
+    // Charger les utilisateurs depuis l'API
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/admin/users');
+        const data = await response.json();
+        if (response.ok) {
+          setUsers(data.users);
+          setFilteredUsers(data.users);
+        }
+      } catch (error) {
+        console.error('Erreur chargement utilisateurs:', error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchUsers();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Filtrer les utilisateurs par ID
