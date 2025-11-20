@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import FormationIllustration from './FormationIllustration';
+import OptimizedImage from './OptimizedImage';
 import { useCurrency } from '../context/CurrencyContext';
 
 export default function FormationCardAnvogue({ formation }) {
@@ -22,11 +23,15 @@ export default function FormationCardAnvogue({ formation }) {
     level = 'Tous niveaux',
   } = formation;
 
+  const [isHovered, setIsHovered] = useState(false);
   const displayPrice = is_promo_active && promo_price ? promo_price : price;
   const hasPromo = is_promo_active && promo_price && promo_price < price;
   const discountPercent = hasPromo ? Math.round((1 - promo_price / price) * 100) : 0;
   const progressPercent = total_capacity > 0 ? (total_sales / total_capacity) * 100 : 0;
   const available = total_capacity - total_sales;
+
+  // Déterminer si on a une vraie image ou si on utilise l'illustration
+  const hasRealImage = cover_image_url && !cover_image_url.includes('/assets/formations/');
 
   // Render stars
   const renderStars = (rating) => {
@@ -75,12 +80,37 @@ export default function FormationCardAnvogue({ formation }) {
             </div>
           </div>
 
-          {/* Formation Illustration */}
-          <div className="product-img w-full h-full aspect-[3/4]">
-            <FormationIllustration
-              category={category_name}
-              className="w-full h-full transition-transform duration-700 group-hover:scale-105"
-            />
+          {/* Formation Image/Illustration */}
+          <div
+            className="product-img w-full h-full aspect-[3/4] relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {hasRealImage ? (
+              <>
+                {/* Image optimisée en WebP */}
+                <OptimizedImage
+                  src={isHovered && cover_image_hover ? cover_image_hover : cover_image_url}
+                  alt={title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="transition-all duration-700 group-hover:scale-105"
+                  quality={90}
+                  fallback={
+                    <FormationIllustration
+                      category={category_name}
+                      className="w-full h-full transition-transform duration-700 group-hover:scale-105"
+                    />
+                  }
+                />
+              </>
+            ) : (
+              /* Illustration CSS si pas d'image */
+              <FormationIllustration
+                category={category_name}
+                className="w-full h-full transition-transform duration-700 group-hover:scale-105"
+              />
+            )}
           </div>
 
           {/* Action Buttons */}
