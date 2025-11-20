@@ -1,11 +1,15 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import FormationIllustration from './FormationIllustration';
 import OptimizedImage from './OptimizedImage';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function FormationCardAnvogue({ formation }) {
   const { formatPrice } = useCurrency();
+  const { user, addToCart, addToWishlist, isInWishlist, isInCart } = useAuth();
+  const router = useRouter();
   const {
     id,
     slug,
@@ -72,12 +76,28 @@ export default function FormationCardAnvogue({ formation }) {
 
           {/* Wishlist Icon */}
           <div className="list-action-icon absolute top-3 right-3 z-[2]">
-            <div className="add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full bg-white duration-300 relative hover:bg-black group/wishlist">
-              <i className="ph ph-heart text-lg group-hover/wishlist:text-white"></i>
+            <button
+              onClick={() => {
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInWishlist(id)) {
+                  alert('Déjà dans les favoris !');
+                } else {
+                  addToWishlist(formation);
+                  alert('Ajouté aux favoris !');
+                }
+              }}
+              className={`add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full duration-300 relative group/wishlist ${
+                isInWishlist(id) ? 'bg-red text-white' : 'bg-white hover:bg-black'
+              }`}
+            >
+              <i className={`${isInWishlist(id) ? 'ph-fill' : 'ph'} ph-heart text-lg ${!isInWishlist(id) && 'group-hover/wishlist:text-white'}`}></i>
               <div className="tag-action bg-black text-white caption2 px-1.5 py-0.5 rounded-sm opacity-0 invisible absolute bottom-full mb-2 transition-all duration-300 group-hover/wishlist:opacity-100 group-hover/wishlist:visible whitespace-nowrap">
-                Ajouter aux favoris
+                {isInWishlist(id) ? 'Dans les favoris' : 'Ajouter aux favoris'}
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Formation Image/Illustration */}
@@ -121,8 +141,22 @@ export default function FormationCardAnvogue({ formation }) {
             >
               Voir détails
             </Link>
-            <button className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white">
-              Ajouter au panier
+            <button
+              onClick={() => {
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInCart(id)) {
+                  alert('Déjà dans le panier !');
+                } else {
+                  addToCart(formation);
+                  alert('Ajouté au panier !');
+                }
+              }}
+              className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
+            >
+              {isInCart(id) ? 'Dans le panier' : 'Ajouter au panier'}
             </button>
           </div>
         </div>

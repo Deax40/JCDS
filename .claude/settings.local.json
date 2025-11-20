@@ -10,7 +10,11 @@
       "Bash(git push:*)",
       "Bash(npm install:*)",
       "Bash(git reset:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(findstr:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

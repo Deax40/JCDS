@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function HeaderAnvogue() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
   const { currency, changeCurrency } = useCurrency();
+  const { user, cart, wishlist, logout } = useAuth();
   const [showCurrencyMenu, setShowCurrencyMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <>
@@ -215,31 +216,58 @@ export default function HeaderAnvogue() {
                   <div className="user-icon flex items-center justify-center cursor-pointer relative group">
                     <i className="ph-bold ph-user text-2xl"></i>
                     <div className="login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                      <Link href="/login" className="button-main w-full text-center block">
-                        Connexion
-                      </Link>
-                      <div className="text-secondary text-center mt-3 pb-4">
-                        Pas de compte ?
-                        <Link href="/register" className="text-black pl-1 hover:underline">
-                          Inscription
-                        </Link>
-                      </div>
-                      <Link href="/dashboard" className="button-white w-full text-center block">
-                        Tableau de bord
-                      </Link>
-                      <div className="bottom mt-4 pt-4 border-t border-line"></div>
-                      <Link href="/support" className="body1 hover:underline">
-                        Support
-                      </Link>
+                      {user ? (
+                        <>
+                          {/* Utilisateur connecté */}
+                          <div className="mb-4 pb-4 border-b border-line">
+                            <p className="text-sm text-secondary mb-1">Connecté en tant que</p>
+                            <p className="font-semibold">{user.pseudo}</p>
+                            <p className="text-sm text-secondary">ID: {user.id}</p>
+                          </div>
+                          <Link href="/mon-compte" className="button-main w-full text-center block mb-3">
+                            Mon compte
+                          </Link>
+                          <Link href="/mes-achats" className="button-white w-full text-center block mb-3">
+                            Mes achats
+                          </Link>
+                          <div className="bottom mt-4 pt-4 border-t border-line"></div>
+                          <Link href="/support" className="body1 hover:underline block mb-3">
+                            Support
+                          </Link>
+                          <button
+                            onClick={logout}
+                            className="w-full text-left body1 text-red hover:underline"
+                          >
+                            Déconnexion
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {/* Utilisateur non connecté */}
+                          <Link href="/login" className="button-main w-full text-center block">
+                            Connexion
+                          </Link>
+                          <div className="text-secondary text-center mt-3 pb-4">
+                            Pas de compte ?
+                            <Link href="/register" className="text-black pl-1 hover:underline">
+                              Inscription
+                            </Link>
+                          </div>
+                          <div className="bottom mt-4 pt-4 border-t border-line"></div>
+                          <Link href="/support" className="body1 hover:underline">
+                            Support
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   {/* Wishlist Icon */}
                   <Link href="/favoris" className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer">
                     <i className="ph-bold ph-heart text-2xl"></i>
-                    {wishlistCount > 0 && (
+                    {wishlist && wishlist.length > 0 && (
                       <span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {wishlistCount}
+                        {wishlist.length}
                       </span>
                     )}
                   </Link>
@@ -247,9 +275,9 @@ export default function HeaderAnvogue() {
                   {/* Cart Icon */}
                   <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
                     <i className="ph-bold ph-handbag text-2xl"></i>
-                    {cartCount > 0 && (
+                    {cart && cart.length > 0 && (
                       <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {cartCount}
+                        {cart.length}
                       </span>
                     )}
                   </Link>
