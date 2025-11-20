@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import FormationIllustration from './FormationIllustration';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function FormationCardAnvogue({ formation }) {
+  const { formatPrice } = useCurrency();
   const {
     id,
     slug,
@@ -164,11 +166,11 @@ export default function FormationCardAnvogue({ formation }) {
 
           {/* Price */}
           <div className="product-price-block flex items-center gap-2 flex-wrap mt-2 duration-300 relative z-[1]">
-            <div className="product-price text-title font-semibold">{displayPrice.toFixed(2)}€</div>
+            <div className="product-price text-title font-semibold">{formatPrice(displayPrice)}</div>
             {hasPromo && (
               <>
                 <div className="product-origin-price caption1 text-secondary2">
-                  <del>{price.toFixed(2)}€</del>
+                  <del>{formatPrice(price)}</del>
                 </div>
                 <div className="product-sale caption1 font-medium bg-green text-white px-3 py-0.5 inline-block rounded-full">
                   -{discountPercent}%

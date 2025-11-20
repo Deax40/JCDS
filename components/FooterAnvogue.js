@@ -110,17 +110,11 @@ export default function FooterAnvogue() {
 
                   {/* Social Media */}
                   <div className="list-social flex items-center gap-4 mt-4">
-                    <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
-                      <i className="ph-bold ph-facebook-logo text-2xl text-black"></i>
-                    </a>
-                    <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
-                      <i className="ph-bold ph-instagram-logo text-2xl text-black"></i>
-                    </a>
                     <a href="https://www.twitter.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
                       <i className="ph-bold ph-twitter-logo text-2xl text-black"></i>
                     </a>
-                    <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
-                      <i className="ph-bold ph-youtube-logo text-2xl text-black"></i>
+                    <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+                      <i className="ph-bold ph-instagram-logo text-2xl text-black"></i>
                     </a>
                     <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
                       <i className="ph-bold ph-linkedin-logo text-2xl text-black"></i>

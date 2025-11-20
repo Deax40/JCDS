@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function HeaderAnvogue() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const { currency, changeCurrency } = useCurrency();
+  const [showCurrencyMenu, setShowCurrencyMenu] = useState(false);
 
   return (
     <>
@@ -19,30 +22,50 @@ export default function HeaderAnvogue() {
                 </div>
                 <i className="ph ph-caret-down text-xs text-white"></i>
               </div>
-              <div className="choose-type choose-currency flex items-center gap-1.5">
+              <div
+                className="choose-type choose-currency flex items-center gap-1.5 relative cursor-pointer"
+                onMouseEnter={() => setShowCurrencyMenu(true)}
+                onMouseLeave={() => setShowCurrencyMenu(false)}
+              >
                 <div className="select relative">
-                  <p className="caption2 text-white cursor-pointer">EUR</p>
+                  <p className="caption2 text-white cursor-pointer">{currency}</p>
                 </div>
                 <i className="ph ph-caret-down text-xs text-white"></i>
+
+                {/* Menu déroulant devise */}
+                {showCurrencyMenu && (
+                  <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg py-2 min-w-[80px] z-50">
+                    <button
+                      onClick={() => changeCurrency('EUR')}
+                      className={`w-full px-4 py-2 text-left text-sm hover:bg-surface transition-colors ${
+                        currency === 'EUR' ? 'font-bold text-purple' : 'text-secondary'
+                      }`}
+                    >
+                      EUR (€)
+                    </button>
+                    <button
+                      onClick={() => changeCurrency('USD')}
+                      className={`w-full px-4 py-2 text-left text-sm hover:bg-surface transition-colors ${
+                        currency === 'USD' ? 'font-bold text-purple' : 'text-secondary'
+                      }`}
+                    >
+                      USD ($)
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="text-center text-button-uppercase text-white flex items-center">
               Nouveau : 10% de réduction avec le code FORMATION10
             </div>
             <div className="right-content flex items-center gap-5 max-md:hidden">
-              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
-                <i className="ph ph-facebook-logo text-white text-lg"></i>
-              </a>
-              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
-                <i className="ph ph-instagram-logo text-white text-lg"></i>
-              </a>
-              <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
-                <i className="ph ph-youtube-logo text-white text-lg"></i>
-              </a>
-              <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+              <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
                 <i className="ph ph-twitter-logo text-white text-lg"></i>
               </a>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+                <i className="ph ph-instagram-logo text-white text-lg"></i>
+              </a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
                 <i className="ph ph-linkedin-logo text-white text-lg"></i>
               </a>
             </div>
@@ -253,9 +276,6 @@ export default function HeaderAnvogue() {
                   </li>
                   <li>
                     <Link href="/formateurs" className="text-lg font-semibold block py-2">Formateurs</Link>
-                  </li>
-                  <li>
-                    <Link href="/blog" className="text-lg font-semibold block py-2">Blog</Link>
                   </li>
                   <li>
                     <Link href="/contact" className="text-lg font-semibold block py-2">Contact</Link>
