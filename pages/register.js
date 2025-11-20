@@ -299,60 +299,40 @@ export default function Register() {
                     </p>
                   </div>
 
-                  {/* Genre et Rôle */}
-                  <div className="grid md:grid-cols-2 gap-5">
-                    {/* Genre */}
-                    <div>
-                      <label htmlFor="genre" className="block text-sm font-medium text-primary mb-2">
-                        Genre <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-gender-intersex text-secondary text-lg"></i>
-                        </div>
-                        <select
-                          id="genre"
-                          name="genre"
-                          value={formData.genre}
-                          onChange={handleChange}
-                          className="block w-full pl-11 pr-4 py-3 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all appearance-none bg-white"
-                        >
-                          <option value="homme">Homme</option>
-                          <option value="femme">Femme</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                          <i className="ph ph-caret-down text-secondary"></i>
-                        </div>
+                  {/* Genre */}
+                  <div>
+                    <label htmlFor="genre" className="block text-sm font-medium text-primary mb-2">
+                      Genre <span className="text-red">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i className="ph ph-gender-intersex text-secondary text-lg"></i>
                       </div>
-                      <p className="mt-1 text-xs text-secondary">
-                        Détermine votre avatar de profil
-                      </p>
+                      <select
+                        id="genre"
+                        name="genre"
+                        value={formData.genre}
+                        onChange={handleChange}
+                        className="block w-full pl-11 pr-4 py-3 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all appearance-none bg-white"
+                      >
+                        <option value="homme">Homme</option>
+                        <option value="femme">Femme</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                        <i className="ph ph-caret-down text-secondary"></i>
+                      </div>
                     </div>
+                    <p className="mt-1 text-xs text-secondary">
+                      Détermine votre avatar de profil
+                    </p>
+                  </div>
 
-                    {/* Rôle */}
-                    <div>
-                      <label htmlFor="role" className="block text-sm font-medium text-primary mb-2">
-                        Type de compte <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-user-circle text-secondary text-lg"></i>
-                        </div>
-                        <select
-                          id="role"
-                          name="role"
-                          value={formData.role}
-                          onChange={handleChange}
-                          className="block w-full pl-11 pr-4 py-3 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all appearance-none bg-white"
-                        >
-                          <option value="acheteur">Acheteur</option>
-                          <option value="vendeur">Vendeur</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                          <i className="ph ph-caret-down text-secondary"></i>
-                        </div>
-                      </div>
-                    </div>
+                  {/* Info compte acheteur */}
+                  <div className="bg-blue bg-opacity-10 border border-blue rounded-xl p-4">
+                    <p className="text-sm text-secondary text-center">
+                      <i className="ph-bold ph-info mr-2"></i>
+                      Vous créez un <strong>compte acheteur</strong>. Vous pourrez devenir vendeur plus tard depuis votre profil.
+                    </p>
                   </div>
 
                   {/* Mots de passe */}

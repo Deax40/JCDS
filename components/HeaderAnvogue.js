@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useCurrency } from '../context/CurrencyContext';
 import { useAuth } from '../context/AuthContext';
 
 export default function HeaderAnvogue() {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { currency, changeCurrency } = useCurrency();
   const { user, cart, wishlist, logout } = useAuth();
@@ -213,9 +215,21 @@ export default function HeaderAnvogue() {
 
                 <div className="list-action flex items-center gap-4">
                   {/* User Icon */}
-                  <div className="user-icon flex items-center justify-center cursor-pointer relative group">
+                  <div
+                    className="user-icon flex items-center justify-center cursor-pointer relative group"
+                    onClick={() => {
+                      if (user) {
+                        router.push('/mon-compte');
+                      } else {
+                        router.push('/login');
+                      }
+                    }}
+                  >
                     <i className="ph-bold ph-user text-2xl"></i>
-                    <div className="login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <div
+                      className="login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {user ? (
                         <>
                           {/* Utilisateur connecté */}
@@ -263,24 +277,42 @@ export default function HeaderAnvogue() {
                   </div>
 
                   {/* Wishlist Icon */}
-                  <Link href="/favoris" className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer">
-                    <i className="ph-bold ph-heart text-2xl"></i>
-                    {wishlist && wishlist.length > 0 && (
-                      <span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {wishlist.length}
-                      </span>
-                    )}
-                  </Link>
+                  {user ? (
+                    <Link href="/favoris" className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer">
+                      <i className="ph-bold ph-heart text-2xl"></i>
+                      {wishlist && wishlist.length > 0 && (
+                        <span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
+                          {wishlist.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => alert('Créez votre compte pour accéder aux favoris')}
+                      className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer"
+                    >
+                      <i className="ph-bold ph-heart text-2xl"></i>
+                    </button>
+                  )}
 
                   {/* Cart Icon */}
-                  <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
-                    <i className="ph-bold ph-handbag text-2xl"></i>
-                    {cart && cart.length > 0 && (
-                      <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {cart.length}
-                      </span>
-                    )}
-                  </Link>
+                  {user ? (
+                    <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
+                      <i className="ph-bold ph-handbag text-2xl"></i>
+                      {cart && cart.length > 0 && (
+                        <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
+                          {cart.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => alert('Créez votre compte pour accéder au panier')}
+                      className="max-md:hidden cart-icon flex items-center relative cursor-pointer"
+                    >
+                      <i className="ph-bold ph-handbag text-2xl"></i>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
