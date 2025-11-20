@@ -179,6 +179,12 @@ export default function HeaderAnvogue() {
                     </li>
 
                     <li className="h-full">
+                      <Link href="/comment-ca-marche" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
+                        Comment ça marche
+                      </Link>
+                    </li>
+
+                    <li className="h-full">
                       <Link href="/contact" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
                         Contact
                       </Link>
@@ -276,6 +282,9 @@ export default function HeaderAnvogue() {
                   </li>
                   <li>
                     <Link href="/formateurs" className="text-lg font-semibold block py-2">Formateurs</Link>
+                  </li>
+                  <li>
+                    <Link href="/comment-ca-marche" className="text-lg font-semibold block py-2">Comment ça marche</Link>
                   </li>
                   <li>
                     <Link href="/contact" className="text-lg font-semibold block py-2">Contact</Link>
