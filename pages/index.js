@@ -183,12 +183,12 @@ export default function HomeAnvogue() {
               <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Parcourir par Catégorie</h2>
               <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Trouvez la formation qui vous correspond parmi nos catégories</p>
             </div>
-            <div className="list-collection grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-8 gap-4">
+            <div className="list-collection grid xl:grid-cols-7 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 sm:gap-5 gap-3">
               {categories.map((category, index) => (
                 <Link
                   key={index}
                   href={`/categories/${category.slug}`}
-                  className="collection-item block relative rounded-3xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                  className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
                 >
                   <div className="bg-img aspect-square relative overflow-hidden">
                     {/* Gradient de fond avec le thème de la catégorie */}
@@ -196,23 +196,23 @@ export default function HomeAnvogue() {
 
                     {/* Icône principale */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <i className={`ph-bold ${category.icon} text-white opacity-30 group-hover:opacity-50 transition-all duration-500`} style={{ fontSize: '120px' }}></i>
+                      <i className={`ph-bold ${category.icon} text-white opacity-30 group-hover:opacity-50 transition-all duration-500`} style={{ fontSize: '48px' }}></i>
                     </div>
 
                     {/* Icône secondaire en arrière-plan */}
-                    <div className="absolute top-4 right-4">
-                      <i className={`ph-bold ${category.secondaryIcon} text-white opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:rotate-12`} style={{ fontSize: '60px' }}></i>
+                    <div className="absolute top-2 right-2">
+                      <i className={`ph-bold ${category.secondaryIcon} text-white opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:rotate-12`} style={{ fontSize: '24px' }}></i>
                     </div>
 
                     {/* Overlay gradient au hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-black/0 group-hover:from-white/10 group-hover:to-black/20 transition-all duration-700"></div>
                   </div>
 
-                  <div className="collection-name font-semibold text-center sm:bottom-8 bottom-4 w-[90%] md:py-3 py-2 px-2 bg-white rounded-xl duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-xl text-sm md:text-base">
+                  <div className="collection-name font-medium text-center bottom-3 w-[85%] py-1.5 px-1 bg-white rounded-lg duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-lg text-xs leading-tight">
                     {category.name}
                   </div>
 
-                  <div className="absolute top-3 right-3 text-xs font-bold bg-white text-purple px-3 py-1.5 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                  <div className="absolute top-2 right-2 text-[10px] font-bold bg-white text-purple px-2 py-1 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
                     {category.count === 0 ? '0' : `${category.count}+`}
                   </div>
                 </Link>
