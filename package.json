@@ -1,7 +1,7 @@
 {
   "name": "formationplace-marketplace",
   "version": "1.0.0",
-  "description": "Marketplace de formations en ligne basée sur le template Comercio",
+  "description": "Marketplace de formations en ligne avec design Anvogue moderne",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -20,7 +20,9 @@
     "jsonwebtoken": "^9.0.2",
     "next-auth": "^4.24.5",
     "stripe": "^14.9.0",
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "swiper": "^11.0.5",
+    "nodemailer": "^7.0.10"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
@@ -28,6 +30,9 @@
     "@types/react-dom": "^18.2.18",
     "typescript": "^5.3.3",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^14.0.4"
+    "eslint-config-next": "^14.0.4",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
   }
 }

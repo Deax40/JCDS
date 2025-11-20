@@ -1,344 +1,289 @@
 import Head from 'next/head';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import FormationCard from '../components/FormationCard';
+import HeaderAnvogue from '../components/HeaderAnvogue';
+import FooterAnvogue from '../components/FooterAnvogue';
+import FormationCardAnvogue from '../components/FormationCardAnvogue';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay } from 'swiper/modules';
+import Link from 'next/link';
+import { getAllCategories } from '../data/categories';
 
-export default function Home() {
-  // Données exemple - à remplacer par des appels API
-  const featuredFormations = [
+export default function HomeAnvogue() {
+  // Sample formations data
+  const formations = [
     {
       id: 1,
-      slug: 'formation-react-avancee',
-      title: 'Maîtrisez React et Next.js',
-      cover_image_url: '/assets/img/formations/1.jpg',
+      slug: 'formation-react-nextjs',
+      title: 'Maîtrisez React et Next.js - Formation Complète',
+      cover_image_url: '/assets/formations/react.jpg',
+      cover_image_hover: '/assets/formations/react-hover.jpg',
       price: 89.00,
       promo_price: 59.00,
       is_promo_active: true,
       average_rating: 4.5,
       seller_name: 'Jean Dupont',
-      category_name: 'Développement Web'
+      category_name: 'Développement Web',
+      total_sales: 45,
+      total_capacity: 100,
+      level: 'Intermédiaire',
+      is_new: false,
     },
-    // Ajouter plus de formations...
+    {
+      id: 2,
+      slug: 'formation-nodejs-backend',
+      title: 'Node.js et Express - Backend Complet',
+      cover_image_url: '/assets/formations/nodejs.jpg',
+      cover_image_hover: '/assets/formations/nodejs-hover.jpg',
+      price: 79.00,
+      promo_price: null,
+      is_promo_active: false,
+      average_rating: 4.8,
+      seller_name: 'Marie Martin',
+      category_name: 'Développement Web',
+      total_sales: 68,
+      total_capacity: 100,
+      level: 'Avancé',
+      is_new: true,
+    },
+    {
+      id: 3,
+      slug: 'formation-design-ui-ux',
+      title: 'Design UI/UX avec Figma - De Zéro à Expert',
+      cover_image_url: '/assets/formations/design.jpg',
+      cover_image_hover: '/assets/formations/design-hover.jpg',
+      price: 69.00,
+      promo_price: 49.00,
+      is_promo_active: true,
+      average_rating: 4.6,
+      seller_name: 'Sophie Dubois',
+      category_name: 'Design',
+      total_sales: 32,
+      total_capacity: 80,
+      level: 'Débutant',
+      is_new: false,
+    },
+    {
+      id: 4,
+      slug: 'formation-marketing-digital',
+      title: 'Marketing Digital & SEO - Stratégies Gagnantes',
+      cover_image_url: '/assets/formations/marketing.jpg',
+      cover_image_hover: '/assets/formations/marketing-hover.jpg',
+      price: 99.00,
+      promo_price: 79.00,
+      is_promo_active: true,
+      average_rating: 4.7,
+      seller_name: 'Pierre Laurent',
+      category_name: 'Business & Marketing',
+      total_sales: 54,
+      total_capacity: 100,
+      level: 'Intermédiaire',
+      is_new: false,
+    },
   ];
+
+  // Récupérer les vraies données de catégories
+  const categories = getAllCategories();
 
   return (
     <>
       <Head>
         <title>FormationPlace - Marketplace de Formations en Ligne</title>
-        <meta name="description" content="Découvrez des milliers de formations en ligne créées par des formateurs experts. Développez vos compétences dès aujourd'hui." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="Découvrez des milliers de formations en ligne. Apprenez de nouvelles compétences avec des formateurs experts." />
       </Head>
 
-      <div className="site-content">
-        <Header />
+      <div className="overflow-x-hidden">
+        <HeaderAnvogue />
 
-        {/* Slider Principal */}
-        <section className="slider-wrapper">
-          <div className="slider-start slider-1 owl-carousel owl-theme">
-            <div className="item">
-              <img src="/assets/img/slider/f1.jpg" alt="Nouvelles formations" />
-              <div className="container-fluid custom-container slider-content">
-                <div className="row align-items-center">
-                  <div className="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-                    <div className="slider-text">
-                      <h4 className="animated fadeInUp">
-                        <span>NOUVELLES</span> FORMATIONS
-                      </h4>
-                      <h1 className="animated fadeInUp">APPRENEZ AUJOURD'HUI</h1>
-                      <p className="animated fadeInUp">
-                        Découvrez des centaines de formations créées par des experts
-                        passionnés. Développez vos compétences à votre rythme.
-                      </p>
-                      <a className="animated fadeInUp btn-two" href="/formations">
-                        DÉCOUVRIR LES FORMATIONS
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="item">
-              <img src="/assets/img/slider/f2.jpg" alt="Devenez formateur" />
-              <div className="container-fluid custom-container slider-content">
-                <div className="row align-items-center">
-                  <div className="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-                    <div className="slider-text">
-                      <h4 className="animated fadeIn">
-                        <span>PARTAGEZ</span> VOTRE EXPERTISE
-                      </h4>
-                      <h1 className="animated fadeIn">DEVENEZ FORMATEUR</h1>
-                      <p className="animated fadeIn">
-                        Créez et vendez vos formations en ligne. Rejoignez notre
-                        communauté de formateurs experts et générez des revenus.
-                      </p>
-                      <a className="animated fadeIn btn-two" href="/devenir-formateur">
-                        COMMENCER MAINTENANT
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="item">
-              <img src="/assets/img/slider/f3.jpg" alt="Promotions" />
-              <div className="container-fluid custom-container slider-content">
-                <div className="row align-items-center">
-                  <div className="col-12 col-sm-8 col-md-8 offset-md-1 col-lg-6 offset-xl-2 col-xl-5 mr-auto">
-                    <div className="slider-text mob-align-left">
-                      <h4 className="animated fadeIn">
-                        <span>OFFRES SPÉCIALES</span> LIMITÉES
-                      </h4>
-                      <h1 className="animated fadeIn">JUSQU'À -50%</h1>
-                      <p className="animated fadeIn">
-                        Profitez de réductions exceptionnelles sur une sélection de
-                        formations. Offre limitée dans le temps.
-                      </p>
-                      <a className="animated fadeIn btn-two" href="/formations?filter=promo">
-                        VOIR LES PROMOS
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Bannières Catégories */}
-        <section className="banner padding-top-120">
-          <div className="container-fluid custom-container">
-            <div className="row">
-              <div className="col-12 col-md-4">
-                <a href="/categories/developpement-web">
-                  <div className="sin-banner align-items-center">
-                    <img src="/assets/img/banners/2.png" alt="Développement" />
-                    <div className="sin-banner-con">
-                      <div className="sin-banner-inner-wrap">
-                        <div className="banner-top">
-                          <h4>Développement</h4>
-                          <h4>Web & <span>Mobile</span></h4>
-                        </div>
-                        <p>Plus de</p>
-                        <h3>200 cours</h3>
-                        <span>Débutant à</span>
-                        <span>Expert</span>
+        {/* Hero Slider */}
+        <div id="header" className="relative w-full">
+          <div className="slider-block style-one bg-linear xl:h-[900px] lg:h-[840px] md:h-[640px] sm:h-[540px] h-[420px] w-full">
+            <div className="slider-main h-full w-full">
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                spaceBetween={0}
+                slidesPerView={1}
+                pagination={{ clickable: true }}
+                autoplay={{ delay: 5000, disableOnInteraction: false }}
+                loop={true}
+                className="h-full relative"
+              >
+                <SwiperSlide>
+                  <div className="slider-item h-full w-full relative">
+                    <div className="container w-full h-full flex items-center relative">
+                      <div className="text-content basis-1/2 z-10">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d'Apprentissage</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Développez Vos<br />Compétences
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
+                          Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd'hui!
+                        </p>
+                        <Link href="/formations" className="button-main">
+                          Découvrir les Formations
+                        </Link>
+                      </div>
+                      <div className="sub-img absolute sm:w-1/2 w-3/5 2xl:-right-[60px] -right-[16px] bottom-0 opacity-90">
+                        <div className="w-full h-full bg-gradient-to-br from-green to-blue rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>
-                </a>
-              </div>
+                </SwiperSlide>
 
-              <div className="col-12 col-md-4">
-                <a href="/categories/business-marketing">
-                  <div className="sin-banner style-two">
-                    <img src="/assets/img/banners/3.png" alt="Business" />
-                    <div className="sin-banner-con">
-                      <div className="sin-banner-inner-wrap">
-                        <h4>Business & Marketing</h4>
-                        <h3>150+ Formations</h3>
-                        <span>Boostez votre carrière</span>
+                <SwiperSlide>
+                  <div className="slider-item h-full w-full relative">
+                    <div className="container w-full h-full flex items-center relative">
+                      <div className="text-content basis-1/2 z-10">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Promotions Exceptionnelles</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Jusqu'à<br />-50%
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
+                          Profitez de réductions exceptionnelles sur une sélection de formations premium.
+                        </p>
+                        <Link href="/formations?filter=promo" className="button-main">
+                          Voir les Promos
+                        </Link>
+                      </div>
+                      <div className="sub-img absolute w-1/2 2xl:-right-[60px] -right-[0] sm:-bottom-[60px] bottom-0 opacity-90">
+                        <div className="w-full h-full bg-gradient-to-br from-red to-orange rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>
-                </a>
-              </div>
+                </SwiperSlide>
 
-              <div className="col-12 col-md-4">
-                <a href="/categories/design">
-                  <div className="sin-banner">
-                    <img src="/assets/img/banners/5.png" alt="Design" />
-                    <div className="br-wrapper">
-                      <div className="sin-banner-con-right">
-                        <p>Design Graphique</p>
-                        <span>Créativité & Innovation</span>
+                <SwiperSlide>
+                  <div className="slider-item h-full w-full relative">
+                    <div className="container w-full h-full flex items-center relative">
+                      <div className="text-content basis-1/2 z-10">
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Partagez Votre Expertise</div>
+                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
+                          Devenez<br />Formateur
+                        </h1>
+                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
+                          Créez et vendez vos formations. Rejoignez notre communauté de formateurs experts.
+                        </p>
+                        <Link href="/devenir-formateur" className="button-main">
+                          Commencer Maintenant
+                        </Link>
+                      </div>
+                      <div className="sub-img absolute sm:w-1/2 w-2/3 2xl:-right-[60px] -right-[36px] sm:bottom-0 -bottom-[30px] opacity-90">
+                        <div className="w-full h-full bg-gradient-to-br from-purple to-pink rounded-tl-full"></div>
                       </div>
                     </div>
                   </div>
-                </a>
-              </div>
+                </SwiperSlide>
+              </Swiper>
             </div>
           </div>
-        </section>
-
-        {/* Formations avec filtres */}
-        <section className="main-product">
-          <div className="container container-two">
-            <div className="section-heading">
-              <h3>Explorez nos <span>formations</span></h3>
-            </div>
-
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="pro-tab-filter">
-                  <ul className="pro-tab-button">
-                    <li className="filter active" data-filter="*">TOUTES</li>
-                    <li className="filter" data-filter=".developpement">Développement</li>
-                    <li className="filter" data-filter=".business">Business</li>
-                    <li className="filter" data-filter=".design">Design</li>
-                    <li className="filter" data-filter=".photo">Photographie</li>
-                  </ul>
-
-                  <div className="grid row">
-                    {/* Les cartes de formations seront générées ici */}
-                    <div className="grid-item developpement col-6 col-md-6 col-lg-4 col-xl-3">
-                      <FormationCard formation={featuredFormations[0]} />
-                    </div>
-                    {/* Répéter pour chaque formation */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="feature-area">
-          <div className="container-fluid custom-container">
-            <div className="row">
-              <div className="col-sm-6 col-xl-3">
-                <div className="sin-feature">
-                  <div className="inner-sin-feature">
-                    <div className="icon">
-                      <i className="flaticon-free-delivery"></i>
-                    </div>
-                    <div className="f-content">
-                      <h6><a href="#">ACCÈS IMMÉDIAT</a></h6>
-                      <p>Accès instantané à vos formations</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-sm-6 col-xl-3">
-                <div className="sin-feature">
-                  <div className="inner-sin-feature">
-                    <div className="icon">
-                      <i className="flaticon-shopping-online-support"></i>
-                    </div>
-                    <div className="f-content">
-                      <h6><a href="#">SUPPORT 24/7</a></h6>
-                      <p>Assistance en ligne disponible</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-sm-6 col-xl-3">
-                <div className="sin-feature">
-                  <div className="inner-sin-feature">
-                    <div className="icon">
-                      <i className="flaticon-return-of-investment"></i>
-                    </div>
-                    <div className="f-content">
-                      <h6><a href="#">SATISFAIT OU REMBOURSÉ</a></h6>
-                      <p>Garantie de remboursement sous 30 jours</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-sm-6 col-xl-3">
-                <div className="sin-feature">
-                  <div className="inner-sin-feature">
-                    <div className="icon">
-                      <i className="flaticon-sign"></i>
-                    </div>
-                    <div className="f-content">
-                      <h6><a href="#">CERTIFICATS</a></h6>
-                      <p>Obtenez des certifications reconnues</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Nouvelles formations tendances */}
-        <section className="banner-product">
-          <div className="container container-two">
-            <div className="section-heading pb-30">
-              <h3>NOUVELLES <span>TENDANCES</span></h3>
-            </div>
-
-            <div className="row justify-content-center">
-              {/* Cartes de formations style 2 */}
-              <div className="col-xl-6 col-lg-4 col-md-8">
-                <FormationCard formation={featuredFormations[0]} style="two" />
-              </div>
-              {/* Répéter pour d'autres formations */}
-            </div>
-          </div>
-        </section>
-
-        {/* Bannière publicitaire */}
-        <section className="add-area">
-          <a href="/formations?filter=promo">
-            <img src="/assets/img/add.jpg" alt="Promotion spéciale" />
-          </a>
-        </section>
-
-        {/* Petites formations (TOP SALE, TOP RATED, etc.) */}
-        <section className="product-small">
-          <div className="container-fluid custom-container">
-            <div className="row">
-              <div className="col-sm-6 col-md-6 col-xl-3">
-                <div className="small-sec-title">
-                  <h6>LES PLUS <span>VENDUES</span></h6>
-                </div>
-                {/* Petites cartes de formations */}
-              </div>
-
-              <div className="col-sm-6 col-xl-3 col-md-6">
-                <div className="small-sec-title">
-                  <h6>MIEUX <span>NOTÉES</span></h6>
-                </div>
-                {/* Petites cartes de formations */}
-              </div>
-
-              <div className="col-sm-6 col-xl-3 col-md-6">
-                <div className="small-sec-title">
-                  <h6>NOUVEAUTÉS <span>DE LA SEMAINE</span></h6>
-                </div>
-                {/* Petites cartes de formations */}
-              </div>
-
-              <div className="col-sm-6 col-xl-3 col-md-6">
-                <div className="small-sec-title">
-                  <h6>EN <span>PROMOTION</span></h6>
-                </div>
-                {/* Petites cartes de formations */}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section Instagram (Témoignages/Success stories) */}
-        <section className="instagram-area">
-          <div className="instagram-slider owl-carousel owl-theme">
-            {/* Images de succès / témoignages visuels */}
-            <div className="sin-instagram">
-              <img src="/assets/img/success/1.jpg" alt="Success story" />
-              <div className="hover-text">
-                <a href="#">
-                  <i className="fa fa-star"></i>
-                  <span>Success Story</span>
-                </a>
-              </div>
-            </div>
-            {/* Répéter */}
-          </div>
-        </section>
-
-        <Footer />
-
-        {/* Back to top */}
-        <div className="backtotop">
-          <i className="fa fa-angle-up backtotop_btn"></i>
         </div>
+
+        {/* Collections Block */}
+        <div className="collection-block md:pt-28 pt-16 md:pb-16 pb-8">
+          <div className="container">
+            <div className="heading flex flex-col items-center text-center mb-12">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Parcourir par Catégorie</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Trouvez la formation qui vous correspond parmi nos catégories</p>
+            </div>
+            <div className="list-collection grid xl:grid-cols-7 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 sm:gap-5 gap-3">
+              {categories.map((category, index) => (
+                <Link
+                  key={index}
+                  href={`/categories/${category.slug}`}
+                  className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
+                >
+                  <div className="bg-img aspect-square relative overflow-hidden">
+                    {/* Gradient de fond avec le thème de la catégorie */}
+                    <div className={`w-full h-full bg-gradient-to-br ${category.gradient} group-hover:scale-110 transition-all duration-700 ease-out`}></div>
+
+                    {/* Icône principale */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <i className={`ph-bold ${category.icon} text-white opacity-30 group-hover:opacity-50 transition-all duration-500`} style={{ fontSize: '48px' }}></i>
+                    </div>
+
+                    {/* Icône secondaire en arrière-plan */}
+                    <div className="absolute top-2 right-2">
+                      <i className={`ph-bold ${category.secondaryIcon} text-white opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:rotate-12`} style={{ fontSize: '24px' }}></i>
+                    </div>
+
+                    {/* Overlay gradient au hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-black/0 group-hover:from-white/10 group-hover:to-black/20 transition-all duration-700"></div>
+                  </div>
+
+                  <div className="collection-name font-medium text-center bottom-3 w-[85%] py-1.5 px-1 bg-white rounded-lg duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-lg text-xs leading-tight">
+                    {category.name}
+                  </div>
+
+                  <div className="absolute top-2 right-2 text-[10px] font-bold bg-white text-purple px-2 py-1 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                    {category.count === 0 ? '0' : `${category.count}+`}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* What's New Section with Tabs */}
+        <div className="what-new-block md:pt-28 pt-16 md:pb-16 pb-8">
+          <div className="container">
+            <div className="heading flex flex-col items-center text-center mb-12">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Formations Populaires</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Découvrez les formations les plus demandées par notre communauté</p>
+            </div>
+
+            <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
+              {formations.map((formation) => (
+                <FormationCardAnvogue key={formation.id} formation={formation} />
+              ))}
+            </div>
+
+            <div className="flex items-center justify-center mt-16">
+              <Link href="/formations" className="button-main text-base px-8 py-4">
+                Voir Toutes les Formations
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="benefit-block md:pt-28 pt-16 md:pb-28 pb-16 bg-surface">
+          <div className="container">
+            <div className="heading flex flex-col items-center text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Pourquoi FormationPlace ?</h2>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Les avantages qui font la différence</p>
+            </div>
+            <div className="list-benefit grid xl:grid-cols-4 sm:grid-cols-2 gap-8">
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-rocket-launch text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Accès Immédiat</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
+                  Commencez à apprendre instantanément après l'achat
+                </p>
+              </div>
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-certificate text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Certificats</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
+                  Obtenez des certificats reconnus à la fin de chaque formation
+                </p>
+              </div>
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-headset text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Support 24/7</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
+                  Assistance disponible à tout moment pour vous aider
+                </p>
+              </div>
+              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
+                <i className="ph-bold ph-shield-check text-6xl mb-6 group-hover:text-white transition-colors"></i>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Satisfait ou Remboursé</h3>
+                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
+                  Garantie de remboursement sous 30 jours
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FooterAnvogue />
       </div>
     </>
   );
