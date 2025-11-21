@@ -2,7 +2,7 @@ import Head from 'next/head';
 import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import FormationCardAnvogue from '../components/FormationCardAnvogue';
-import HeroModern from '../components/HeroModern';
+import HeroSlider from '../components/HeroSlider';
 import Link from 'next/link';
 import { getAllCategories } from '../data/categories';
 
@@ -92,11 +92,11 @@ export default function HomeAnvogue() {
       <div className="overflow-x-hidden bg-white">
         <HeaderAnvogue />
 
-        {/* Modern Hero Section */}
-        <HeroModern />
+        {/* Hero Slider Section */}
+        <HeroSlider />
 
-        {/* Collections Block - Modernized */}
-        <div className="py-16 md:py-24">
+        {/* Collections Block - Modernized & Improved */}
+        <div className="py-16 md:py-24 bg-gradient-to-b from-white to-surface/50">
           <div className="container">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="max-w-2xl">
@@ -114,13 +114,16 @@ export default function HomeAnvogue() {
                 <Link
                   key={index}
                   href={`/categories/${category.slug}`}
-                  className="group relative overflow-hidden rounded-2xl bg-surface p-6 flex flex-col items-center justify-center text-center gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-white border border-transparent hover:border-line"
+                  className="group relative overflow-hidden rounded-2xl bg-white p-6 flex flex-col items-center justify-center text-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-purple/5 hover:-translate-y-2 border border-line/50 hover:border-purple/30"
                 >
-                   <div className={`w-16 h-16 rounded-full flex items-center justify-center bg-white shadow-sm group-hover:scale-110 transition-transform duration-300 text-3xl ${category.icon.includes('code') ? 'text-blue' : category.icon.includes('paint') ? 'text-purple' : 'text-primary'}`}>
+                   {/* Hover Effect Background */}
+                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300 text-3xl relative z-10 ${category.icon.includes('code') ? 'bg-blue/10 text-blue' : category.icon.includes('paint') ? 'bg-purple/10 text-purple' : 'bg-primary/5 text-primary'}`}>
                       <i className={`ph-bold ${category.icon}`}></i>
                    </div>
-                   <div className="font-semibold text-primary">{category.name}</div>
-                   <span className="text-xs text-secondary bg-white px-2 py-1 rounded-full border border-line group-hover:border-purple/30 transition-colors">
+                   <div className="font-semibold text-primary relative z-10 group-hover:text-purple transition-colors">{category.name}</div>
+                   <span className="text-xs text-secondary bg-surface px-3 py-1 rounded-full border border-line group-hover:border-purple/20 transition-colors relative z-10">
                       {category.count || 0} cours
                    </span>
                 </Link>
@@ -130,7 +133,7 @@ export default function HomeAnvogue() {
         </div>
 
         {/* What's New / Popular Formations */}
-        <div className="py-16 md:py-24 bg-surface/50">
+        <div className="py-16 md:py-24 bg-surface/30">
           <div className="container">
              <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="max-w-2xl">
@@ -151,46 +154,7 @@ export default function HomeAnvogue() {
           </div>
         </div>
 
-        {/* Benefits Section - Modernized */}
-        <div className="py-16 md:py-24">
-          <div className="container">
-            <div className="bg-primary rounded-3xl p-8 md:p-16 relative overflow-hidden text-white">
-              {/* Background Patterns */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-purple opacity-20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-              <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue opacity-20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
-
-              <div className="relative z-10">
-                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">Pourquoi nous choisir ?</h2>
-                    <p className="text-white/80 text-lg">Une expérience d'apprentissage conçue pour votre réussite.</p>
-                 </div>
-
-                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
-                       <i className="ph-bold ph-rocket-launch text-5xl mb-4 text-purple"></i>
-                       <h3 className="text-xl font-bold mb-2">Accès Immédiat</h3>
-                       <p className="text-white/60 text-sm">Commencez à apprendre dès votre inscription.</p>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
-                       <i className="ph-bold ph-certificate text-5xl mb-4 text-blue"></i>
-                       <h3 className="text-xl font-bold mb-2">Certificats</h3>
-                       <p className="text-white/60 text-sm">Validez vos compétences avec un certificat.</p>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
-                       <i className="ph-bold ph-users text-5xl mb-4 text-green"></i>
-                       <h3 className="text-xl font-bold mb-2">Communauté</h3>
-                       <p className="text-white/60 text-sm">Échangez avec d'autres passionnés.</p>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
-                       <i className="ph-bold ph-device-mobile text-5xl mb-4 text-orange"></i>
-                       <h3 className="text-xl font-bold mb-2">Accessible</h3>
-                       <p className="text-white/60 text-sm">Apprenez sur mobile, tablette ou ordinateur.</p>
-                    </div>
-                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Removed "Why Choose Us" Section as per user feedback */}
 
         <FooterAnvogue />
       </div>
