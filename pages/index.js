@@ -2,8 +2,7 @@ import Head from 'next/head';
 import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import FormationCardAnvogue from '../components/FormationCardAnvogue';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
+import HeroModern from '../components/HeroModern';
 import Link from 'next/link';
 import { getAllCategories } from '../data/categories';
 
@@ -90,194 +89,104 @@ export default function HomeAnvogue() {
         <meta name="description" content="Découvrez des milliers de formations en ligne. Apprenez de nouvelles compétences avec des formateurs experts." />
       </Head>
 
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden bg-white">
         <HeaderAnvogue />
 
-        {/* Hero Slider */}
-        <div id="header" className="relative w-full">
-          <div className="slider-block style-one bg-linear xl:h-[900px] lg:h-[840px] md:h-[640px] sm:h-[540px] h-[420px] w-full">
-            <div className="slider-main h-full w-full">
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                spaceBetween={0}
-                slidesPerView={1}
-                pagination={{ clickable: true }}
-                autoplay={{ delay: 5000, disableOnInteraction: false }}
-                loop={true}
-                className="h-full relative"
-              >
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d'Apprentissage</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Développez Vos<br />Compétences
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd'hui!
-                        </p>
-                        <Link href="/formations" className="button-main">
-                          Découvrir les Formations
-                        </Link>
-                      </div>
-                      <div className="sub-img absolute sm:w-1/2 w-3/5 2xl:-right-[60px] -right-[16px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-green to-blue rounded-tl-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+        {/* Modern Hero Section */}
+        <HeroModern />
 
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Promotions Exceptionnelles</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Jusqu'à<br />-50%
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Profitez de réductions exceptionnelles sur une sélection de formations premium.
-                        </p>
-                        <Link href="/formations?filter=promo" className="button-main">
-                          Voir les Promos
-                        </Link>
-                      </div>
-                      <div className="sub-img absolute w-1/2 2xl:-right-[60px] -right-[0] sm:-bottom-[60px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-red to-orange rounded-tl-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Partagez Votre Expertise</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Devenez<br />Formateur
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Créez et vendez vos formations. Rejoignez notre communauté de formateurs experts.
-                        </p>
-                        <Link href="/devenir-formateur" className="button-main">
-                          Commencer Maintenant
-                        </Link>
-                      </div>
-                      <div className="sub-img absolute sm:w-1/2 w-2/3 2xl:-right-[60px] -right-[36px] sm:bottom-0 -bottom-[30px] opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-purple to-pink rounded-tl-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              </Swiper>
-            </div>
-          </div>
-        </div>
-
-        {/* Collections Block */}
-        <div className="collection-block md:pt-28 pt-16 md:pb-16 pb-8">
+        {/* Collections Block - Modernized */}
+        <div className="py-16 md:py-24">
           <div className="container">
-            <div className="heading flex flex-col items-center text-center mb-12">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Parcourir par Catégorie</h2>
-              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Trouvez la formation qui vous correspond parmi nos catégories</p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div className="max-w-2xl">
+                 <div className="text-purple font-semibold uppercase tracking-wider text-sm mb-2">Explorer</div>
+                 <h2 className="font-display text-3xl md:text-4xl font-bold text-primary">Parcourir par Catégorie</h2>
+                 <p className="mt-3 text-secondary text-lg">Trouvez la formation qui vous correspond.</p>
+              </div>
+              <Link href="/categories" className="text-primary font-semibold hover:text-purple transition-colors flex items-center gap-2 group">
+                Voir tout <i className="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+              </Link>
             </div>
-            <div className="list-collection grid xl:grid-cols-7 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 sm:gap-5 gap-3">
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
               {categories.map((category, index) => (
                 <Link
                   key={index}
                   href={`/categories/${category.slug}`}
-                  className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer group transform transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
+                  className="group relative overflow-hidden rounded-2xl bg-surface p-6 flex flex-col items-center justify-center text-center gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-white border border-transparent hover:border-line"
                 >
-                  <div className="bg-img aspect-square relative overflow-hidden">
-                    {/* Gradient de fond avec le thème de la catégorie */}
-                    <div className={`w-full h-full bg-gradient-to-br ${category.gradient} group-hover:scale-110 transition-all duration-700 ease-out`}></div>
-
-                    {/* Icône principale */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <i className={`ph-bold ${category.icon} text-white opacity-30 group-hover:opacity-50 transition-all duration-500`} style={{ fontSize: '48px' }}></i>
-                    </div>
-
-                    {/* Icône secondaire en arrière-plan */}
-                    <div className="absolute top-2 right-2">
-                      <i className={`ph-bold ${category.secondaryIcon} text-white opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:rotate-12`} style={{ fontSize: '24px' }}></i>
-                    </div>
-
-                    {/* Overlay gradient au hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-black/0 group-hover:from-white/10 group-hover:to-black/20 transition-all duration-700"></div>
-                  </div>
-
-                  <div className="collection-name font-medium text-center bottom-3 w-[85%] py-1.5 px-1 bg-white rounded-lg duration-500 absolute left-1/2 -translate-x-1/2 group-hover:bg-black group-hover:text-white group-hover:scale-105 shadow-md group-hover:shadow-lg text-xs leading-tight">
-                    {category.name}
-                  </div>
-
-                  <div className="absolute top-2 right-2 text-[10px] font-bold bg-white text-purple px-2 py-1 rounded-full group-hover:bg-purple group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
-                    {category.count === 0 ? '0' : `${category.count}+`}
-                  </div>
+                   <div className={`w-16 h-16 rounded-full flex items-center justify-center bg-white shadow-sm group-hover:scale-110 transition-transform duration-300 text-3xl ${category.icon.includes('code') ? 'text-blue' : category.icon.includes('paint') ? 'text-purple' : 'text-primary'}`}>
+                      <i className={`ph-bold ${category.icon}`}></i>
+                   </div>
+                   <div className="font-semibold text-primary">{category.name}</div>
+                   <span className="text-xs text-secondary bg-white px-2 py-1 rounded-full border border-line group-hover:border-purple/30 transition-colors">
+                      {category.count || 0} cours
+                   </span>
                 </Link>
               ))}
             </div>
           </div>
         </div>
 
-        {/* What's New Section with Tabs */}
-        <div className="what-new-block md:pt-28 pt-16 md:pb-16 pb-8">
+        {/* What's New / Popular Formations */}
+        <div className="py-16 md:py-24 bg-surface/50">
           <div className="container">
-            <div className="heading flex flex-col items-center text-center mb-12">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Formations Populaires</h2>
-              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Découvrez les formations les plus demandées par notre communauté</p>
+             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div className="max-w-2xl">
+                 <div className="text-purple font-semibold uppercase tracking-wider text-sm mb-2">Tendances</div>
+                 <h2 className="font-display text-3xl md:text-4xl font-bold text-primary">Formations Populaires</h2>
+                 <p className="mt-3 text-secondary text-lg">Les cours les plus plébiscités par la communauté.</p>
+              </div>
+              <Link href="/formations" className="button-white px-6 py-3">
+                Voir le catalogue
+              </Link>
             </div>
 
-            <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {formations.map((formation) => (
                 <FormationCardAnvogue key={formation.id} formation={formation} />
               ))}
             </div>
-
-            <div className="flex items-center justify-center mt-16">
-              <Link href="/formations" className="button-main text-base px-8 py-4">
-                Voir Toutes les Formations
-              </Link>
-            </div>
           </div>
         </div>
 
-        {/* Benefits Section */}
-        <div className="benefit-block md:pt-28 pt-16 md:pb-28 pb-16 bg-surface">
+        {/* Benefits Section - Modernized */}
+        <div className="py-16 md:py-24">
           <div className="container">
-            <div className="heading flex flex-col items-center text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Pourquoi FormationPlace ?</h2>
-              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Les avantages qui font la différence</p>
-            </div>
-            <div className="list-benefit grid xl:grid-cols-4 sm:grid-cols-2 gap-8">
-              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
-                <i className="ph-bold ph-rocket-launch text-6xl mb-6 group-hover:text-white transition-colors"></i>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Accès Immédiat</h3>
-                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
-                  Commencez à apprendre instantanément après l'achat
-                </p>
-              </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
-                <i className="ph-bold ph-certificate text-6xl mb-6 group-hover:text-white transition-colors"></i>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Certificats</h3>
-                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
-                  Obtenez des certificats reconnus à la fin de chaque formation
-                </p>
-              </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
-                <i className="ph-bold ph-headset text-6xl mb-6 group-hover:text-white transition-colors"></i>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Support 24/7</h3>
-                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
-                  Assistance disponible à tout moment pour vous aider
-                </p>
-              </div>
-              <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
-                <i className="ph-bold ph-shield-check text-6xl mb-6 group-hover:text-white transition-colors"></i>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Satisfait ou Remboursé</h3>
-                <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
-                  Garantie de remboursement sous 30 jours
-                </p>
+            <div className="bg-primary rounded-3xl p-8 md:p-16 relative overflow-hidden text-white">
+              {/* Background Patterns */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-purple opacity-20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue opacity-20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+
+              <div className="relative z-10">
+                 <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">Pourquoi nous choisir ?</h2>
+                    <p className="text-white/80 text-lg">Une expérience d'apprentissage conçue pour votre réussite.</p>
+                 </div>
+
+                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
+                       <i className="ph-bold ph-rocket-launch text-5xl mb-4 text-purple"></i>
+                       <h3 className="text-xl font-bold mb-2">Accès Immédiat</h3>
+                       <p className="text-white/60 text-sm">Commencez à apprendre dès votre inscription.</p>
+                    </div>
+                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
+                       <i className="ph-bold ph-certificate text-5xl mb-4 text-blue"></i>
+                       <h3 className="text-xl font-bold mb-2">Certificats</h3>
+                       <p className="text-white/60 text-sm">Validez vos compétences avec un certificat.</p>
+                    </div>
+                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
+                       <i className="ph-bold ph-users text-5xl mb-4 text-green"></i>
+                       <h3 className="text-xl font-bold mb-2">Communauté</h3>
+                       <p className="text-white/60 text-sm">Échangez avec d'autres passionnés.</p>
+                    </div>
+                    <div className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur hover:bg-white/10 transition-colors">
+                       <i className="ph-bold ph-device-mobile text-5xl mb-4 text-orange"></i>
+                       <h3 className="text-xl font-bold mb-2">Accessible</h3>
+                       <p className="text-white/60 text-sm">Apprenez sur mobile, tablette ou ordinateur.</p>
+                    </div>
+                 </div>
               </div>
             </div>
           </div>
