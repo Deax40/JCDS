@@ -144,6 +144,12 @@ export default async function handler(req, res) {
       });
     }
 
+    if (error.message?.includes('Tenant or user not found')) {
+      return res.status(500).json({
+        message: 'Erreur de configuration base de données : Le projet semble suspendu ou introuvable. Vérifiez votre chaîne de connexion et le statut de votre projet Supabase/Neon.'
+      });
+    }
+
     return res.status(500).json({
       message: 'Erreur lors de la création du compte',
       details: process.env.NODE_ENV !== 'production' ? error.message : undefined
