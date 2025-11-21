@@ -1,20 +1,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import AuthLayout from '../components/AuthLayout';
-import AuthCard from '../components/AuthCard';
+import Head from 'next/head';
+import HeaderAnvogue from '../components/HeaderAnvogue';
+import FooterAnvogue from '../components/FooterAnvogue';
+import { useAuth } from '../context/AuthContext';
 
-/**
- * Login Page
- *
- * Page de connexion moderne avec:
- * - Design clean et professionnel
- * - Validation des champs
- * - Messages d'erreur
- * - Liens vers register et forgot-password
- */
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -35,8 +29,6 @@ export default function Login() {
 
     if (!formData.password) {
       newErrors.password = 'Le mot de passe est requis';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
     }
 
     setErrors(newErrors);
@@ -55,22 +47,13 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // TODO: Appeler l'API de connexion
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await login(formData.email, formData.password);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Connexion réussie - rediriger vers le dashboard ou la page d'accueil
-        router.push('/account');
+      if (result.success) {
+        // Connexion réussie - rediriger vers le profil
+        router.push('/mon-compte');
       } else {
-        setGeneralError(data.message || 'Email ou mot de passe incorrect');
+        setGeneralError(result.message || 'Email ou mot de passe incorrect');
       }
     } catch (error) {
       setGeneralError('Une erreur est survenue. Veuillez réessayer.');
@@ -95,13 +78,27 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout title="Connexion">
-      <AuthCard
-        icon="ph-sign-in"
-        title="Connexion"
-        subtitle="Accédez à votre espace formation"
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <Head>
+        <title>Connexion - FormationPlace</title>
+        <meta name="description" content="Connectez-vous à votre compte FormationPlace" />
+      </Head>
+
+      <div className="overflow-x-hidden">
+        <HeaderAnvogue />
+
+        <div className="login-page pt-20 pb-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-md mx-auto">
+              {/* Header */}
+              <div className="text-center mb-10">
+                <h1 className="heading3 mb-3">Connexion</h1>
+                <p className="text-secondary">Accédez à votre compte FormationPlace</p>
+              </div>
+
+              {/* Form Card */}
+              <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10">
+                <form onSubmit={handleSubmit} className="space-y-6">
           {/* Message d'erreur général */}
           {generalError && (
             <div className="bg-red bg-opacity-10 border border-red text-red px-4 py-3 rounded-xl text-sm">
@@ -169,7 +166,7 @@ export default function Login() {
           {/* Forgot Password Link */}
           <div className="flex items-center justify-end">
             <Link
-              href="/forgot-password"
+              href="/support"
               className="text-sm text-purple hover:text-blue transition-colors duration-200"
             >
               Mot de passe oublié ?
@@ -203,12 +200,26 @@ export default function Login() {
                 href="/register"
                 className="font-medium text-purple hover:text-blue transition-colors duration-200"
               >
-                Créer un compte
+                S'inscrire
               </Link>
             </p>
           </div>
-        </form>
-      </AuthCard>
-    </AuthLayout>
+                </form>
+              </div>
+
+              {/* Info */}
+              <div className="mt-8 bg-blue bg-opacity-10 border border-blue rounded-xl p-4">
+                <p className="text-sm text-center text-secondary">
+                  <i className="ph-bold ph-info mr-2"></i>
+                  Créez un compte gratuitement pour accéder à toutes les fonctionnalités
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FooterAnvogue />
+      </div>
+    </>
   );
 }

@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function HeaderAnvogue() {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
   const { currency, changeCurrency } = useCurrency();
+  const { user, cart, wishlist, logout } = useAuth();
   const [showCurrencyMenu, setShowCurrencyMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <>
@@ -105,30 +108,30 @@ export default function HeaderAnvogue() {
                         Formations
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
-                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute top-full bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                         <ul className="w-full">
                           <li>
-                            <Link href="/formations" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Toutes les formations
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=populaires" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=populaires" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Formations populaires
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=mieux-notees" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=mieux-notees" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Mieux notées
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=nouvelles" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=nouvelles" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Nouvelles formations
                             </Link>
                           </li>
                           <li>
-                            <Link href="/formations?filter=promo" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/formations?filter=promo" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               En promotion
                             </Link>
                           </li>
@@ -141,31 +144,41 @@ export default function HeaderAnvogue() {
                         Catégories
                         <i className="ph ph-caret-down text-xs"></i>
                       </Link>
-                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                      <div className="sub-menu py-3 px-5 -left-10 w-max absolute top-full bg-white rounded-b-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                         <ul className="w-full">
                           <li>
-                            <Link href="/categories/developpement-web" className="link text-secondary duration-300 block py-2 hover:text-black">
+                            <Link href="/categories/developpement-web" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
                               Développement Web
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/business-marketing" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Business & Marketing
+                            <Link href="/categories/developpement-personnel-mindset" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Développement Personnel & Mindset
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/design" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Design
+                            <Link href="/categories/argent-business-independance" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Argent, Business & Indépendance
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/photographie" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Photographie
+                            <Link href="/categories/langues" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Langues
                             </Link>
                           </li>
                           <li>
-                            <Link href="/categories/developpement-personnel" className="link text-secondary duration-300 block py-2 hover:text-black">
-                              Développement Personnel
+                            <Link href="/categories/droit" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Droit
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/categories/fitness-bien-etre-sante" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Fitness, Bien-être & Santé
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/categories/carriere-competences-professionnelles" className="link text-secondary duration-300 block py-2 hover:text-black whitespace-nowrap">
+                              Carrière & Compétences Professionnelles
                             </Link>
                           </li>
                         </ul>
@@ -175,6 +188,12 @@ export default function HeaderAnvogue() {
                     <li className="h-full">
                       <Link href="/formateurs" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
                         Formateurs
+                      </Link>
+                    </li>
+
+                    <li className="h-full">
+                      <Link href="/comment-ca-marche" className="text-button-uppercase duration-300 h-full flex items-center justify-center text-black hover:text-purple">
+                        Comment ça marche
                       </Link>
                     </li>
 
@@ -196,47 +215,104 @@ export default function HeaderAnvogue() {
 
                 <div className="list-action flex items-center gap-4">
                   {/* User Icon */}
-                  <div className="user-icon flex items-center justify-center cursor-pointer relative group">
+                  <div
+                    className="user-icon flex items-center justify-center cursor-pointer relative group"
+                    onClick={() => {
+                      if (user) {
+                        router.push('/mon-compte');
+                      } else {
+                        router.push('/login');
+                      }
+                    }}
+                  >
                     <i className="ph-bold ph-user text-2xl"></i>
-                    <div className="login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                      <Link href="/login" className="button-main w-full text-center block">
-                        Connexion
-                      </Link>
-                      <div className="text-secondary text-center mt-3 pb-4">
-                        Pas de compte ?
-                        <Link href="/register" className="text-black pl-1 hover:underline">
-                          Inscription
-                        </Link>
-                      </div>
-                      <Link href="/dashboard" className="button-white w-full text-center block">
-                        Tableau de bord
-                      </Link>
-                      <div className="bottom mt-4 pt-4 border-t border-line"></div>
-                      <Link href="/support" className="body1 hover:underline">
-                        Support
-                      </Link>
+                    <div
+                      className="login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {user ? (
+                        <>
+                          {/* Utilisateur connecté */}
+                          <div className="mb-4 pb-4 border-b border-line">
+                            <p className="text-sm text-secondary mb-1">Connecté en tant que</p>
+                            <p className="font-semibold">{user.pseudo}</p>
+                            <p className="text-sm text-secondary">ID: {user.id}</p>
+                          </div>
+                          <Link href="/mon-compte" className="button-main w-full text-center block mb-3">
+                            Mon compte
+                          </Link>
+                          <Link href="/mes-achats" className="button-white w-full text-center block mb-3">
+                            Mes achats
+                          </Link>
+                          <div className="bottom mt-4 pt-4 border-t border-line"></div>
+                          <Link href="/support" className="body1 hover:underline block mb-3">
+                            Support
+                          </Link>
+                          <button
+                            onClick={logout}
+                            className="w-full text-left body1 text-red hover:underline"
+                          >
+                            Déconnexion
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {/* Utilisateur non connecté */}
+                          <Link href="/login" className="button-main w-full text-center block">
+                            Connexion
+                          </Link>
+                          <div className="text-secondary text-center mt-3 pb-4">
+                            Pas de compte ?
+                            <Link href="/register" className="text-black pl-1 hover:underline">
+                              Inscription
+                            </Link>
+                          </div>
+                          <div className="bottom mt-4 pt-4 border-t border-line"></div>
+                          <Link href="/support" className="body1 hover:underline">
+                            Support
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   {/* Wishlist Icon */}
-                  <Link href="/favoris" className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer">
-                    <i className="ph-bold ph-heart text-2xl"></i>
-                    {wishlistCount > 0 && (
-                      <span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {wishlistCount}
-                      </span>
-                    )}
-                  </Link>
+                  {user ? (
+                    <Link href="/favoris" className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer">
+                      <i className="ph-bold ph-heart text-2xl"></i>
+                      {wishlist && wishlist.length > 0 && (
+                        <span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
+                          {wishlist.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => alert('Créez votre compte pour accéder aux favoris')}
+                      className="max-md:hidden wishlist-icon flex items-center relative cursor-pointer"
+                    >
+                      <i className="ph-bold ph-heart text-2xl"></i>
+                    </button>
+                  )}
 
                   {/* Cart Icon */}
-                  <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
-                    <i className="ph-bold ph-handbag text-2xl"></i>
-                    {cartCount > 0 && (
-                      <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
-                        {cartCount}
-                      </span>
-                    )}
-                  </Link>
+                  {user ? (
+                    <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
+                      <i className="ph-bold ph-handbag text-2xl"></i>
+                      {cart && cart.length > 0 && (
+                        <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
+                          {cart.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => alert('Créez votre compte pour accéder au panier')}
+                      className="max-md:hidden cart-icon flex items-center relative cursor-pointer"
+                    >
+                      <i className="ph-bold ph-handbag text-2xl"></i>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -276,6 +352,9 @@ export default function HeaderAnvogue() {
                   </li>
                   <li>
                     <Link href="/formateurs" className="text-lg font-semibold block py-2">Formateurs</Link>
+                  </li>
+                  <li>
+                    <Link href="/comment-ca-marche" className="text-lg font-semibold block py-2">Comment ça marche</Link>
                   </li>
                   <li>
                     <Link href="/contact" className="text-lg font-semibold block py-2">Contact</Link>

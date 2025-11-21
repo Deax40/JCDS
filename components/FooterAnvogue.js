@@ -33,7 +33,10 @@ export default function FooterAnvogue() {
                   {/* Information Column */}
                   <div className="item flex flex-col basis-1/3">
                     <div className="text-button-uppercase pb-3">Information</div>
-                    <Link href="/about" className="caption1 has-line-before duration-300 w-fit hover:text-black">
+                    <Link href="/comment-ca-marche" className="caption1 has-line-before duration-300 w-fit hover:text-black">
+                      Comment ça marche
+                    </Link>
+                    <Link href="/about" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
                       À propos de nous
                     </Link>
                     <Link href="/formateurs" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
@@ -56,17 +59,17 @@ export default function FooterAnvogue() {
                     <Link href="/formations" className="caption1 has-line-before duration-300 w-fit hover:text-black">
                       Toutes les formations
                     </Link>
+                    <Link href="/categories" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
+                      Toutes les catégories
+                    </Link>
                     <Link href="/categories/developpement-web" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
                       Développement Web
                     </Link>
-                    <Link href="/categories/business-marketing" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
-                      Business & Marketing
+                    <Link href="/categories/argent-business-independance" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
+                      Business & Argent
                     </Link>
-                    <Link href="/categories/design" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
-                      Design
-                    </Link>
-                    <Link href="/blog" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
-                      Blog
+                    <Link href="/categories/fitness-bien-etre-sante" className="caption1 has-line-before duration-300 w-fit pt-2 hover:text-black">
+                      Fitness & Santé
                     </Link>
                   </div>
 

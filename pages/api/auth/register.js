@@ -19,10 +19,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { name, email, password, role = 'buyer' } = req.body;
+  const { email, telephone, nom, prenom, pseudo, password, genre, role = 'acheteur' } = req.body;
 
   // Validation
-  if (!name || !email || !password) {
+  if (!email || !telephone || !nom || !prenom || !pseudo || !password || !genre) {
     return res.status(400).json({ message: 'Tous les champs sont requis' });
   }
 
@@ -34,38 +34,68 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Email invalide' });
   }
 
+  if (!/^[0-9]{10}$/.test(telephone.replace(/\s/g, ''))) {
+    return res.status(400).json({ message: 'Le téléphone doit contenir 10 chiffres' });
+  }
+
+  if (pseudo.length < 3 || !/^[a-zA-Z0-9_]+$/.test(pseudo)) {
+    return res.status(400).json({ message: 'Le pseudo doit contenir au moins 3 caractères (lettres, chiffres et underscores uniquement)' });
+  }
+
+  if (!['homme', 'femme'].includes(genre)) {
+    return res.status(400).json({ message: 'Genre invalide' });
+  }
+
   try {
-    // Vérifier si l'utilisateur existe déjà
-    const existingUser = await query(
+    // Vérifier si l'email existe déjà
+    const existingEmail = await query(
       'SELECT id FROM users WHERE email = $1',
       [email.toLowerCase()]
     );
 
-    if (existingUser.rows.length > 0) {
+    if (existingEmail.rows.length > 0) {
       return res.status(400).json({ message: 'Un compte existe déjà avec cet email' });
+    }
+
+    // Vérifier si le téléphone existe déjà
+    const existingPhone = await query(
+      'SELECT id FROM users WHERE phone = $1',
+      [telephone.replace(/\s/g, '')]
+    );
+
+    if (existingPhone.rows.length > 0) {
+      return res.status(400).json({ message: 'Ce numéro de téléphone est déjà utilisé' });
+    }
+
+    // Vérifier si le pseudo existe déjà
+    const existingPseudo = await query(
+      'SELECT id FROM users WHERE pseudo = $1',
+      [pseudo]
+    );
+
+    if (existingPseudo.rows.length > 0) {
+      return res.status(400).json({ message: 'Ce pseudo est déjà utilisé' });
     }
 
     // Hasher le mot de passe
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Séparer le nom en prénom et nom de famille
-    const nameParts = name.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
+    // Avatar basé sur le genre
+    const avatarUrl = genre === 'femme' ? '/assets/avatars/femme.png' : '/assets/avatars/homme.png';
 
-    // Créer l'utilisateur avec le rôle buyer par défaut
+    // Créer l'utilisateur avec le rôle acheteur par défaut
     const result = await query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, roles)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, email, first_name, last_name, roles, created_at`,
-      [email.toLowerCase(), passwordHash, firstName, lastName, [role]]
+      `INSERT INTO users (email, password_hash, first_name, last_name, phone, pseudo, genre, roles, avatar_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING id, email, first_name, last_name, phone, pseudo, genre, roles, avatar_url, created_at`,
+      [email.toLowerCase(), passwordHash, prenom, nom, telephone.replace(/\s/g, ''), pseudo, genre, [role], avatarUrl]
     );
 
     const user = result.rows[0];
 
     // Envoyer un email de bienvenue (ne pas bloquer sur erreur)
     try {
-      await sendWelcomeEmail(email, name);
+      await sendWelcomeEmail(email, `${prenom} ${nom}`);
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError);
     }
@@ -76,8 +106,14 @@ export default async function handler(req, res) {
       user: {
         id: user.id,
         email: user.email,
-        name: `${user.first_name} ${user.last_name}`.trim(),
-        roles: user.roles,
+        nom: user.last_name,
+        prenom: user.first_name,
+        pseudo: user.pseudo,
+        telephone: user.phone,
+        genre: user.genre,
+        role: user.roles[0],
+        avatar: user.avatar_url,
+        createdAt: user.created_at,
       },
     });
   } catch (error) {
