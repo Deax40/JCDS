@@ -22,7 +22,7 @@ export default function DevenirFormateurPage() {
                 Devenez Formateur
               </h1>
               <p className="text-xl md:text-2xl mb-8 drop-shadow-md opacity-95">
-                Partagez votre expertise avec des milliers d'apprenants et générez des revenus
+                Partagez votre expertise avec des milliers d&apos;apprenants et générez des revenus
               </p>
               <Link href="/register" className="inline-block px-10 py-5 bg-white text-black rounded-full hover:bg-gray-100 transition-all duration-300 font-semibold text-lg shadow-2xl hover:shadow-3xl hover:-translate-y-1">
                 Commencer Maintenant
@@ -62,7 +62,7 @@ export default function DevenirFormateurPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-3">Large Audience</h3>
                 <p className="text-secondary leading-relaxed">
-                  Touchez des milliers d'apprenants du monde entier en quelques clics
+                  Touchez des milliers d&apos;apprenants du monde entier en quelques clics
                 </p>
               </div>
 
@@ -84,7 +84,7 @@ export default function DevenirFormateurPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-3">Liberté Totale</h3>
                 <p className="text-secondary leading-relaxed">
-                  Travaillez de n'importe où, à votre rythme, selon vos disponibilités
+                  Travaillez de n&apos;importe où, à votre rythme, selon vos disponibilités
                 </p>
               </div>
 
@@ -172,7 +172,7 @@ export default function DevenirFormateurPage() {
                     4
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2">Gagnez de l'argent</h3>
+                    <h3 className="text-2xl font-bold mb-2">Gagnez de l&apos;argent</h3>
                     <p className="text-secondary leading-relaxed">
                       Recevez vos paiements automatiquement à chaque vente de votre formation
                     </p>

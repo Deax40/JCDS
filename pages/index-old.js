@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FormationCard from '../components/FormationCard';
+import Link from 'next/link';
 
 export default function Home() {
   // Données exemple - à remplacer par des appels API
@@ -45,14 +46,14 @@ export default function Home() {
                       <h4 className="animated fadeInUp">
                         <span>NOUVELLES</span> FORMATIONS
                       </h4>
-                      <h1 className="animated fadeInUp">APPRENEZ AUJOURD'HUI</h1>
+                      <h1 className="animated fadeInUp">APPRENEZ AUJOURD&apos;HUI</h1>
                       <p className="animated fadeInUp">
                         Découvrez des centaines de formations créées par des experts
                         passionnés. Développez vos compétences à votre rythme.
                       </p>
-                      <a className="animated fadeInUp btn-two" href="/formations">
+                      <Link href="/formations" className="animated fadeInUp btn-two">
                         DÉCOUVRIR LES FORMATIONS
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -73,9 +74,9 @@ export default function Home() {
                         Créez et vendez vos formations en ligne. Rejoignez notre
                         communauté de formateurs experts et générez des revenus.
                       </p>
-                      <a className="animated fadeIn btn-two" href="/devenir-formateur">
+                      <Link href="/devenir-formateur" className="animated fadeIn btn-two">
                         COMMENCER MAINTENANT
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -91,14 +92,14 @@ export default function Home() {
                       <h4 className="animated fadeIn">
                         <span>OFFRES SPÉCIALES</span> LIMITÉES
                       </h4>
-                      <h1 className="animated fadeIn">JUSQU'À -50%</h1>
+                      <h1 className="animated fadeIn">JUSQU&apos;À -50%</h1>
                       <p className="animated fadeIn">
                         Profitez de réductions exceptionnelles sur une sélection de
                         formations. Offre limitée dans le temps.
                       </p>
-                      <a className="animated fadeIn btn-two" href="/formations?filter=promo">
+                      <Link href="/formations?filter=promo" className="animated fadeIn btn-two">
                         VOIR LES PROMOS
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -112,7 +113,7 @@ export default function Home() {
           <div className="container-fluid custom-container">
             <div className="row">
               <div className="col-12 col-md-4">
-                <a href="/categories/developpement-web">
+                <Link href="/categories/developpement-web">
                   <div className="sin-banner align-items-center">
                     <img src="/assets/img/banners/2.png" alt="Développement" />
                     <div className="sin-banner-con">
@@ -128,11 +129,11 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
 
               <div className="col-12 col-md-4">
-                <a href="/categories/business-marketing">
+                <Link href="/categories/business-marketing">
                   <div className="sin-banner style-two">
                     <img src="/assets/img/banners/3.png" alt="Business" />
                     <div className="sin-banner-con">
@@ -143,11 +144,11 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
 
               <div className="col-12 col-md-4">
-                <a href="/categories/design">
+                <Link href="/categories/design">
                   <div className="sin-banner">
                     <img src="/assets/img/banners/5.png" alt="Design" />
                     <div className="br-wrapper">
@@ -157,7 +158,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -276,9 +277,9 @@ export default function Home() {
 
         {/* Bannière publicitaire */}
         <section className="add-area">
-          <a href="/formations?filter=promo">
+          <Link href="/formations?filter=promo">
             <img src="/assets/img/add.jpg" alt="Promotion spéciale" />
-          </a>
+          </Link>
         </section>
 
         {/* Petites formations (TOP SALE, TOP RATED, etc.) */}
