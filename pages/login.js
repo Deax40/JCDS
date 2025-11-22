@@ -195,12 +195,12 @@ export default function Login() {
           {/* Register Link */}
           <div className="text-center pt-4">
             <p className="text-sm text-secondary">
-              Vous n'avez pas de compte ?{' '}
+              Vous n&apos;avez pas de compte ?{' '}
               <Link
                 href="/register"
                 className="font-medium text-purple hover:text-blue transition-colors duration-200"
               >
-                S'inscrire
+                S&apos;inscrire
               </Link>
             </p>
           </div>

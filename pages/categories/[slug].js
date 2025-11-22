@@ -20,9 +20,9 @@ export default function CategoryPage({ category }) {
         <HeaderAnvogue />
         <div className="container py-20 text-center">
           <h1 className="text-4xl font-bold mb-4">Catégorie non trouvée</h1>
-          <p className="text-secondary mb-8">Cette catégorie n'existe pas.</p>
+          <p className="text-secondary mb-8">Cette catégorie n&apos;existe pas.</p>
           <Link href="/" className="button-main">
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
         </div>
         <FooterAnvogue />
@@ -87,7 +87,7 @@ export default function CategoryPage({ category }) {
                       Devenir Formateur
                     </Link>
                     <Link href="/" className="button-white">
-                      Retour à l'accueil
+                      Retour à l&apos;accueil
                     </Link>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function CategoryPage({ category }) {
           <div className="container">
             <div className="heading flex flex-col items-center text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-                Découvrez d'autres catégories
+                Découvrez d&apos;autres catégories
               </h2>
               <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">
                 Explorez nos autres domaines de formation

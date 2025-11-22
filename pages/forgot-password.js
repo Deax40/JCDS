@@ -36,7 +36,7 @@ export default function ForgotPassword() {
     }
 
     if (!validateEmail(email)) {
-      setError('L\'adresse email n\'est pas valide');
+      setError('L\'adresse email n&apos;est pas valide');
       return;
     }
 
@@ -76,7 +76,7 @@ export default function ForgotPassword() {
             {/* Instructions */}
             <div className="bg-surface px-4 py-3 rounded-xl text-sm text-secondary">
               <p>
-                Entrez l'adresse email associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+                Entrez l&apos;adresse email associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe.
               </p>
             </div>
 
@@ -154,7 +154,7 @@ export default function ForgotPassword() {
                 Email envoyé !
               </h3>
               <p className="text-secondary text-sm leading-relaxed">
-                Si un compte existe avec l'adresse <strong>{email}</strong>, vous recevrez un email contenant un lien pour réinitialiser votre mot de passe.
+                Si un compte existe avec l&apos;adresse <strong>{email}</strong>, vous recevrez un email contenant un lien pour réinitialiser votre mot de passe.
               </p>
               <p className="text-secondary text-sm mt-4">
                 Le lien sera valide pendant <strong>1 heure</strong>.
@@ -165,12 +165,12 @@ export default function ForgotPassword() {
             <div className="bg-surface px-4 py-3 rounded-xl text-sm text-secondary">
               <p className="font-medium text-primary mb-2">
                 <i className="ph-bold ph-info mr-2"></i>
-                Vous ne trouvez pas l'email ?
+                Vous ne trouvez pas l&apos;email ?
               </p>
               <ul className="space-y-1 ml-6 list-disc">
                 <li>Vérifiez votre dossier spam/courrier indésirable</li>
-                <li>Assurez-vous d'avoir utilisé la bonne adresse email</li>
-                <li>Attendez quelques minutes, l'email peut prendre du temps</li>
+                <li>Assurez-vous d&apos;avoir utilisé la bonne adresse email</li>
+                <li>Attendez quelques minutes, l&apos;email peut prendre du temps</li>
               </ul>
             </div>
 

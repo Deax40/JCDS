@@ -41,7 +41,7 @@ export default function MesAchats() {
               <div className="bg-white rounded-2xl shadow p-12 text-center">
                 <i className="ph-bold ph-shopping-cart text-6xl text-secondary mb-4"></i>
                 <h2 className="heading5 mb-4">Aucun achat</h2>
-                <p className="text-secondary mb-6">Vous n'avez pas encore effectué d'achat</p>
+                <p className="text-secondary mb-6">Vous n&apos;avez pas encore effectué d&apos;achat</p>
                 <Link href="/formations" className="button-main inline-block">
                   Découvrir les formations
                 </Link>

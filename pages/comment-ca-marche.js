@@ -31,7 +31,7 @@ export default function CommentCaMarchePage() {
                 Comment Ça Marche ?
               </h1>
               <p className="text-xl md:text-2xl mb-10 drop-shadow-md opacity-95 leading-relaxed">
-                FormationPlace révolutionne l'apprentissage en ligne avec des formations de qualité à prix abordables et un modèle économique unique
+                FormationPlace révolutionne l&apos;apprentissage en ligne avec des formations de qualité à prix abordables et un modèle économique unique
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <a href="#apprenants" className="inline-block px-8 py-4 bg-white text-black rounded-full hover:bg-gray-100 transition-all duration-300 font-semibold shadow-2xl hover:shadow-3xl hover:-translate-y-1">
@@ -90,7 +90,7 @@ export default function CommentCaMarchePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <i className="ph-fill ph-x-circle text-red text-xl mt-1"></i>
-                    <span className="text-secondary">Aucune interaction avec l'auteur</span>
+                    <span className="text-secondary">Aucune interaction avec l&apos;auteur</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <i className="ph-fill ph-x-circle text-red text-xl mt-1"></i>
@@ -198,7 +198,7 @@ export default function CommentCaMarchePage() {
                   </div>
                   <h3 className="font-display text-2xl font-bold mb-4">100% Français</h3>
                   <p className="text-gray-300 leading-relaxed mb-4">
-                    Contrairement à nos concurrents (souvent basés hors d'Europe), FormationPlace est une plateforme entièrement française.
+                    Contrairement à nos concurrents (souvent basés hors d&apos;Europe), FormationPlace est une plateforme entièrement française.
                   </p>
                   <ul className="space-y-2 text-sm text-gray-400">
                     <li className="flex items-center gap-2">
@@ -316,7 +316,7 @@ export default function CommentCaMarchePage() {
                   <div className="flex-1">
                     <h3 className="font-display text-2xl font-bold mb-3">Créez Votre Compte</h3>
                     <p className="text-secondary leading-relaxed mb-4">
-                      Inscrivez-vous gratuitement sur FormationPlace. Remplissez vos informations de base et confirmez votre email. C'est rapide et gratuit !
+                      Inscrivez-vous gratuitement sur FormationPlace. Remplissez vos informations de base et confirmez votre email. C&apos;est rapide et gratuit !
                     </p>
                     <Link href="/register" className="inline-flex items-center gap-2 text-purple font-medium hover:gap-3 transition-all">
                       Créer mon compte
@@ -335,9 +335,9 @@ export default function CommentCaMarchePage() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-2xl font-bold mb-3">Activez "Devenir Formateur"</h3>
+                    <h3 className="font-display text-2xl font-bold mb-3">Activez &quot;Devenir Formateur&quot;</h3>
                     <p className="text-secondary leading-relaxed mb-4">
-                      Une fois connecté, rendez-vous dans votre profil et cliquez sur le bouton "Devenir Formateur". Un petit formulaire simple vous sera demandé pour vérifier votre identité.
+                      Une fois connecté, rendez-vous dans votre profil et cliquez sur le bouton &quot;Devenir Formateur&quot;. Un petit formulaire simple vous sera demandé pour vérifier votre identité.
                     </p>
                     <div className="flex items-center gap-3 p-4 bg-blue bg-opacity-10 rounded-xl border border-blue">
                       <i className="ph-bold ph-info text-blue text-2xl"></i>
@@ -448,7 +448,7 @@ export default function CommentCaMarchePage() {
                 Prêt à Commencer ?
               </h2>
               <p className="text-xl mb-10 opacity-90">
-                Rejoignez FormationPlace aujourd'hui et transformez votre expertise en revenus
+                Rejoignez FormationPlace aujourd&apos;hui et transformez votre expertise en revenus
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <Link href="/register" className="inline-block px-10 py-5 bg-gradient-to-r from-purple to-pink text-white rounded-full hover:scale-105 transition-all duration-300 font-semibold text-lg shadow-2xl">

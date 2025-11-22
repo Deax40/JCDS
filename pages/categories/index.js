@@ -43,7 +43,7 @@ export default function CategoriesPage() {
                 {categories.length} Catégories Disponibles
               </h2>
               <p className="text-lg text-secondary">
-                Choisissez la catégorie qui correspond à vos objectifs d'apprentissage
+                Choisissez la catégorie qui correspond à vos objectifs d&apos;apprentissage
               </p>
             </div>
 

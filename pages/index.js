@@ -110,12 +110,12 @@ export default function HomeAnvogue() {
                   <div className="slider-item h-full w-full relative">
                     <div className="container w-full h-full flex items-center relative">
                       <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d'Apprentissage</div>
+                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d&apos;Apprentissage</div>
                         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
                           Développez Vos<br />Compétences
                         </h1>
                         <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd'hui!
+                          Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd&apos;hui!
                         </p>
                         <Link href="/formations" className="button-main">
                           Découvrir les Formations
@@ -134,7 +134,7 @@ export default function HomeAnvogue() {
                       <div className="text-content basis-1/2 z-10">
                         <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Promotions Exceptionnelles</div>
                         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Jusqu'à<br />-50%
+                          Jusqu&apos;à<br />-50%
                         </h1>
                         <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
                           Profitez de réductions exceptionnelles sur une sélection de formations premium.
@@ -255,7 +255,7 @@ export default function HomeAnvogue() {
                 <i className="ph-bold ph-rocket-launch text-6xl mb-6 group-hover:text-white transition-colors"></i>
                 <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">Accès Immédiat</h3>
                 <p className="text-sm leading-relaxed text-secondary group-hover:text-gray-300 transition-colors">
-                  Commencez à apprendre instantanément après l'achat
+                  Commencez à apprendre instantanément après l&apos;achat
                 </p>
               </div>
               <div className="benefit-item flex flex-col items-center justify-center bg-white rounded-3xl p-10 text-center group hover:bg-black transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2">
