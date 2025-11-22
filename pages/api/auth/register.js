@@ -144,6 +144,13 @@ export default async function handler(req, res) {
       });
     }
 
+    if (error.code === 'XX000' || error.message?.includes('Tenant or user not found')) {
+      return res.status(500).json({
+        message: 'Erreur de configuration base de données : Projet Supabase en pause ou URL incorrecte. Vérifiez votre dashboard Supabase.',
+        details: 'Le projet de base de données semble être inaccessible (Tenant or user not found).'
+      });
+    }
+
     return res.status(500).json({
       message: 'Erreur lors de la création du compte',
       details: process.env.NODE_ENV !== 'production' ? error.message : undefined
