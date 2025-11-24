@@ -63,6 +63,7 @@ export default function OptimizedImage({
     return (
       <Image
         {...imageProps}
+        alt={alt}
         fill
         sizes={sizes || '100vw'}
         style={{ objectFit }}
@@ -74,6 +75,7 @@ export default function OptimizedImage({
   return (
     <Image
       {...imageProps}
+      alt={alt}
       width={width}
       height={height}
       sizes={sizes}

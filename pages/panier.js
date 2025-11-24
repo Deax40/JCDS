@@ -86,7 +86,7 @@ export default function Panier() {
                     <h2 className="heading6 mb-6">Résumé</h2>
                     <div className="space-y-4 mb-6">
                       <div className="flex justify-between">
-                        <span className="text-secondary">Nombre d'articles</span>
+                        <span className="text-secondary">Nombre d&apos;articles</span>
                         <span className="font-semibold">{cart.length}</span>
                       </div>
                       <div className="flex justify-between text-lg font-bold">
@@ -98,7 +98,7 @@ export default function Panier() {
                       onClick={handleCheckout}
                       className="button-main w-full mb-3"
                     >
-                      Valider l'achat
+                      Valider l&apos;achat
                     </button>
                     <button
                       onClick={clearCart}

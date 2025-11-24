@@ -156,7 +156,7 @@ export default function MonCompte() {
                     <div className="pt-6 mt-6 border-t border-line">
                       <p className="text-sm text-secondary">
                         <i className="ph-bold ph-info mr-2"></i>
-                        Pour modifier d'autres informations, veuillez{' '}
+                        Pour modifier d&apos;autres informations, veuillez{' '}
                         <Link href="/support" className="text-purple hover:underline">
                           contacter le support
                         </Link>
