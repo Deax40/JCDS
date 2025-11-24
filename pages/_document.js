@@ -16,7 +16,6 @@ export default function Document() {
         />
 
         {/* Phosphor Icons - Modern Icon Library */}
-        <script src="https://unpkg.com/@phosphor-icons/web"></script>
       </Head>
       <body className="font-sans antialiased">
         <Main />

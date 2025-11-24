@@ -54,7 +54,7 @@ export default function FormateursPage() {
                       Devenir Formateur
                     </Link>
                     <Link href="/" className="button-white">
-                      Retour à l'accueil
+                      Retour à l&apos;accueil
                     </Link>
                   </div>
                 </div>

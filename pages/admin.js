@@ -106,7 +106,7 @@ export default function Admin() {
 
             <div className="mt-6 text-center">
               <Link href="/" className="text-sm text-purple hover:underline">
-                Retour à l'accueil
+                Retour à l&apos;accueil
               </Link>
             </div>
           </div>
