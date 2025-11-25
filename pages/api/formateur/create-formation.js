@@ -5,14 +5,89 @@
  *
  * POST /api/formateur/create-formation
  * Body: { sellerId, categorySlug, title, description, ... }
+ * Pour PDF: multipart/form-data avec fichier PDF + données JSON
  */
 
 import { query } from '../../../lib/db';
 import { getCategoryBySlug } from '../../../data/categories';
+import { uploadPDF } from '../../../lib/supabase';
+import formidable from 'formidable';
+import fs from 'fs';
+
+// Désactiver le body parser de Next.js pour gérer multipart/form-data
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// Helper pour parser JSON body
+async function parseJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch (e) {
+        reject(e);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+// Helper pour parser multipart/form-data
+async function parseForm(req) {
+  const form = formidable({
+    maxFileSize: 50 * 1024 * 1024, // 50MB
+    filter: ({ mimetype }) => mimetype === 'application/pdf',
+  });
+
+  return new Promise((resolve, reject) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) reject(err);
+      else resolve({ fields, files });
+    });
+  });
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  let bodyData;
+  let pdfFile = null;
+  let pdfFilePath = null;
+
+  // Déterminer si c'est un upload PDF ou JSON simple
+  const contentType = req.headers['content-type'] || '';
+
+  if (contentType.includes('multipart/form-data')) {
+    // Parser le multipart/form-data (PDF upload)
+    try {
+      const { fields, files } = await parseForm(req);
+      bodyData = JSON.parse(fields.data[0]);
+
+      if (files.pdf && files.pdf[0]) {
+        pdfFile = files.pdf[0];
+        pdfFilePath = pdfFile.filepath;
+      }
+    } catch (error) {
+      console.error('Error parsing multipart form:', error);
+      return res.status(400).json({ message: 'Erreur lors du parsing du formulaire' });
+    }
+  } else {
+    // Parser le JSON standard
+    try {
+      bodyData = await parseJsonBody(req);
+    } catch (error) {
+      console.error('Error parsing JSON body:', error);
+      return res.status(400).json({ message: 'Erreur lors du parsing du JSON' });
+    }
   }
 
   const {
@@ -35,7 +110,7 @@ export default async function handler(req, res) {
     priceNet,
     sumupFee,
     platformFee,
-  } = req.body;
+  } = bodyData;
 
   // Validation
   if (!sellerId) {
@@ -68,6 +143,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Le lien de visioconférence est requis' });
   }
 
+  if (formationType === 'pdf' && !pdfFile) {
+    return res.status(400).json({ message: 'Le fichier PDF est requis' });
+  }
+
   if (!priceTTC || priceTTC <= 0) {
     return res.status(400).json({ message: 'Prix invalide' });
   }
@@ -88,7 +167,7 @@ export default async function handler(req, res) {
       return res.status(403).json({ message: 'Vous devez être formateur pour créer une formation' });
     }
 
-    // Créer la formation
+    // Créer la formation d'abord pour obtenir l'ID
     const result = await query(
       `INSERT INTO formations (
         seller_id, category_slug, title, description, tags,
@@ -115,6 +194,40 @@ export default async function handler(req, res) {
     );
 
     const formation = result.rows[0];
+
+    // Si c'est un PDF, uploader vers Supabase Storage
+    let pdfPath = null;
+    if (formationType === 'pdf' && pdfFile && pdfFilePath) {
+      try {
+        // Lire le fichier
+        const fileBuffer = fs.readFileSync(pdfFilePath);
+
+        // Générer le chemin: formations/{formateurId}/{formationId}.pdf
+        const storagePath = `formations/${sellerId}/${formation.id}.pdf`;
+
+        // Upload vers Supabase
+        const uploadResult = await uploadPDF(fileBuffer, storagePath, 'application/pdf');
+
+        if (uploadResult.success) {
+          pdfPath = uploadResult.path;
+
+          // Mettre à jour la formation avec le chemin du PDF
+          await query(
+            'UPDATE formations SET pdf_path = $1 WHERE id = $2',
+            [pdfPath, formation.id]
+          );
+        } else {
+          console.error('Erreur upload PDF vers Supabase:', uploadResult.error);
+          // Ne pas échouer la création, mais logger l'erreur
+        }
+
+        // Nettoyer le fichier temporaire
+        fs.unlinkSync(pdfFilePath);
+      } catch (uploadError) {
+        console.error('Erreur lors de l\'upload du PDF:', uploadError);
+        // Ne pas échouer la création de la formation
+      }
+    }
 
     return res.status(201).json({
       success: true,

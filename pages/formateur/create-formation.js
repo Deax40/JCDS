@@ -41,6 +41,10 @@ export default function CreateFormation() {
     platformFee: 0,
   });
 
+  // État pour le PDF
+  const [pdfFile, setPdfFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+
   useEffect(() => {
     if (!user) {
       router.push('/login?redirect=/formateur/create-formation');
@@ -78,6 +82,43 @@ export default function CreateFormation() {
     });
   };
 
+  // Gestion du PDF
+  const handlePdfDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer?.files[0] || e.target?.files[0];
+
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        setError('Veuillez sélectionner un fichier PDF');
+        return;
+      }
+
+      if (file.size > 50 * 1024 * 1024) { // 50MB max
+        setError('Le fichier PDF ne doit pas dépasser 50MB');
+        return;
+      }
+
+      setPdfFile(file);
+      setError('');
+    }
+  };
+
+  const handlePdfDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handlePdfDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const removePdf = () => {
+    setPdfFile(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -108,6 +149,11 @@ export default function CreateFormation() {
       return;
     }
 
+    if (formData.formationType === 'pdf' && !pdfFile) {
+      setError('Veuillez télécharger un fichier PDF');
+      return;
+    }
+
     if (!formData.priceTTC || formData.priceTTC <= 0) {
       setError('Veuillez définir un prix valide');
       return;
@@ -125,22 +171,19 @@ export default function CreateFormation() {
         visioDateTime = new Date(`${formData.visioDate}T${formData.visioTime}`).toISOString();
       }
 
-      const response = await fetch('/api/formateur/create-formation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Utiliser FormData si PDF, sinon JSON
+      let response;
+
+      if (formData.formationType === 'pdf' && pdfFile) {
+        const formDataToSend = new FormData();
+        formDataToSend.append('pdf', pdfFile);
+        formDataToSend.append('data', JSON.stringify({
           sellerId: user.id,
           categorySlug: formData.categorySlug,
           title: formData.title,
           description: formData.description,
           tags: cleanTags,
           formationType: formData.formationType,
-
-          visioLink: formData.visioLink || null,
-          visioDate: visioDateTime,
-          visioDuration: parseInt(formData.visioDuration) || null,
 
           hasTimeLimit: formData.hasTimeLimit,
           timeLimitDate: formData.hasTimeLimit && formData.timeLimitDate
@@ -155,8 +198,46 @@ export default function CreateFormation() {
           priceNet: formData.priceNet,
           sumupFee: formData.sumupFee,
           platformFee: formData.platformFee,
-        }),
-      });
+        }));
+
+        response = await fetch('/api/formateur/create-formation', {
+          method: 'POST',
+          body: formDataToSend,
+        });
+      } else {
+        response = await fetch('/api/formateur/create-formation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sellerId: user.id,
+            categorySlug: formData.categorySlug,
+            title: formData.title,
+            description: formData.description,
+            tags: cleanTags,
+            formationType: formData.formationType,
+
+            visioLink: formData.visioLink || null,
+            visioDate: visioDateTime,
+            visioDuration: parseInt(formData.visioDuration) || null,
+
+            hasTimeLimit: formData.hasTimeLimit,
+            timeLimitDate: formData.hasTimeLimit && formData.timeLimitDate
+              ? new Date(formData.timeLimitDate).toISOString()
+              : null,
+            hasQuantityLimit: formData.hasQuantityLimit,
+            quantityLimit: formData.hasQuantityLimit ? parseInt(formData.quantityLimit) : null,
+
+            priceMode: formData.priceMode,
+            priceEntered: parseFloat(formData.priceEntered),
+            priceTTC: formData.priceTTC,
+            priceNet: formData.priceNet,
+            sumupFee: formData.sumupFee,
+            platformFee: formData.platformFee,
+          }),
+        });
+      }
 
       const data = await response.json();
 
@@ -328,6 +409,72 @@ export default function CreateFormation() {
                     </button>
                   </div>
                 </div>
+
+                {/* Champs spécifiques PDF */}
+                {formData.formationType === 'pdf' && (
+                  <div className="p-6 bg-red bg-opacity-5 rounded-xl border border-red border-opacity-20">
+                    <h3 className="font-semibold flex items-center mb-4">
+                      <i className="ph-bold ph-file-pdf text-red mr-2"></i>
+                      Télécharger le PDF
+                    </h3>
+
+                    {!pdfFile ? (
+                      <div
+                        onDrop={handlePdfDrop}
+                        onDragOver={handlePdfDragOver}
+                        onDragLeave={handlePdfDragLeave}
+                        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
+                          isDragging
+                            ? 'border-red bg-red bg-opacity-10'
+                            : 'border-line hover:border-red hover:bg-red hover:bg-opacity-5'
+                        }`}
+                      >
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          onChange={handlePdfDrop}
+                          className="hidden"
+                          id="pdf-upload"
+                        />
+                        <label htmlFor="pdf-upload" className="cursor-pointer">
+                          <i className="ph-bold ph-upload-simple text-5xl text-red mb-4 block"></i>
+                          <p className="font-semibold mb-2">
+                            Glissez-déposez votre PDF ici
+                          </p>
+                          <p className="text-sm text-secondary mb-4">
+                            ou cliquez pour sélectionner un fichier
+                          </p>
+                          <p className="text-xs text-secondary">
+                            Taille maximale: 50MB
+                          </p>
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="bg-white rounded-xl border border-line p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-lg bg-red bg-opacity-10 flex items-center justify-center">
+                              <i className="ph-bold ph-file-pdf text-red text-2xl"></i>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm">{pdfFile.name}</p>
+                              <p className="text-xs text-secondary">
+                                {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={removePdf}
+                            className="w-8 h-8 rounded-lg bg-red bg-opacity-10 hover:bg-opacity-20 flex items-center justify-center text-red transition"
+                          >
+                            <i className="ph-bold ph-x text-lg"></i>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Champs spécifiques Visio */}
                 {formData.formationType === 'visio' && (
