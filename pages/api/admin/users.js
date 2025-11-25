@@ -23,7 +23,9 @@ export default async function handler(req, res) {
     let sqlQuery = `
       SELECT
         id, email, first_name, last_name, phone, pseudo, genre, roles,
-        avatar_url, is_active, created_at
+        avatar_url, is_active, created_at,
+        formateur_application_status, formateur_application_reason,
+        formateur_application_formation_type, formateur_application_date
       FROM users
     `;
 
@@ -53,6 +55,10 @@ export default async function handler(req, res) {
       avatar: user.avatar_url,
       isActive: user.is_active,
       createdAt: user.created_at,
+      formateurApplicationStatus: user.formateur_application_status,
+      formateurApplicationReason: user.formateur_application_reason,
+      formateurApplicationFormationType: user.formateur_application_formation_type,
+      formateurApplicationDate: user.formateur_application_date,
     }));
 
     return res.status(200).json({ users });

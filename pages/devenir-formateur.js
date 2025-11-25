@@ -55,32 +55,53 @@ export default function DevenirFormateurPage() {
     setIsSubmitting(true);
 
     try {
-      // Soumettre à Web3Forms
-      const web3FormData = new FormData();
-      web3FormData.append('access_key', 'YOUR_WEB3FORMS_ACCESS_KEY'); // À REMPLACER PAR VOTRE CLÉ
-      web3FormData.append('subject', `Nouvelle demande formateur - ${user.prenom} ${user.nom}`);
-      web3FormData.append('from_name', 'FormationPlace - Candidature Formateur');
-      web3FormData.append('Nom', `${user.prenom} ${user.nom}`);
-      web3FormData.append('Email', user.email);
-      web3FormData.append('Pseudo', user.pseudo);
-      web3FormData.append('ID Utilisateur', user.id);
-      web3FormData.append('Téléphone', user.telephone);
-      web3FormData.append('Raison de la candidature', formData.raison);
-      web3FormData.append('Type de formations', formData.typeFormation);
-
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // 1. Sauvegarder dans la base de données
+      const dbResponse = await fetch('/api/formateur/apply', {
         method: 'POST',
-        body: web3FormData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          raison: formData.raison,
+          typeFormation: formData.typeFormation,
+        }),
       });
 
-      const result = await response.json();
+      const dbResult = await dbResponse.json();
 
-      if (result.success) {
-        // Rediriger vers la page de confirmation
-        router.push('/devenir-formateur/confirmation');
-      } else {
-        setError('Une erreur est survenue lors de l\'envoi du formulaire. Veuillez réessayer.');
+      if (!dbResponse.ok) {
+        setError(dbResult.message || 'Erreur lors de l\'enregistrement de la candidature');
+        setIsSubmitting(false);
+        return;
       }
+
+      // 2. Envoyer par email via Web3Forms
+      try {
+        const web3FormData = new FormData();
+        web3FormData.append('access_key', 'YOUR_WEB3FORMS_ACCESS_KEY'); // À REMPLACER PAR VOTRE CLÉ
+        web3FormData.append('subject', `Nouvelle demande formateur - ${user.prenom} ${user.nom}`);
+        web3FormData.append('from_name', 'FormationPlace - Candidature Formateur');
+        web3FormData.append('Nom', `${user.prenom} ${user.nom}`);
+        web3FormData.append('Email', user.email);
+        web3FormData.append('Pseudo', user.pseudo);
+        web3FormData.append('ID Utilisateur', user.id);
+        web3FormData.append('Téléphone', user.telephone);
+        web3FormData.append('Raison de la candidature', formData.raison);
+        web3FormData.append('Type de formations', formData.typeFormation);
+
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: web3FormData,
+        });
+        // Note: On ne bloque pas si l'email échoue
+      } catch (emailError) {
+        console.error('Email notification error:', emailError);
+        // Continuer même si l'email échoue
+      }
+
+      // 3. Rediriger vers la page de confirmation
+      router.push('/devenir-formateur/confirmation');
     } catch (err) {
       console.error('Erreur soumission formulaire:', err);
       setError('Une erreur est survenue. Veuillez réessayer plus tard.');

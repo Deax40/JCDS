@@ -3,6 +3,148 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+// Composant pour afficher et gérer le statut de candidature formateur
+function ApplicationStatus({ user, onStatusChange }) {
+  const [isApproving, setIsApproving] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  if (!user.formateurApplicationStatus || user.formateurApplicationStatus === 'approved') {
+    return <span className="text-xs text-secondary">-</span>;
+  }
+
+  const handleApprove = async () => {
+    if (!confirm(`Approuver la candidature de ${user.prenom} ${user.nom} comme formateur ?`)) {
+      return;
+    }
+
+    setIsApproving(true);
+    try {
+      // Ajouter le rôle formateur
+      const newRoles = [...(user.roles || [])];
+      if (!newRoles.includes('formateur')) {
+        newRoles.push('formateur');
+      }
+
+      const response = await fetch('/api/admin/update-user-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          roles: newRoles,
+        }),
+      });
+
+      if (response.ok) {
+        // Mettre à jour le statut à approved
+        await fetch('/api/admin/update-application-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            status: 'approved',
+          }),
+        });
+
+        onStatusChange({
+          ...user,
+          roles: newRoles,
+          formateurApplicationStatus: 'approved',
+        });
+
+        alert('Candidature approuvée avec succès !');
+      }
+    } catch (error) {
+      console.error('Error approving application:', error);
+      alert('Erreur lors de l\'approbation');
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!confirm(`Rejeter la candidature de ${user.prenom} ${user.nom} ?`)) {
+      return;
+    }
+
+    setIsApproving(true);
+    try {
+      const response = await fetch('/api/admin/update-application-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          status: 'rejected',
+        }),
+      });
+
+      if (response.ok) {
+        onStatusChange({
+          ...user,
+          formateurApplicationStatus: 'rejected',
+        });
+
+        alert('Candidature rejetée');
+      }
+    } catch (error) {
+      console.error('Error rejecting application:', error);
+      alert('Erreur lors du rejet');
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+  if (user.formateurApplicationStatus === 'pending') {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-2 py-1 bg-orange bg-opacity-10 text-orange rounded">
+            En attente
+          </span>
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-xs text-blue hover:underline"
+          >
+            {showDetails ? 'Masquer' : 'Détails'}
+          </button>
+        </div>
+        {showDetails && (
+          <div className="text-xs space-y-2 p-2 bg-surface rounded">
+            <p><strong>Raison:</strong> {user.formateurApplicationReason}</p>
+            <p><strong>Type:</strong> {user.formateurApplicationFormationType}</p>
+            <p><strong>Date:</strong> {new Date(user.formateurApplicationDate).toLocaleDateString('fr-FR')}</p>
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={handleApprove}
+                disabled={isApproving}
+                className="px-3 py-1 bg-green text-white rounded text-xs hover:bg-opacity-90 disabled:opacity-50"
+              >
+                Approuver
+              </button>
+              <button
+                onClick={handleReject}
+                disabled={isApproving}
+                className="px-3 py-1 bg-red text-white rounded text-xs hover:bg-opacity-90 disabled:opacity-50"
+              >
+                Rejeter
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (user.formateurApplicationStatus === 'rejected') {
+    return (
+      <span className="text-xs px-2 py-1 bg-red bg-opacity-10 text-red rounded">
+        Rejetée
+      </span>
+    );
+  }
+
+  return <span className="text-xs text-secondary">-</span>;
+}
+
 // Composant pour gérer les rôles des utilisateurs
 function RoleSelector({ user, onRoleChange }) {
   const [isChanging, setIsChanging] = useState(false);
@@ -310,13 +452,14 @@ export default function Admin() {
                     <th className="px-6 py-4 text-left text-sm font-semibold">Email</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">Téléphone</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">Rôle</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">Candidature</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">Inscription</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line">
                   {filteredUsers.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center text-secondary">
+                      <td colSpan="8" className="px-6 py-12 text-center text-secondary">
                         Aucun utilisateur trouvé
                       </td>
                     </tr>
@@ -339,6 +482,12 @@ export default function Admin() {
                         <td className="px-6 py-4 text-sm">{user.telephone}</td>
                         <td className="px-6 py-4">
                           <RoleSelector user={user} onRoleChange={(updatedUser) => {
+                            setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+                            setFilteredUsers(filteredUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
+                          }} />
+                        </td>
+                        <td className="px-6 py-4">
+                          <ApplicationStatus user={user} onStatusChange={(updatedUser) => {
                             setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
                             setFilteredUsers(filteredUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
                           }} />

@@ -22,9 +22,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer l'utilisateur avec tous les champs
+    // Récupérer l'utilisateur avec tous les champs y compris le statut de candidature
     const result = await query(
-      `SELECT id, email, password_hash, first_name, last_name, phone, pseudo, genre, roles, avatar_url, is_active, created_at
+      `SELECT id, email, password_hash, first_name, last_name, phone, pseudo, genre, roles, avatar_url, is_active, created_at,
+              formateur_application_status, formateur_application_date
        FROM users
        WHERE email = $1`,
       [email.toLowerCase()]
@@ -59,9 +60,12 @@ export default async function handler(req, res) {
         pseudo: user.pseudo,
         telephone: user.phone,
         genre: user.genre,
-        role: user.roles[0],
+        role: user.roles ? user.roles[0] : 'acheteur',
+        roles: user.roles || ['acheteur'],
         avatar: user.avatar_url,
         createdAt: user.created_at,
+        formateurApplicationStatus: user.formateur_application_status,
+        formateurApplicationDate: user.formateur_application_date,
         purchases: [], // À charger depuis une table purchases si besoin
       },
     });

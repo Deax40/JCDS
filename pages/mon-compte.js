@@ -170,6 +170,7 @@ export default function MonCompte() {
               <div className="space-y-6">
                 {/* Statut Formateur */}
                 {user.roles && user.roles.includes('formateur') ? (
+                  // Utilisateur est formateur actif
                   <div className="bg-gradient-to-br from-purple to-blue rounded-2xl shadow p-6 text-white">
                     <div className="flex items-center gap-3 mb-4">
                       <i className="ph-bold ph-crown text-3xl"></i>
@@ -186,7 +187,56 @@ export default function MonCompte() {
                       Tableau de bord formateur
                     </Link>
                   </div>
+                ) : user.formateurApplicationStatus === 'pending' ? (
+                  // Candidature en cours
+                  <div className="bg-white rounded-2xl shadow p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-orange bg-opacity-10 flex items-center justify-center">
+                        <i className="ph-bold ph-clock text-orange text-xl"></i>
+                      </div>
+                      <h3 className="heading6">Candidature Formateur</h3>
+                    </div>
+                    <div className="mb-4 p-3 bg-orange bg-opacity-5 rounded-lg border border-orange border-opacity-20">
+                      <p className="text-sm font-semibold text-orange mb-1">
+                        <i className="ph-bold ph-hourglass-medium mr-1"></i>
+                        En cours de traitement
+                      </p>
+                      <p className="text-xs text-secondary">
+                        Soumise le {new Date(user.formateurApplicationDate).toLocaleDateString('fr-FR')}
+                      </p>
+                    </div>
+                    <p className="text-sm text-secondary mb-4">
+                      Votre candidature est en cours d'examen. Vous recevrez une réponse par email sous 24h.
+                    </p>
+                    <div className="text-center">
+                      <p className="text-xs text-secondary">
+                        <i className="ph-bold ph-check-circle text-green mr-1"></i>
+                        Candidature envoyée avec succès
+                      </p>
+                    </div>
+                  </div>
+                ) : user.formateurApplicationStatus === 'rejected' ? (
+                  // Candidature rejetée
+                  <div className="bg-white rounded-2xl shadow p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-red bg-opacity-10 flex items-center justify-center">
+                        <i className="ph-bold ph-x-circle text-red text-xl"></i>
+                      </div>
+                      <h3 className="heading6">Candidature Refusée</h3>
+                    </div>
+                    <p className="text-sm text-secondary mb-4">
+                      Votre candidature formateur n'a pas été acceptée. Vous pouvez soumettre une nouvelle demande.
+                    </p>
+                    <Link
+                      href="/devenir-formateur"
+                      className="block w-full px-4 py-3 bg-gradient-to-r from-purple to-blue text-white rounded-xl hover:from-purple hover:to-purple transition text-center font-semibold"
+                    >
+                      <i className="ph-bold ph-rocket-launch mr-2"></i>
+                      Postuler à nouveau
+                    </Link>
+                  </div>
                 ) : (
+                  // Aucune candidature
                   <div className="bg-white rounded-2xl shadow p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 rounded-lg bg-purple bg-opacity-10 flex items-center justify-center">
