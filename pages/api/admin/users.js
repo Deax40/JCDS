@@ -48,7 +48,8 @@ export default async function handler(req, res) {
       pseudo: user.pseudo,
       telephone: user.phone,
       genre: user.genre,
-      role: user.roles[0],
+      role: user.roles ? user.roles[0] : 'acheteur', // Premier rôle pour compatibilité
+      roles: user.roles || ['acheteur'], // Tous les rôles
       avatar: user.avatar_url,
       isActive: user.is_active,
       createdAt: user.created_at,

@@ -168,6 +168,45 @@ export default function MonCompte() {
 
               {/* Sidebar */}
               <div className="space-y-6">
+                {/* Statut Formateur */}
+                {user.roles && user.roles.includes('formateur') ? (
+                  <div className="bg-gradient-to-br from-purple to-blue rounded-2xl shadow p-6 text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <i className="ph-bold ph-crown text-3xl"></i>
+                      <h3 className="heading6">Statut Formateur</h3>
+                    </div>
+                    <p className="text-sm text-white text-opacity-90 mb-4">
+                      Vous êtes formateur actif sur la plateforme !
+                    </p>
+                    <Link
+                      href="/formateur/dashboard"
+                      className="block w-full px-4 py-3 bg-white text-purple rounded-xl hover:bg-opacity-90 transition text-center font-semibold"
+                    >
+                      <i className="ph-bold ph-chart-line mr-2"></i>
+                      Tableau de bord formateur
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-2xl shadow p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple bg-opacity-10 flex items-center justify-center">
+                        <i className="ph-bold ph-graduation-cap text-purple text-xl"></i>
+                      </div>
+                      <h3 className="heading6">Devenir Formateur</h3>
+                    </div>
+                    <p className="text-sm text-secondary mb-4">
+                      Partagez votre expertise et gagnez de l'argent en vendant vos formations !
+                    </p>
+                    <Link
+                      href="/devenir-formateur"
+                      className="block w-full px-4 py-3 bg-gradient-to-r from-purple to-blue text-white rounded-xl hover:from-purple hover:to-purple transition text-center font-semibold"
+                    >
+                      <i className="ph-bold ph-rocket-launch mr-2"></i>
+                      Postuler maintenant
+                    </Link>
+                  </div>
+                )}
+
                 {/* Statistiques */}
                 <div className="bg-white rounded-2xl shadow p-6">
                   <h3 className="heading6 mb-4">Statistiques</h3>

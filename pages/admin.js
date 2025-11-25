@@ -3,6 +3,84 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+// Composant pour gérer les rôles des utilisateurs
+function RoleSelector({ user, onRoleChange }) {
+  const [isChanging, setIsChanging] = useState(false);
+  const [selectedRoles, setSelectedRoles] = useState(user.roles || [user.role]);
+
+  const handleRoleToggle = async (role) => {
+    setIsChanging(true);
+
+    try {
+      const newRoles = selectedRoles.includes(role)
+        ? selectedRoles.filter(r => r !== role)
+        : [...selectedRoles, role];
+
+      // Empêcher de retirer tous les rôles
+      if (newRoles.length === 0) {
+        alert('Un utilisateur doit avoir au moins un rôle');
+        setIsChanging(false);
+        return;
+      }
+
+      const response = await fetch('/api/admin/update-user-role', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          roles: newRoles,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSelectedRoles(newRoles);
+        onRoleChange({ ...user, roles: newRoles, role: newRoles[0] });
+      } else {
+        alert(data.message || 'Erreur lors de la mise à jour');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la mise à jour du rôle');
+    } finally {
+      setIsChanging(false);
+    }
+  };
+
+  const roles = ['acheteur', 'formateur'];
+
+  return (
+    <div className="flex gap-2 items-center">
+      {roles.map(role => {
+        const isActive = selectedRoles.includes(role);
+        return (
+          <button
+            key={role}
+            onClick={() => handleRoleToggle(role)}
+            disabled={isChanging}
+            className={`text-xs px-3 py-1 rounded-full transition-all ${
+              isActive
+                ? role === 'formateur'
+                  ? 'bg-purple text-white'
+                  : 'bg-blue text-white'
+                : 'bg-surface text-secondary hover:bg-opacity-70'
+            } ${isChanging ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          >
+            {isChanging ? (
+              <i className="ph ph-circle-notch animate-spin"></i>
+            ) : (
+              role
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Admin() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -260,13 +338,10 @@ export default function Admin() {
                         <td className="px-6 py-4 text-sm">{user.email}</td>
                         <td className="px-6 py-4 text-sm">{user.telephone}</td>
                         <td className="px-6 py-4">
-                          <span className={`text-xs px-3 py-1 rounded-full ${
-                            user.role === 'vendeur'
-                              ? 'bg-purple bg-opacity-10 text-purple'
-                              : 'bg-blue bg-opacity-10 text-blue'
-                          }`}>
-                            {user.role}
-                          </span>
+                          <RoleSelector user={user} onRoleChange={(updatedUser) => {
+                            setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+                            setFilteredUsers(filteredUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
+                          }} />
                         </td>
                         <td className="px-6 py-4 text-sm text-secondary">
                           {new Date(user.createdAt).toLocaleDateString('fr-FR')}
