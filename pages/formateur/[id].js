@@ -288,14 +288,10 @@ export default function FormateurProfilePage() {
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                     <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
                       <p className="text-sm opacity-80 mb-1">Formations</p>
                       <p className="text-2xl font-bold">{formateur.stats.totalFormations}</p>
-                    </div>
-                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
-                      <p className="text-sm opacity-80 mb-1">Étudiants</p>
-                      <p className="text-2xl font-bold">{formateur.stats.totalStudents}</p>
                     </div>
                     <Link
                       href={`/formateur/${id}/followers`}
