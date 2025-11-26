@@ -2,9 +2,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import HeaderAnvogue from '../components/HeaderAnvogue';
-import FooterAnvogue from '../components/FooterAnvogue';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
 export default function Login() {
   const router = useRouter();
@@ -17,40 +16,30 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
 
-  // Validation du formulaire
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.email) {
       newErrors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'L\'email est invalide';
     }
-
     if (!formData.password) {
       newErrors.password = 'Le mot de passe est requis';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
     setGeneralError('');
-
     if (!validateForm()) {
       return;
     }
-
     setLoading(true);
-
     try {
       const result = await login(formData.email, formData.password);
-
       if (result.success) {
-        // Connexion réussie - rediriger vers le profil
         router.push('/mon-compte');
       } else {
         setGeneralError(result.message || 'Email ou mot de passe incorrect');
@@ -68,7 +57,6 @@ export default function Login() {
       ...prev,
       [name]: value
     }));
-    // Effacer l'erreur pour ce champ
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -77,149 +65,179 @@ export default function Login() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100
+      }
+    }
+  };
+
   return (
     <>
       <Head>
         <title>Connexion - FormationPlace</title>
-        <meta name="description" content="Connectez-vous à votre compte FormationPlace" />
+        <meta name="description" content="Connectez-vous à votre compte FormationPlace pour accéder à vos formations." />
       </Head>
 
-      <div className="overflow-x-hidden">
-        <HeaderAnvogue />
+      <main className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
+        <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto shadow-2xl rounded-2xl overflow-hidden">
 
-        <div className="login-page pt-20 pb-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-md mx-auto">
-              {/* Header */}
-              <div className="text-center mb-10">
-                <h1 className="heading3 mb-3">Connexion</h1>
-                <p className="text-secondary">Accédez à votre compte FormationPlace</p>
-              </div>
-
-              {/* Form Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10">
-                <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Message d'erreur général */}
-          {generalError && (
-            <div className="bg-red bg-opacity-10 border border-red text-red px-4 py-3 rounded-xl text-sm">
-              <i className="ph-bold ph-warning-circle mr-2"></i>
-              {generalError}
-            </div>
-          )}
-
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
-              Adresse email
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i className="ph ph-envelope text-secondary text-xl"></i>
-              </div>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className={`block w-full pl-12 pr-4 py-3 border ${
-                  errors.email ? 'border-red' : 'border-line'
-                } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all duration-200`}
-                placeholder="vous@example.com"
-              />
-            </div>
-            {errors.email && (
-              <p className="mt-2 text-sm text-red">{errors.email}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-primary mb-2">
-              Mot de passe
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i className="ph ph-lock text-secondary text-xl"></i>
-              </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className={`block w-full pl-12 pr-4 py-3 border ${
-                  errors.password ? 'border-red' : 'border-line'
-                } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all duration-200`}
-                placeholder="••••••••"
-              />
-            </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red">{errors.password}</p>
-            )}
-          </div>
-
-          {/* Forgot Password Link */}
-          <div className="flex items-center justify-end">
-            <Link
-              href="/support"
-              className="text-sm text-purple hover:text-blue transition-colors duration-200"
-            >
-              Mot de passe oublié ?
-            </Link>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-white bg-gradient-to-r from-purple to-blue hover:from-purple hover:to-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium"
+          {/* Left Side */}
+          <motion.div
+            className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center items-center bg-gradient-to-br from-purple to-blue text-white"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            {loading ? (
-              <>
-                <i className="ph ph-circle-notch animate-spin mr-2 text-xl"></i>
-                Connexion en cours...
-              </>
-            ) : (
-              <>
-                <i className="ph-bold ph-sign-in mr-2 text-xl"></i>
-                Se connecter
-              </>
-            )}
-          </button>
-
-          {/* Register Link */}
-          <div className="text-center pt-4">
-            <p className="text-sm text-secondary">
-              Vous n'avez pas de compte ?{' '}
-              <Link
-                href="/register"
-                className="font-medium text-purple hover:text-blue transition-colors duration-200"
-              >
-                S'inscrire
+            <motion.div variants={itemVariants} className="text-center">
+              <Link href="/">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">FormationPlace</h1>
               </Link>
-            </p>
-          </div>
-                </form>
-              </div>
+              <motion.p variants={itemVariants} className="text-lg md:text-xl max-w-sm">
+                Bienvenue de retour ! Connectez-vous pour continuer votre parcours d&apos;apprentissage.
+              </motion.p>
+            </motion.div>
+          </motion.div>
 
-              {/* Info */}
-              <div className="mt-8 bg-blue bg-opacity-10 border border-blue rounded-xl p-4">
-                <p className="text-sm text-center text-secondary">
-                  <i className="ph-bold ph-info mr-2"></i>
-                  Créez un compte gratuitement pour accéder à toutes les fonctionnalités
-                </p>
-              </div>
+          {/* Right Side - Form */}
+          <div className="w-full md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
+            <div className="max-w-md mx-auto w-full">
+              <motion.div
+                className="text-center mb-8"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.h2 variants={itemVariants} className="text-3xl font-bold text-gray-800 mb-2">Connectez-vous</motion.h2>
+                <motion.p variants={itemVariants} className="text-gray-500">Accédez à votre espace personnel.</motion.p>
+              </motion.div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {generalError && (
+                  <motion.div
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <i className="ph-bold ph-warning-circle mr-2 text-lg"></i>
+                    {generalError}
+                  </motion.div>
+                )}
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Adresse email
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <i className="ph ph-envelope text-gray-400 text-xl"></i>
+                    </span>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={`block w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                        errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'
+                      }`}
+                      placeholder="vous@example.com"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Mot de passe
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <i className="ph ph-lock text-gray-400 text-xl"></i>
+                    </span>
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      required
+                      value={formData.password}
+                      onChange={handleChange}
+                      className={`block w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                        errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'
+                      }`}
+                      placeholder="••••••••"
+                    />
+                  </div>
+                  {errors.password && (
+                    <p className="mt-2 text-sm text-red-600">{errors.password}</p>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-end">
+                  <Link
+                    href="/support"
+                    className="text-sm text-purple hover:text-blue transition-colors duration-200 font-medium"
+                  >
+                    Mot de passe oublié ?
+                  </Link>
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-white bg-gradient-to-r from-purple to-blue hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {loading ? (
+                    <>
+                      <i className="ph ph-circle-notch animate-spin mr-2 text-xl"></i>
+                      Connexion...
+                    </>
+                  ) : (
+                    <>
+                      <i className="ph-bold ph-sign-in mr-2 text-xl"></i>
+                      Se connecter
+                    </>
+                  )}
+                </motion.button>
+
+                <div className="text-center pt-4">
+                  <p className="text-sm text-gray-500">
+                    Pas encore de compte ?{' '}
+                    <Link
+                      href="/register"
+                      className="font-medium text-purple hover:text-blue transition-colors duration-200"
+                    >
+                      Inscrivez-vous
+                    </Link>
+                  </p>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-
-        <FooterAnvogue />
-      </div>
+      </main>
     </>
   );
 }
