@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
+import { UserCircle, Envelope, Phone, PencilSimple, ShoppingCart, Heart, SignOut } from "@phosphor-icons/react";
 import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
-import { useAuth } from '../context/AuthContext';
+import { InfoRow, StatRow, ActionLink } from '../components/AuthComponents';
 
 export default function MonCompte() {
   const router = useRouter();
-  const { user, wishlist, updatePseudo } = useAuth();
-  const [isEditingPseudo, setIsEditingPseudo] = useState(false);
+  const { user, wishlist, updatePseudo, logout } = useAuth();
+  const [isEditingPseudo, setIsEditingPseudo] =useState(false);
   const [newPseudo, setNewPseudo] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -21,202 +24,148 @@ export default function MonCompte() {
   }, [user, router]);
 
   if (!user) {
-    return null;
+    return null; // Affiche un loader ou rien en attendant la redirection
   }
 
   const handleUpdatePseudo = async () => {
     setError('');
     setSuccess('');
-
     if (!newPseudo || newPseudo.length < 3) {
-      setError('Le pseudo doit contenir au moins 3 caractères');
+      setError('Le pseudo doit contenir au moins 3 caractères.');
       return;
     }
-
     const result = await updatePseudo(newPseudo);
     if (result.success) {
-      setSuccess('Pseudo mis à jour avec succès');
+      setSuccess('Pseudo mis à jour avec succès!');
       setIsEditingPseudo(false);
       setNewPseudo('');
     } else {
-      setError(result.message);
+      setError(result.message || "Erreur lors de la mise à jour.");
     }
   };
 
-  // Avatar selon le genre
-  const avatarIcon = user.genre === 'femme' ? 'ph-user-circle-gear' : 'ph-user-circle';
+  const avatarIcon = user.genre === 'femme' ? <UserCircle size={80} weight="light" className="text-purple-500" /> : <UserCircle size={80} weight="light" className="text-blue-500" />;
+
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
 
   return (
     <>
       <Head>
-        <title>Mon Compte - FormationPlace</title>
+        <title>Mon Espace Compte - FormationPlace</title>
+        <meta name="description" content={`Bienvenue sur votre espace personnel, ${user.prenom}. Gérez vos informations et formations.`} />
       </Head>
 
-      <div className="overflow-x-hidden">
+      <div className="bg-gray-50 min-h-screen">
         <HeaderAnvogue />
 
-        <div className="account-page pt-20 pb-20">
-          <div className="container mx-auto px-4">
-            <h1 className="heading3 mb-10">Mon Compte</h1>
+        <main className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl font-bold text-gray-800">
+              Bienvenue, <span className="text-purple-600">{user.prenom}</span>!
+            </h1>
+            <p className="text-gray-600 mt-2 text-lg">Ravis de vous revoir sur votre espace personnel.</p>
+          </motion.div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
-              {/* Profil */}
-              <div className="lg:col-span-2">
-                <div className="bg-white rounded-2xl shadow p-8">
-                  {/* Avatar et infos principales */}
-                  <div className="flex items-center gap-6 mb-8 pb-8 border-b border-line">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple to-blue flex items-center justify-center">
-                      <i className={`ph-bold ${avatarIcon} text-white text-6xl`}></i>
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="heading5 mb-2">{user.prenom} {user.nom}</h2>
-                      <p className="text-secondary mb-1">@{user.pseudo}</p>
-                      <p className="text-xs text-secondary">ID: #{user.id}</p>
-                      <div className="mt-2">
-                        <span className={`text-xs px-3 py-1 rounded-full ${
-                          user.role === 'vendeur'
-                            ? 'bg-purple bg-opacity-10 text-purple'
-                            : 'bg-blue bg-opacity-10 text-blue'
-                        }`}>
-                          {user.role === 'vendeur' ? 'Vendeur' : 'Acheteur'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Informations */}
-                  <div className="space-y-6">
-                    <h3 className="heading6 mb-4">Informations personnelles</h3>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="text-sm text-secondary block mb-2">Email</label>
-                        <p className="font-medium">{user.email}</p>
-                      </div>
-
-                      <div>
-                        <label className="text-sm text-secondary block mb-2">Téléphone</label>
-                        <p className="font-medium">{user.telephone}</p>
-                      </div>
-
-                      <div>
-                        <label className="text-sm text-secondary block mb-2">Nom</label>
-                        <p className="font-medium">{user.nom}</p>
-                      </div>
-
-                      <div>
-                        <label className="text-sm text-secondary block mb-2">Prénom</label>
-                        <p className="font-medium">{user.prenom}</p>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="text-sm text-secondary block mb-2">Pseudo (modifiable)</label>
-                        {isEditingPseudo ? (
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={newPseudo}
-                              onChange={(e) => setNewPseudo(e.target.value)}
-                              className="flex-1 px-4 py-2 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple"
-                              placeholder={user.pseudo}
-                            />
-                            <button
-                              onClick={handleUpdatePseudo}
-                              className="px-6 py-2 bg-purple text-white rounded-xl hover:bg-opacity-90 transition"
-                            >
-                              Valider
-                            </button>
-                            <button
-                              onClick={() => {
-                                setIsEditingPseudo(false);
-                                setNewPseudo('');
-                                setError('');
-                              }}
-                              className="px-6 py-2 bg-surface rounded-xl hover:bg-opacity-80 transition"
-                            >
-                              Annuler
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-3">
-                            <p className="font-medium">{user.pseudo}</p>
-                            <button
-                              onClick={() => setIsEditingPseudo(true)}
-                              className="text-sm text-purple hover:underline"
-                            >
-                              Modifier
-                            </button>
-                          </div>
-                        )}
-                        {error && <p className="text-sm text-red mt-2">{error}</p>}
-                        {success && <p className="text-sm text-green mt-2">{success}</p>}
-                      </div>
-                    </div>
-
-                    <div className="pt-6 mt-6 border-t border-line">
-                      <p className="text-sm text-secondary">
-                        <i className="ph-bold ph-info mr-2"></i>
-                        Pour modifier d'autres informations, veuillez{' '}
-                        <Link href="/support" className="text-purple hover:underline">
-                          contacter le support
-                        </Link>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sidebar */}
-              <div className="space-y-6">
-                {/* Statistiques */}
-                <div className="bg-white rounded-2xl shadow p-6">
-                  <h3 className="heading6 mb-4">Statistiques</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-secondary">Achats</span>
-                      <span className="font-semibold">{user.purchases?.length || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-secondary">Favoris</span>
-                      <span className="font-semibold">{wishlist?.length || 0}</span>
-                    </div>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid lg:grid-cols-3 gap-8"
+          >
+            {/* Colonne principale */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Carte Profil */}
+              <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex items-center gap-6 mb-8">
+                  {avatarIcon}
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-gray-800">{user.prenom} {user.nom}</h2>
+                    <p className="text-gray-500">@{user.pseudo}</p>
+                    <span className={`mt-2 inline-block text-xs px-3 py-1 rounded-full font-semibold ${user.role === 'vendeur' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                      {user.role}
+                    </span>
                   </div>
                 </div>
 
-                {/* Actions rapides */}
-                <div className="bg-white rounded-2xl shadow p-6">
-                  <h3 className="heading6 mb-4">Actions rapides</h3>
-                  <div className="space-y-3">
-                    <Link
-                      href="/mes-achats"
-                      className="block w-full px-4 py-3 bg-surface rounded-xl hover:bg-opacity-80 transition text-center"
-                    >
-                      Voir mes achats
-                    </Link>
-                    <Link
-                      href="/favoris"
-                      className="block w-full px-4 py-3 bg-surface rounded-xl hover:bg-opacity-80 transition text-center"
-                    >
-                      Mes favoris
-                    </Link>
-                    <Link
-                      href="/panier"
-                      className="block w-full px-4 py-3 bg-surface rounded-xl hover:bg-opacity-80 transition text-center"
-                    >
-                      Mon panier
-                    </Link>
-                    <Link
-                      href="/support"
-                      className="block w-full px-4 py-3 bg-surface rounded-xl hover:bg-opacity-80 transition text-center"
-                    >
-                      Support
-                    </Link>
+                <div className="space-y-4">
+                  <InfoRow icon={<Envelope />} label="Email" value={user.email} />
+                  <InfoRow icon={<Phone />} label="Téléphone" value={user.telephone} />
+                  <div className="pt-4 border-t border-gray-100">
+                    <label className="text-sm font-medium text-gray-500 block mb-2">Pseudo (modifiable)</label>
+                    {isEditingPseudo ? (
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          value={newPseudo}
+                          onChange={(e) => setNewPseudo(e.target.value)}
+                          className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          placeholder={user.pseudo}
+                        />
+                        <div className="flex gap-2">
+                          <button onClick={handleUpdatePseudo} className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Valider</button>
+                          <button onClick={() => setIsEditingPseudo(false)} className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Annuler</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <p className="font-semibold text-gray-800">{user.pseudo}</p>
+                        <button onClick={() => setIsEditingPseudo(true)} className="flex items-center text-sm text-purple-600 hover:underline">
+                          <PencilSimple className="mr-1" /> Modifier
+                        </button>
+                      </div>
+                    )}
+                    {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+                    {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
+
+            {/* Colonne latérale */}
+            <div className="space-y-8">
+              {/* Statistiques */}
+              <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Vos Activités</h3>
+                <div className="space-y-4">
+                  <StatRow icon={<ShoppingCart />} label="Achats effectués" value={user.purchases?.length || 0} />
+                  <StatRow icon={<Heart />} label="Formations en favoris" value={wishlist?.length || 0} />
+                </div>
+              </motion.div>
+
+              {/* Actions */}
+              <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Actions Rapides</h3>
+                <div className="space-y-3">
+                  <ActionLink href="/mes-achats" icon={<ShoppingCart />}>Mes Achats</ActionLink>
+                  <ActionLink href="/favoris" icon={<Heart />}>Mes Favoris</ActionLink>
+                  <ActionLink href="/panier" icon={<ShoppingCart />}>Mon Panier</ActionLink>
+                  <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-semibold">
+                    <SignOut /> Se déconnecter
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </main>
 
         <FooterAnvogue />
       </div>
