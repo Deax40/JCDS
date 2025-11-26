@@ -616,11 +616,56 @@ export default function CreateFormation() {
                     Tarification
                   </h3>
 
-                  <PriceCalculator
-                    value={formData.priceEntered}
-                    onChange={handlePriceChange}
-                    mode={formData.priceMode}
-                  />
+                  {/* Option Formation Gratuite */}
+                  <div className="mb-6 p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green border-opacity-20 rounded-xl">
+                    <div className="flex items-start gap-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="isFree"
+                        checked={formData.priceEntered === '0' || formData.priceEntered === 0}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            handlePriceChange({
+                              priceMode: 'ttc',
+                              priceEntered: '0',
+                              priceTTC: 0,
+                              priceNet: 0,
+                              sumupFee: 0,
+                              platformFee: 0,
+                            });
+                          } else {
+                            handlePriceChange({
+                              priceMode: 'ttc',
+                              priceEntered: '',
+                              priceTTC: 0,
+                              priceNet: 0,
+                              sumupFee: 0,
+                              platformFee: 0,
+                            });
+                          }
+                        }}
+                        className="mt-1 w-5 h-5 text-green rounded border-gray-300 focus:ring-green"
+                      />
+                      <div className="flex-1">
+                        <label htmlFor="isFree" className="font-semibold text-green-700 cursor-pointer flex items-center gap-2">
+                          <i className="ph-bold ph-gift text-xl"></i>
+                          Formation Gratuite
+                        </label>
+                        <p className="text-sm text-green-700 mt-2 leading-relaxed">
+                          <strong>Les formations gratuites sont idéales pour promouvoir votre profil !</strong> Offrez du contenu de haute qualité gratuitement pour démontrer votre expertise et votre engagement. C'est un excellent moyen d'attirer de nouveaux élèves, de gagner en visibilité et d'augmenter vos ventes de formations payantes. Montrez votre savoir-faire et construisez votre réputation !
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Calculateur de prix (seulement si payant) */}
+                  {formData.priceEntered !== '0' && formData.priceEntered !== 0 && (
+                    <PriceCalculator
+                      value={formData.priceEntered}
+                      onChange={handlePriceChange}
+                      mode={formData.priceMode}
+                    />
+                  )}
                 </div>
 
                 {/* Message d'erreur */}

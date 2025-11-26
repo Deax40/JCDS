@@ -147,7 +147,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Le fichier PDF est requis' });
   }
 
-  if (!priceTTC || priceTTC <= 0) {
+  // Allow free formations (priceTTC === 0) or paid formations (priceTTC > 0)
+  if (priceTTC === null || priceTTC === undefined || priceTTC < 0) {
     return res.status(400).json({ message: 'Prix invalide' });
   }
 

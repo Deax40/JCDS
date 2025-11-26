@@ -168,15 +168,23 @@ export default function FavoritesPage() {
                         {/* Price & Actions */}
                         <div className="flex items-center justify-between mb-4">
                           <div>
-                            <p className="text-2xl font-bold text-purple">
-                              {favorite.formation.priceTTC.toFixed(2)} €
-                            </p>
+                            {favorite.formation.priceTTC === 0 ? (
+                              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green bg-opacity-10 text-green rounded-lg font-bold">
+                                <i className="ph-bold ph-gift"></i>
+                                GRATUIT
+                              </div>
+                            ) : (
+                              <p className="text-2xl font-bold text-purple">
+                                {favorite.formation.priceTTC.toFixed(2)} €
+                              </p>
+                            )}
                           </div>
                         </div>
 
                         {/* Action Buttons */}
                         <FormationActions
                           formationId={favorite.formation.id}
+                          priceTTC={favorite.formation.priceTTC}
                           onCartUpdate={loadFavorites}
                           onFavoriteUpdate={loadFavorites}
                         />

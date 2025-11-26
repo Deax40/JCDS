@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function FormationActions({
   formationId,
+  priceTTC = null,
   className = '',
   onCartUpdate = () => {},
   onFavoriteUpdate = () => {},
@@ -17,6 +18,7 @@ export default function FormationActions({
   const [inCart, setInCart] = useState(false);
   const [inFavorites, setInFavorites] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isFree = priceTTC === 0;
 
   useEffect(() => {
     if (user && formationId) {
@@ -160,8 +162,16 @@ export default function FormationActions({
         <i className={`ph-bold ${inFavorites ? 'ph-heart-fill' : 'ph-heart'} text-xl`}></i>
       </button>
 
-      {/* Cart Button */}
-      {inCart ? (
+      {/* Cart/Access Button */}
+      {isFree ? (
+        <button
+          onClick={() => window.location.href = `/formation/${formationId}`}
+          className="flex-1 px-4 py-2 bg-green text-white rounded-lg hover:bg-opacity-90 transition font-semibold text-sm flex items-center justify-center gap-2"
+        >
+          <i className="ph-bold ph-gift"></i>
+          <span>Accéder gratuitement</span>
+        </button>
+      ) : inCart ? (
         <button
           onClick={handleRemoveFromCart}
           disabled={loading}
