@@ -382,10 +382,17 @@ export default function FormateurDashboard() {
                       Nouvelle formation
                     </Link>
                     <Link
+                      href="/formateur/edit-profile"
+                      className="block w-full px-4 py-2 bg-blue bg-opacity-10 text-blue rounded-lg hover:bg-opacity-20 transition text-center text-sm font-semibold"
+                    >
+                      <i className="ph-bold ph-user-circle mr-2"></i>
+                      Modifier mon profil public
+                    </Link>
+                    <Link
                       href="/mon-compte"
                       className="block w-full px-4 py-2 bg-surface rounded-lg hover:bg-opacity-80 transition text-center text-sm"
                     >
-                      Mon profil
+                      Mon compte
                     </Link>
                   </div>
                 </div>

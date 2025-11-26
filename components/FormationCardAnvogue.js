@@ -136,7 +136,7 @@ export default function FormationCardAnvogue({ formation }) {
           {/* Action Buttons */}
           <div className="list-action grid grid-cols-2 gap-3 px-5 absolute w-full bottom-5 max-lg:hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
             <Link
-              href={`/formations/${slug}`}
+              href={`/formation/${id}`}
               className="quick-view-btn w-full text-button-uppercase py-2 text-center rounded-full duration-300 bg-white hover:bg-black hover:text-white"
             >
               Voir détails
@@ -186,7 +186,7 @@ export default function FormationCardAnvogue({ formation }) {
           )}
 
           {/* Formation Title */}
-          <Link href={`/formations/${slug}`}>
+          <Link href={`/formation/${id}`}>
             <div className="product-name text-title duration-300 hover:text-black line-clamp-2">
               {title}
             </div>
