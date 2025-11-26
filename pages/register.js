@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import HeaderAnvogue from '../components/HeaderAnvogue';
-import FooterAnvogue from '../components/FooterAnvogue';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
+import { At, Phone, User, Lock, UserPlus } from "@phosphor-icons/react";
+import Image from 'next/image';
+import { InputField } from '../components/AuthComponents';
+import { BACKGROUND_IMAGE_URL } from '../lib/constants';
 
 export default function Register() {
   const router = useRouter();
@@ -24,7 +27,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
 
-  // Validation du formulaire
   const validateForm = () => {
     const newErrors = {};
 
@@ -83,22 +85,14 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
     setGeneralError('');
-
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
     setLoading(true);
-
     try {
       const result = await register(formData);
-
       if (result.success) {
-        // Inscription réussie - rediriger vers le profil
         router.push('/mon-compte');
       } else {
         setGeneralError(result.message || 'Une erreur est survenue lors de l\'inscription');
@@ -112,324 +106,103 @@ export default function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Effacer l'erreur pour ce champ
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
   return (
     <>
       <Head>
         <title>Inscription - FormationPlace</title>
-        <meta name="description" content="Créez votre compte FormationPlace" />
+        <meta name="description" content="Créez votre compte pour accéder à des milliers de formations." />
       </Head>
 
-      <div className="overflow-x-hidden">
-        <HeaderAnvogue />
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center relative overflow-hidden py-12">
+        <Image
+          src={BACKGROUND_IMAGE_URL}
+          alt="Abstract background"
+          layout="fill"
+          objectFit="cover"
+          className="z-0"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
 
-        <div className="register-page pt-20 pb-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto">
-              {/* Header */}
-              <div className="text-center mb-10">
-                <h1 className="heading3 mb-3">Créer un compte</h1>
-                <p className="text-secondary">Rejoignez FormationPlace et commencez à apprendre</p>
-              </div>
-
-              {/* Form Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Message d'erreur général */}
-                  {generalError && (
-                    <div className="bg-red bg-opacity-10 border border-red text-red px-4 py-3 rounded-xl text-sm flex items-start">
-                      <i className="ph-bold ph-warning-circle mr-2 text-lg flex-shrink-0 mt-0.5"></i>
-                      <span>{generalError}</span>
-                    </div>
-                  )}
-
-                  {/* Email et Téléphone */}
-                  <div className="grid md:grid-cols-2 gap-5">
-                    {/* Email */}
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
-                        Adresse email <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-envelope text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.email ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="vous@example.com"
-                        />
-                      </div>
-                      {errors.email && (
-                        <p className="mt-1 text-xs text-red">{errors.email}</p>
-                      )}
-                    </div>
-
-                    {/* Téléphone */}
-                    <div>
-                      <label htmlFor="telephone" className="block text-sm font-medium text-primary mb-2">
-                        Téléphone <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-phone text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="telephone"
-                          name="telephone"
-                          type="tel"
-                          required
-                          value={formData.telephone}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.telephone ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="06 12 34 56 78"
-                        />
-                      </div>
-                      {errors.telephone && (
-                        <p className="mt-1 text-xs text-red">{errors.telephone}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Nom et Prénom */}
-                  <div className="grid md:grid-cols-2 gap-5">
-                    {/* Nom */}
-                    <div>
-                      <label htmlFor="nom" className="block text-sm font-medium text-primary mb-2">
-                        Nom <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-user text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="nom"
-                          name="nom"
-                          type="text"
-                          required
-                          value={formData.nom}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.nom ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="Dupont"
-                        />
-                      </div>
-                      {errors.nom && (
-                        <p className="mt-1 text-xs text-red">{errors.nom}</p>
-                      )}
-                    </div>
-
-                    {/* Prénom */}
-                    <div>
-                      <label htmlFor="prenom" className="block text-sm font-medium text-primary mb-2">
-                        Prénom <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-user text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="prenom"
-                          name="prenom"
-                          type="text"
-                          required
-                          value={formData.prenom}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.prenom ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="Jean"
-                        />
-                      </div>
-                      {errors.prenom && (
-                        <p className="mt-1 text-xs text-red">{errors.prenom}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Pseudo */}
-                  <div>
-                    <label htmlFor="pseudo" className="block text-sm font-medium text-primary mb-2">
-                      Pseudo en ligne <span className="text-red">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i className="ph ph-at text-secondary text-lg"></i>
-                      </div>
-                      <input
-                        id="pseudo"
-                        name="pseudo"
-                        type="text"
-                        required
-                        value={formData.pseudo}
-                        onChange={handleChange}
-                        className={`block w-full pl-11 pr-4 py-3 border ${
-                          errors.pseudo ? 'border-red' : 'border-line'
-                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                        placeholder="jean_dupont"
-                      />
-                    </div>
-                    {errors.pseudo && (
-                      <p className="mt-1 text-xs text-red">{errors.pseudo}</p>
-                    )}
-                    <p className="mt-1 text-xs text-secondary">
-                      Lettres, chiffres et underscores uniquement
-                    </p>
-                  </div>
-
-                  {/* Genre */}
-                  <div>
-                    <label htmlFor="genre" className="block text-sm font-medium text-primary mb-2">
-                      Genre <span className="text-red">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i className="ph ph-gender-intersex text-secondary text-lg"></i>
-                      </div>
-                      <select
-                        id="genre"
-                        name="genre"
-                        value={formData.genre}
-                        onChange={handleChange}
-                        className="block w-full pl-11 pr-4 py-3 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all appearance-none bg-white"
-                      >
-                        <option value="homme">Homme</option>
-                        <option value="femme">Femme</option>
-                      </select>
-                      <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                        <i className="ph ph-caret-down text-secondary"></i>
-                      </div>
-                    </div>
-                    <p className="mt-1 text-xs text-secondary">
-                      Détermine votre avatar de profil
-                    </p>
-                  </div>
-
-                  {/* Info compte acheteur */}
-                  <div className="bg-blue bg-opacity-10 border border-blue rounded-xl p-4">
-                    <p className="text-sm text-secondary text-center">
-                      <i className="ph-bold ph-info mr-2"></i>
-                      Vous créez un <strong>compte acheteur</strong>. Vous pourrez devenir vendeur plus tard depuis votre profil.
-                    </p>
-                  </div>
-
-                  {/* Mots de passe */}
-                  <div className="grid md:grid-cols-2 gap-5">
-                    {/* Mot de passe */}
-                    <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-primary mb-2">
-                        Mot de passe <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-lock text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="password"
-                          name="password"
-                          type="password"
-                          required
-                          value={formData.password}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.password ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="••••••••"
-                        />
-                      </div>
-                      {errors.password && (
-                        <p className="mt-1 text-xs text-red">{errors.password}</p>
-                      )}
-                    </div>
-
-                    {/* Confirmation mot de passe */}
-                    <div>
-                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-primary mb-2">
-                        Confirmer <span className="text-red">*</span>
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <i className="ph ph-lock-key text-secondary text-lg"></i>
-                        </div>
-                        <input
-                          id="confirmPassword"
-                          name="confirmPassword"
-                          type="password"
-                          required
-                          value={formData.confirmPassword}
-                          onChange={handleChange}
-                          className={`block w-full pl-11 pr-4 py-3 border ${
-                            errors.confirmPassword ? 'border-red' : 'border-line'
-                          } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-all`}
-                          placeholder="••••••••"
-                        />
-                      </div>
-                      {errors.confirmPassword && (
-                        <p className="mt-1 text-xs text-red">{errors.confirmPassword}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl text-white bg-gradient-to-r from-purple to-blue hover:from-purple hover:to-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-semibold text-lg mt-8"
-                  >
-                    {loading ? (
-                      <>
-                        <i className="ph ph-circle-notch animate-spin mr-2 text-xl"></i>
-                        Création en cours...
-                      </>
-                    ) : (
-                      <>
-                        <i className="ph-bold ph-user-plus mr-2 text-xl"></i>
-                        Créer mon compte
-                      </>
-                    )}
-                  </button>
-
-                  {/* Login Link */}
-                  <div className="text-center pt-4">
-                    <p className="text-sm text-secondary">
-                      Vous avez déjà un compte ?{' '}
-                      <Link
-                        href="/login"
-                        className="font-medium text-purple hover:text-blue transition-colors duration-200"
-                      >
-                        Se connecter
-                      </Link>
-                    </p>
-                  </div>
-                </form>
-              </div>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative z-10 max-w-2xl w-full mx-4"
+        >
+          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 space-y-6">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-gray-800">Créer un Compte</h1>
+              <p className="text-gray-600 mt-2">Rejoignez-nous et commencez à apprendre</p>
             </div>
-          </div>
-        </div>
 
-        <FooterAnvogue />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {generalError && (
+                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm">
+                  {generalError}
+                </div>
+              )}
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <InputField icon={<User />} name="nom" placeholder="Nom" value={formData.nom} onChange={handleChange} error={errors.nom} />
+                <InputField icon={<User />} name="prenom" placeholder="Prénom" value={formData.prenom} onChange={handleChange} error={errors.prenom} />
+                <InputField icon={<At />} name="email" type="email" placeholder="Adresse email" value={formData.email} onChange={handleChange} error={errors.email} />
+                <InputField icon={<Phone />} name="telephone" type="tel" placeholder="Téléphone" value={formData.telephone} onChange={handleChange} error={errors.telephone} />
+                <InputField icon={<UserPlus />} name="pseudo" placeholder="Pseudo" value={formData.pseudo} onChange={handleChange} error={errors.pseudo} />
+
+                <div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="text-gray-400" />
+                    </div>
+                    <select
+                      name="genre"
+                      value={formData.genre}
+                      onChange={handleChange}
+                      className="block w-full pl-10 pr-3 py-3 bg-white/50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="homme">Homme</option>
+                      <option value="femme">Femme</option>
+                    </select>
+                  </div>
+                </div>
+
+                <InputField icon={<Lock />} name="password" type="password" placeholder="Mot de passe" value={formData.password} onChange={handleChange} error={errors.password} />
+                <InputField icon={<Lock />} name="confirmPassword" type="password" placeholder="Confirmer le mot de passe" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-white bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
+              >
+                {loading ? 'Création en cours...' : (
+                  <>
+                    <UserPlus size={20} className="mr-2" />
+                    Créer mon compte
+                  </>
+                )}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-gray-600">
+              Déjà un compte ?{' '}
+              <Link href="/login" passHref>
+                <a className="font-medium text-purple-600 hover:text-purple-800">
+                  Connectez-vous
+                </a>
+              </Link>
+            </p>
+          </div>
+        </motion.div>
       </div>
     </>
   );
