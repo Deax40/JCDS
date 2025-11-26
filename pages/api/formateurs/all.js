@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         COALESCE(SUM(f.total_reviews), 0) as total_reviews
       FROM users u
       LEFT JOIN formations f ON u.id = f.seller_id AND f.is_published = TRUE
-      WHERE u.roles @> ARRAY['formateur']::VARCHAR[]
+      WHERE 'formateur' = ANY(u.roles)
       GROUP BY u.id, u.first_name, u.last_name, u.pseudo, u.email, u.avatar_url, u.bio, u.created_at
       ORDER BY total_formations DESC, total_students DESC`,
       []
