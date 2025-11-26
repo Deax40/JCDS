@@ -100,6 +100,9 @@ export default async function handler(req, res) {
       console.error('Failed to send welcome email:', emailError);
     }
 
+    // Définir le cookie de session
+    res.setHeader('Set-Cookie', `userId=${user.id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`); // 7 jours
+
     // Retourner l'utilisateur créé (sans le mot de passe)
     return res.status(201).json({
       message: 'Compte créé avec succès',
@@ -112,6 +115,7 @@ export default async function handler(req, res) {
         telephone: user.phone,
         genre: user.genre,
         role: user.roles[0],
+        roles: user.roles,
         avatar: user.avatar_url,
         createdAt: user.created_at,
       },

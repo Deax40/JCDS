@@ -49,6 +49,9 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
+    // Définir le cookie de session
+    res.setHeader('Set-Cookie', `userId=${user.id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`); // 7 jours
+
     // Retourner les données complètes de l'utilisateur
     return res.status(200).json({
       message: 'Connexion réussie',
