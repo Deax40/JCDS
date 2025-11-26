@@ -37,7 +37,10 @@ export default async function handler(req, res) {
         instagram,
         twitter,
         facebook,
-        linkedin
+        linkedin,
+        presentation_video_url,
+        show_presentation_video,
+        certifications
       FROM users
       WHERE id = $1`,
       [user.id]
@@ -62,6 +65,9 @@ export default async function handler(req, res) {
         bio: userData.bio,
         competences: userData.competences || [],
         website: userData.website,
+        presentationVideoUrl: userData.presentation_video_url,
+        showPresentationVideo: userData.show_presentation_video || false,
+        certifications: userData.certifications || [],
         socials: {
           instagram: userData.instagram,
           twitter: userData.twitter,

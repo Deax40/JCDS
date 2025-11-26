@@ -26,8 +26,12 @@ export default function EditProfile() {
     twitter: '',
     facebook: '',
     linkedin: '',
+    presentationVideoUrl: '',
+    showPresentationVideo: false,
+    certifications: [],
   });
   const [competenceInput, setCompetenceInput] = useState('');
+  const [certificationInput, setCertificationInput] = useState({ name: '', issuer: '', year: '' });
 
   useEffect(() => {
     if (!user) {
@@ -64,6 +68,9 @@ export default function EditProfile() {
           twitter: data.profile.socials.twitter || '',
           facebook: data.profile.socials.facebook || '',
           linkedin: data.profile.socials.linkedin || '',
+          presentationVideoUrl: data.profile.presentationVideoUrl || '',
+          showPresentationVideo: data.profile.showPresentationVideo || false,
+          certifications: data.profile.certifications || [],
         });
       } else {
         const error = await response.json();
@@ -174,6 +181,31 @@ export default function EditProfile() {
       e.preventDefault();
       addCompetence();
     }
+  };
+
+  const addCertification = () => {
+    if (certificationInput.name && certificationInput.issuer && certificationInput.year) {
+      setProfile({
+        ...profile,
+        certifications: [...profile.certifications, { ...certificationInput }],
+      });
+      setCertificationInput({ name: '', issuer: '', year: '' });
+    }
+  };
+
+  const removeCertification = (index) => {
+    setProfile({
+      ...profile,
+      certifications: profile.certifications.filter((_, i) => i !== index),
+    });
+  };
+
+  // Extraire l'ID de la vidéo YouTube
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
   };
 
   if (!user || !user.roles || !user.roles.includes('formateur')) {
@@ -483,6 +515,143 @@ export default function EditProfile() {
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="border-t border-line my-8"></div>
+
+                {/* Vidéo de présentation */}
+                <div className="mb-6">
+                  <h3 className="font-semibold mb-2 text-lg">
+                    <i className="ph-bold ph-video text-purple mr-2"></i>
+                    Vidéo de présentation YouTube
+                    <span className="text-secondary font-normal ml-2 text-sm">(Optionnel)</span>
+                  </h3>
+                  <p className="text-sm text-secondary mb-4">
+                    Ajoutez une vidéo YouTube de présentation. Elle sera affichée sur votre profil formateur et lancée automatiquement.
+                  </p>
+
+                  <div className="mb-4">
+                    <input
+                      type="url"
+                      value={profile.presentationVideoUrl}
+                      onChange={(e) => setProfile({ ...profile, presentationVideoUrl: e.target.value })}
+                      className="w-full px-4 py-3 border border-line rounded-lg focus:border-purple focus:outline-none"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                  </div>
+
+                  {/* Prévisualisation vidéo */}
+                  {profile.presentationVideoUrl && getYouTubeId(profile.presentationVideoUrl) && (
+                    <div className="mb-4">
+                      <p className="text-sm font-semibold mb-2">Prévisualisation:</p>
+                      <div className="aspect-video rounded-xl overflow-hidden bg-black">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={`https://www.youtube.com/embed/${getYouTubeId(profile.presentationVideoUrl)}`}
+                          title="Vidéo de présentation"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Toggle pour afficher/masquer */}
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={profile.showPresentationVideo}
+                      onChange={(e) => setProfile({ ...profile, showPresentationVideo: e.target.checked })}
+                      className="w-5 h-5 rounded border-line text-purple focus:ring-purple"
+                    />
+                    <span className="text-sm font-medium">
+                      Afficher la vidéo sur mon profil public et la lancer automatiquement
+                    </span>
+                  </label>
+                </div>
+
+                <div className="border-t border-line my-8"></div>
+
+                {/* Certifications et diplômes */}
+                <div className="mb-6">
+                  <h3 className="font-semibold mb-2 text-lg">
+                    <i className="ph-bold ph-certificate text-purple mr-2"></i>
+                    Certifications et Diplômes
+                    <span className="text-secondary font-normal ml-2 text-sm">(Optionnel)</span>
+                  </h3>
+                  <p className="text-sm text-secondary mb-4">
+                    Ajoutez vos certifications et diplômes pour renforcer votre crédibilité.
+                  </p>
+
+                  {/* Formulaire d'ajout */}
+                  <div className="grid md:grid-cols-3 gap-3 mb-4">
+                    <input
+                      type="text"
+                      value={certificationInput.name}
+                      onChange={(e) => setCertificationInput({ ...certificationInput, name: e.target.value })}
+                      className="px-4 py-2 border border-line rounded-lg focus:border-purple focus:outline-none"
+                      placeholder="Nom du diplôme/certification"
+                    />
+                    <input
+                      type="text"
+                      value={certificationInput.issuer}
+                      onChange={(e) => setCertificationInput({ ...certificationInput, issuer: e.target.value })}
+                      className="px-4 py-2 border border-line rounded-lg focus:border-purple focus:outline-none"
+                      placeholder="Organisme émetteur"
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        value={certificationInput.year}
+                        onChange={(e) => setCertificationInput({ ...certificationInput, year: e.target.value })}
+                        className="flex-1 px-4 py-2 border border-line rounded-lg focus:border-purple focus:outline-none"
+                        placeholder="Année"
+                        min="1950"
+                        max={new Date().getFullYear()}
+                      />
+                      <button
+                        type="button"
+                        onClick={addCertification}
+                        className="px-4 py-2 bg-purple text-white rounded-lg hover:bg-opacity-90 transition"
+                        disabled={!certificationInput.name || !certificationInput.issuer || !certificationInput.year}
+                      >
+                        <i className="ph-bold ph-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Liste des certifications */}
+                  {profile.certifications.length > 0 && (
+                    <div className="space-y-3">
+                      {profile.certifications.map((cert, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-4 bg-surface rounded-lg border border-line"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-full bg-purple bg-opacity-10 flex items-center justify-center flex-shrink-0">
+                              <i className="ph-bold ph-certificate text-purple text-xl"></i>
+                            </div>
+                            <div>
+                              <p className="font-semibold">{cert.name}</p>
+                              <p className="text-sm text-secondary">
+                                {cert.issuer} • {cert.year}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeCertification(index)}
+                            className="text-red hover:bg-red hover:bg-opacity-10 p-2 rounded-lg transition"
+                          >
+                            <i className="ph-bold ph-trash"></i>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Boutons */}

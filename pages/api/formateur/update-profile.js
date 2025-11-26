@@ -34,7 +34,10 @@ export default async function handler(req, res) {
     instagram,
     twitter,
     facebook,
-    linkedin
+    linkedin,
+    presentationVideoUrl,
+    showPresentationVideo,
+    certifications
   } = req.body;
 
   // Validation
@@ -79,6 +82,19 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Forme d\'avatar non valide' });
   }
 
+  // Validation vidéo YouTube
+  if (presentationVideoUrl && presentationVideoUrl.trim()) {
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+    if (!youtubeRegex.test(presentationVideoUrl)) {
+      return res.status(400).json({ message: 'URL YouTube non valide' });
+    }
+  }
+
+  // Validation certifications
+  if (certifications && !Array.isArray(certifications)) {
+    return res.status(400).json({ message: 'Le format des certifications est invalide' });
+  }
+
   try {
     await query(
       `UPDATE users
@@ -94,8 +110,11 @@ export default async function handler(req, res) {
            twitter = $10,
            facebook = $11,
            linkedin = $12,
+           presentation_video_url = $13,
+           show_presentation_video = $14,
+           certifications = $15,
            updated_at = NOW()
-       WHERE id = $13`,
+       WHERE id = $16`,
       [
         firstName?.trim() || null,
         lastName?.trim() || null,
@@ -109,6 +128,9 @@ export default async function handler(req, res) {
         twitter?.trim() || null,
         facebook?.trim() || null,
         linkedin?.trim() || null,
+        presentationVideoUrl?.trim() || null,
+        showPresentationVideo || false,
+        JSON.stringify(certifications || []),
         user.id
       ]
     );
