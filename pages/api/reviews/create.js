@@ -7,17 +7,18 @@
  */
 
 import { query } from '../../../lib/db';
-import { getSession } from 'next-auth/react';
+import { requireAuth } from '../../../lib/auth';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getSession({ req });
-
-  if (!session?.user?.id) {
-    return res.status(401).json({ message: 'Non authentifié' });
+  let user;
+  try {
+    user = await requireAuth(req);
+  } catch (error) {
+    return res.status(401).json({ message: error.message });
   }
 
   const { formationId, rating, comment } = req.body;
@@ -41,7 +42,7 @@ export default async function handler(req, res) {
       `SELECT id FROM purchases
        WHERE buyer_id = $1 AND formation_id = $2
        LIMIT 1`,
-      [session.user.id, formationId]
+      [user.id, formationId]
     );
 
     if (purchaseCheck.rows.length === 0) {
@@ -55,7 +56,7 @@ export default async function handler(req, res) {
       `SELECT id FROM reviews
        WHERE buyer_id = $1 AND formation_id = $2
        LIMIT 1`,
-      [session.user.id, formationId]
+      [user.id, formationId]
     );
 
     if (existingReview.rows.length > 0) {
@@ -68,7 +69,7 @@ export default async function handler(req, res) {
     await query(
       `INSERT INTO reviews (formation_id, buyer_id, rating, comment, created_at)
        VALUES ($1, $2, $3, $4, NOW())`,
-      [formationId, session.user.id, rating, comment.trim()]
+      [formationId, user.id, rating, comment.trim()]
     );
 
     // Mettre à jour les statistiques de la formation

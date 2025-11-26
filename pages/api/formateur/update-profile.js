@@ -7,30 +7,27 @@
  */
 
 import { query } from '../../../lib/db';
-import { getSession } from 'next-auth/react';
+import { requireRole } from '../../../lib/auth';
 
 export default async function handler(req, res) {
   if (req.method !== 'PUT') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getSession({ req });
-
-  if (!session?.user?.id) {
-    return res.status(401).json({ message: 'Non authentifié' });
-  }
-
-  // Vérifier que l'utilisateur est formateur
-  const userCheck = await query(
-    `SELECT roles FROM users WHERE id = $1`,
-    [session.user.id]
-  );
-
-  if (userCheck.rows.length === 0 || !userCheck.rows[0].roles.includes('formateur')) {
-    return res.status(403).json({ message: 'Accès non autorisé' });
+  let user;
+  try {
+    // Vérifier que l'utilisateur est authentifié et formateur
+    user = await requireRole(req, 'formateur');
+  } catch (error) {
+    return res.status(401).json({ message: error.message });
   }
 
   const {
+    firstName,
+    lastName,
+    avatarColor,
+    avatarShape,
+    avatarUrl,
     bio,
     competences,
     website,
@@ -61,19 +58,50 @@ export default async function handler(req, res) {
     }
   }
 
+  // Validation du nom et prénom
+  if (firstName && (firstName.length < 2 || firstName.length > 50)) {
+    return res.status(400).json({ message: 'Le prénom doit contenir entre 2 et 50 caractères' });
+  }
+
+  if (lastName && (lastName.length < 2 || lastName.length > 50)) {
+    return res.status(400).json({ message: 'Le nom doit contenir entre 2 et 50 caractères' });
+  }
+
+  // Validation avatar color
+  const validColors = ['purple', 'blue', 'green', 'red', 'orange', 'pink', 'yellow', 'indigo', 'teal'];
+  if (avatarColor && !validColors.includes(avatarColor)) {
+    return res.status(400).json({ message: 'Couleur d\'avatar non valide' });
+  }
+
+  // Validation avatar shape
+  const validShapes = ['circle', 'square', 'hexagon'];
+  if (avatarShape && !validShapes.includes(avatarShape)) {
+    return res.status(400).json({ message: 'Forme d\'avatar non valide' });
+  }
+
   try {
     await query(
       `UPDATE users
-       SET bio = $1,
-           competences = $2,
-           website = $3,
-           instagram = $4,
-           twitter = $5,
-           facebook = $6,
-           linkedin = $7,
+       SET first_name = COALESCE($1, first_name),
+           last_name = COALESCE($2, last_name),
+           avatar_url = COALESCE($3, avatar_url),
+           avatar_color = COALESCE($4, avatar_color),
+           avatar_shape = COALESCE($5, avatar_shape),
+           bio = $6,
+           competences = $7,
+           website = $8,
+           instagram = $9,
+           twitter = $10,
+           facebook = $11,
+           linkedin = $12,
            updated_at = NOW()
-       WHERE id = $8`,
+       WHERE id = $13`,
       [
+        firstName?.trim() || null,
+        lastName?.trim() || null,
+        avatarUrl?.trim() || null,
+        avatarColor || null,
+        avatarShape || null,
         bio?.trim() || null,
         competences || [],
         website?.trim() || null,
@@ -81,7 +109,7 @@ export default async function handler(req, res) {
         twitter?.trim() || null,
         facebook?.trim() || null,
         linkedin?.trim() || null,
-        session.user.id
+        user.id
       ]
     );
 

@@ -7,16 +7,16 @@
  */
 
 import { query } from '../../../lib/db';
-import { getSession } from 'next-auth/react';
+import { getCurrentUser } from '../../../lib/auth';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getSession({ req });
+  const user = await getCurrentUser(req);
 
-  if (!session?.user?.id) {
+  if (!user) {
     return res.status(200).json({ hasPurchased: false });
   }
 
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       `SELECT id FROM purchases
        WHERE buyer_id = $1 AND formation_id = $2
        LIMIT 1`,
-      [session.user.id, formationId]
+      [user.id, formationId]
     );
 
     return res.status(200).json({

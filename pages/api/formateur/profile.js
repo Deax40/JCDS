@@ -7,16 +7,16 @@
  */
 
 import { query } from '../../../lib/db';
-import { getSession } from 'next-auth/react';
+import { getCurrentUser } from '../../../lib/auth';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getSession({ req });
+  const user = await getCurrentUser(req);
 
-  if (!session?.user?.id) {
+  if (!user) {
     return res.status(401).json({ message: 'Non authentifié' });
   }
 
@@ -29,6 +29,8 @@ export default async function handler(req, res) {
         pseudo,
         email,
         avatar_url,
+        avatar_color,
+        avatar_shape,
         bio,
         competences,
         website,
@@ -38,31 +40,33 @@ export default async function handler(req, res) {
         linkedin
       FROM users
       WHERE id = $1`,
-      [session.user.id]
+      [user.id]
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    const user = result.rows[0];
+    const userData = result.rows[0];
 
     return res.status(200).json({
       profile: {
-        id: user.id,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        pseudo: user.pseudo,
-        email: user.email,
-        avatar: user.avatar_url,
-        bio: user.bio,
-        competences: user.competences || [],
-        website: user.website,
+        id: userData.id,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        pseudo: userData.pseudo,
+        email: userData.email,
+        avatar: userData.avatar_url,
+        avatarColor: userData.avatar_color || 'purple',
+        avatarShape: userData.avatar_shape || 'circle',
+        bio: userData.bio,
+        competences: userData.competences || [],
+        website: userData.website,
         socials: {
-          instagram: user.instagram,
-          twitter: user.twitter,
-          facebook: user.facebook,
-          linkedin: user.linkedin,
+          instagram: userData.instagram,
+          twitter: userData.twitter,
+          facebook: userData.facebook,
+          linkedin: userData.linkedin,
         },
       },
     });
