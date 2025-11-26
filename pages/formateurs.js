@@ -3,10 +3,30 @@ import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import SearchBar from '../components/SearchBar';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function FormateursPage() {
-  // Formateurs d'exemple (vide pour l'instant)
-  const formateurs = [];
+  const [formateurs, setFormateurs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadFormateurs();
+  }, []);
+
+  const loadFormateurs = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/formateurs/all');
+      if (response.ok) {
+        const data = await response.json();
+        setFormateurs(data.formateurs || []);
+      }
+    } catch (error) {
+      console.error('Error loading formateurs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -36,9 +56,15 @@ export default function FormateursPage() {
         </div>
 
         {/* Liste des formateurs */}
-        <div className="formateurs-section md:py-20 py-12">
+        <div className="formateurs-section md:py-20 py-12 bg-surface min-h-screen">
           <div className="container">
-            {formateurs.length === 0 ? (
+            {loading ? (
+              // État de chargement
+              <div className="text-center py-20">
+                <i className="ph ph-circle-notch animate-spin text-purple text-6xl mb-4"></i>
+                <p className="text-secondary">Chargement des formateurs...</p>
+              </div>
+            ) : formateurs.length === 0 ? (
               // État vide
               <div className="text-center py-20">
                 <div className="max-w-lg mx-auto">
@@ -62,9 +88,74 @@ export default function FormateursPage() {
             ) : (
               // Grid des formateurs
               <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-8">
-                {formateurs.map((formateur, index) => (
-                  <div key={index} className="formateur-card bg-white rounded-3xl p-8 text-center shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                    {/* Card contenu à venir */}
+                {formateurs.map((formateur) => (
+                  <div key={formateur.id} className="formateur-card bg-white rounded-2xl p-6 text-center shadow hover:shadow-lg transition-all duration-300">
+                    {/* Avatar */}
+                    <div className="mb-4">
+                      {formateur.avatar ? (
+                        <img
+                          src={formateur.avatar}
+                          alt={formateur.pseudo}
+                          className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-surface"
+                        />
+                      ) : (
+                        <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-purple to-blue flex items-center justify-center text-white text-3xl font-bold">
+                          {formateur.firstName?.charAt(0)}{formateur.lastName?.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <h3 className="heading6 mb-1">{formateur.pseudo}</h3>
+                    <p className="text-sm text-secondary mb-4">
+                      {formateur.firstName} {formateur.lastName}
+                    </p>
+
+                    {/* Bio */}
+                    {formateur.bio && (
+                      <p className="text-sm text-secondary mb-4 line-clamp-2">
+                        {formateur.bio}
+                      </p>
+                    )}
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-surface rounded-lg p-3">
+                        <p className="text-xs text-secondary mb-1">Formations</p>
+                        <p className="font-bold text-purple">{formateur.stats.totalFormations}</p>
+                      </div>
+                      <div className="bg-surface rounded-lg p-3">
+                        <p className="text-xs text-secondary mb-1">Étudiants</p>
+                        <p className="font-bold text-blue">{formateur.stats.totalStudents}</p>
+                      </div>
+                    </div>
+
+                    {/* Rating */}
+                    {formateur.stats.globalRating > 0 && (
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <i
+                              key={i}
+                              className={`ph-fill ph-star text-sm ${
+                                i < Math.round(formateur.stats.globalRating) ? 'text-yellow' : 'text-surface'
+                              }`}
+                            ></i>
+                          ))}
+                        </div>
+                        <span className="text-sm text-secondary">
+                          ({formateur.stats.totalReviews} avis)
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Bouton */}
+                    <Link
+                      href={`/formateur/${formateur.id}`}
+                      className="block w-full px-4 py-2 bg-purple bg-opacity-10 text-purple rounded-lg hover:bg-opacity-20 transition font-semibold text-sm"
+                    >
+                      Voir le profil
+                    </Link>
                   </div>
                 ))}
               </div>
