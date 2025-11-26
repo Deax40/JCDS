@@ -77,7 +77,7 @@ export default async function handler(req, res) {
   }
 
   // Validation avatar shape
-  const validShapes = ['circle', 'square', 'hexagon'];
+  const validShapes = ['circle', 'square'];
   if (avatarShape && !validShapes.includes(avatarShape)) {
     return res.status(400).json({ message: 'Forme d\'avatar non valide' });
   }

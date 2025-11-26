@@ -2,6 +2,7 @@ import Head from 'next/head';
 import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import SearchBar from '../components/SearchBar';
+import UserAvatar from '../components/UserAvatar';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
@@ -91,18 +92,19 @@ export default function FormateursPage() {
                 {formateurs.map((formateur) => (
                   <div key={formateur.id} className="formateur-card bg-white rounded-2xl p-6 text-center shadow hover:shadow-lg transition-all duration-300">
                     {/* Avatar */}
-                    <div className="mb-4">
-                      {formateur.avatar ? (
-                        <img
-                          src={formateur.avatar}
-                          alt={formateur.pseudo}
-                          className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-surface"
-                        />
-                      ) : (
-                        <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-purple to-blue flex items-center justify-center text-white text-3xl font-bold">
-                          {formateur.firstName?.charAt(0)}{formateur.lastName?.charAt(0)}
-                        </div>
-                      )}
+                    <div className="mb-4 flex justify-center">
+                      <UserAvatar
+                        user={{
+                          firstName: formateur.firstName,
+                          lastName: formateur.lastName,
+                          pseudo: formateur.pseudo,
+                          avatar: formateur.avatar,
+                          avatarColor: formateur.avatarColor,
+                          avatarShape: formateur.avatarShape
+                        }}
+                        size="xl"
+                        className="border-4 border-surface"
+                      />
                     </div>
 
                     {/* Info */}

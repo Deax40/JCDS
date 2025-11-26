@@ -23,6 +23,8 @@ export default async function handler(req, res) {
         u.pseudo,
         u.email,
         u.avatar_url,
+        u.avatar_color,
+        u.avatar_shape,
         u.bio,
         u.created_at,
         COUNT(DISTINCT f.id) as total_formations,
@@ -32,7 +34,7 @@ export default async function handler(req, res) {
       FROM users u
       LEFT JOIN formations f ON u.id = f.seller_id AND f.is_published = TRUE
       WHERE 'formateur' = ANY(u.roles)
-      GROUP BY u.id, u.first_name, u.last_name, u.pseudo, u.email, u.avatar_url, u.bio, u.created_at
+      GROUP BY u.id, u.first_name, u.last_name, u.pseudo, u.email, u.avatar_url, u.avatar_color, u.avatar_shape, u.bio, u.created_at
       ORDER BY total_formations DESC, total_students DESC`,
       []
     );
@@ -43,6 +45,8 @@ export default async function handler(req, res) {
       lastName: f.last_name,
       pseudo: f.pseudo,
       avatar: f.avatar_url,
+      avatarColor: f.avatar_color || 'purple',
+      avatarShape: f.avatar_shape || 'circle',
       bio: f.bio,
       memberSince: f.created_at,
       stats: {

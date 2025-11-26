@@ -8,13 +8,12 @@ export default function AvatarPicker({ currentColor, currentShape, onColorChange
     { name: 'pink', class: 'from-pink to-rose', label: 'Rose' },
     { name: 'yellow', class: 'from-yellow to-orange', label: 'Jaune' },
     { name: 'indigo', class: 'from-indigo to-purple', label: 'Indigo' },
-    { name: 'teal', class: 'from-teal to-green', label: 'Turquoise' },
+    { name: 'teal', class: 'from-teal-500 to-emerald-500', label: 'Turquoise' },
   ];
 
   const shapes = [
     { name: 'circle', label: 'Rond', className: 'rounded-full' },
     { name: 'square', label: 'Carré', className: 'rounded-2xl' },
-    { name: 'hexagon', label: 'Hexagone', className: 'rounded-2xl' }, // Approximation
   ];
 
   const getShapeClass = (shape) => {
