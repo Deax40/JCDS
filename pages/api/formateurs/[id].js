@@ -105,6 +105,8 @@ export default async function handler(req, res) {
         ? formationsResult.rows.reduce((sum, f) => sum + (parseFloat(f.average_rating) || 0), 0) / formationsResult.rows.length
         : 0,
       totalReviews: reviewsResult.rows.length,
+      followersCount: formateur.followers_count || 0,
+      followingCount: formateur.following_count || 0,
     };
 
     return res.status(200).json({

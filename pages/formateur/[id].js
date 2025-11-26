@@ -5,7 +5,7 @@ import UserAvatar from '../../components/UserAvatar';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function FormateurProfilePage() {
   const router = useRouter();
@@ -18,6 +18,11 @@ export default function FormateurProfilePage() {
   const [loading, setLoading] = useState(true);
   const [canReview, setCanReview] = useState(false);
 
+  // Subscription state
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [togglingFollow, setTogglingFollow] = useState(false);
+
   // Review form state
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState('');
@@ -28,8 +33,11 @@ export default function FormateurProfilePage() {
   useEffect(() => {
     if (id) {
       loadFormateurProfile();
+      if (user && user.id !== parseInt(id)) {
+        checkFollowingStatus();
+      }
     }
-  }, [id]);
+  }, [id, user]);
 
   const loadFormateurProfile = async () => {
     setLoading(true);
@@ -40,6 +48,7 @@ export default function FormateurProfilePage() {
         setFormateur(data.formateur);
         setFormations(data.formations || []);
         setReviews(data.reviews || []);
+        setFollowersCount(data.formateur?.stats?.followersCount || 0);
 
         // Check if current user can leave a review
         if (user && user.id !== parseInt(id)) {
@@ -52,6 +61,48 @@ export default function FormateurProfilePage() {
       console.error('Error loading formateur profile:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkFollowingStatus = async () => {
+    try {
+      const response = await fetch(`/api/subscriptions/check?formateurId=${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setIsFollowing(data.isFollowing);
+      }
+    } catch (error) {
+      console.error('Error checking following status:', error);
+    }
+  };
+
+  const handleToggleFollow = async () => {
+    if (!user) {
+      alert('Veuillez vous connecter pour suivre ce formateur');
+      return;
+    }
+
+    setTogglingFollow(true);
+    try {
+      const response = await fetch('/api/subscriptions/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formateurId: id }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsFollowing(data.isFollowing);
+        setFollowersCount(prev => data.isFollowing ? prev + 1 : prev - 1);
+      } else {
+        alert(data.message || 'Erreur lors de la mise à jour de l\'abonnement');
+      }
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+      alert('Erreur lors de la mise à jour de l\'abonnement');
+    } finally {
+      setTogglingFollow(false);
     }
   };
 
@@ -212,14 +263,32 @@ export default function FormateurProfilePage() {
                     {formateur.firstName} {formateur.lastName}
                   </p>
 
-                  {/* Member since */}
-                  <div className="inline-flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full mb-6">
-                    <i className="ph-bold ph-calendar-check"></i>
-                    <span>Formateur depuis {formatDate(formateur.memberSince)}</span>
+                  {/* Member since & Follow Button */}
+                  <div className="flex flex-wrap items-center gap-3 mb-6 justify-center md:justify-start">
+                    <div className="inline-flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                      <i className="ph-bold ph-calendar-check"></i>
+                      <span>Formateur depuis {formatDate(formateur.memberSince)}</span>
+                    </div>
+
+                    {/* Follow Button - Only show if user is logged in and not viewing own profile */}
+                    {user && user.id !== parseInt(id) && (
+                      <button
+                        onClick={handleToggleFollow}
+                        disabled={togglingFollow}
+                        className={`inline-flex items-center gap-2 px-6 py-2 rounded-full font-semibold transition-all ${
+                          isFollowing
+                            ? 'bg-white text-purple hover:bg-opacity-90'
+                            : 'bg-purple bg-opacity-20 hover:bg-opacity-30 border-2 border-white'
+                        }`}
+                      >
+                        <i className={`ph-bold ${isFollowing ? 'ph-check' : 'ph-plus'}`}></i>
+                        <span>{togglingFollow ? 'Chargement...' : (isFollowing ? 'Abonné' : 'S\'abonner')}</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
                     <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
                       <p className="text-sm opacity-80 mb-1">Formations</p>
                       <p className="text-2xl font-bold">{formateur.stats.totalFormations}</p>
@@ -228,6 +297,13 @@ export default function FormateurProfilePage() {
                       <p className="text-sm opacity-80 mb-1">Étudiants</p>
                       <p className="text-2xl font-bold">{formateur.stats.totalStudents}</p>
                     </div>
+                    <Link
+                      href={`/formateur/${id}/followers`}
+                      className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 hover:bg-opacity-20 transition cursor-pointer"
+                    >
+                      <p className="text-sm opacity-80 mb-1">Abonnés</p>
+                      <p className="text-2xl font-bold">{followersCount}</p>
+                    </Link>
                     <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
                       <p className="text-sm opacity-80 mb-1">Note moyenne</p>
                       <p className="text-2xl font-bold">{formateur.stats.globalRating.toFixed(1)}</p>
