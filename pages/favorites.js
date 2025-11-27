@@ -94,39 +94,48 @@ export default function FavoritesPage() {
                   {favorites.map((favorite) => (
                     <div
                       key={favorite.favoriteId}
-                      className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition"
+                      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group"
                     >
-                      <Link href={`/formation/${favorite.formation.id}`} className="block">
-                        {/* Image placeholder */}
-                        <div className="h-48 bg-gradient-to-br from-purple to-pink flex items-center justify-center">
-                          <i className="ph-bold ph-book-open text-white text-6xl opacity-50"></i>
+                      <Link href={`/formation/${favorite.formation.id}`} className="block relative">
+                        {/* Image placeholder with gradient */}
+                        <div className="h-52 bg-gradient-to-br from-purple via-pink to-orange flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                          <i className="ph-bold ph-book-open text-white text-6xl opacity-40 transform group-hover:scale-110 transition-transform duration-300"></i>
+
+                          {/* Free Badge */}
+                          {favorite.formation.priceTTC === 0 && (
+                            <div className="absolute top-3 left-3 px-3 py-1.5 bg-green text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-lg">
+                              <i className="ph-bold ph-gift"></i>
+                              GRATUIT
+                            </div>
+                          )}
                         </div>
                       </Link>
 
-                      <div className="p-6">
+                      <div className="p-5">
                         {/* Category */}
                         <div className="mb-3">
-                          <span className="inline-block px-3 py-1 bg-purple bg-opacity-10 text-purple text-xs font-semibold rounded-full">
+                          <span className="inline-block px-3 py-1 bg-purple bg-opacity-10 text-purple text-xs font-bold rounded-full uppercase tracking-wide">
                             {favorite.formation.categorySlug}
                           </span>
                         </div>
 
                         {/* Title */}
                         <Link href={`/formation/${favorite.formation.id}`}>
-                          <h3 className="heading6 mb-2 hover:text-purple transition line-clamp-2">
+                          <h3 className="text-lg font-bold mb-3 hover:text-purple transition line-clamp-2 leading-snug">
                             {favorite.formation.title}
                           </h3>
                         </Link>
 
                         {/* Description */}
-                        <p className="text-sm text-secondary mb-4 line-clamp-2">
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
                           {favorite.formation.description}
                         </p>
 
                         {/* Seller */}
                         <Link
                           href={`/formateur/${favorite.formation.seller.id}`}
-                          className="flex items-center gap-2 mb-4 hover:text-purple transition"
+                          className="flex items-center gap-2.5 mb-4 hover:text-purple transition group/seller"
                         >
                           <UserAvatar
                             user={{
@@ -139,19 +148,19 @@ export default function FavoritesPage() {
                             }}
                             size="sm"
                           />
-                          <span className="text-sm font-semibold">
+                          <span className="text-sm font-semibold group-hover/seller:underline">
                             {favorite.formation.seller.pseudo}
                           </span>
                         </Link>
 
                         {/* Rating */}
                         {favorite.formation.averageRating > 0 && (
-                          <div className="flex items-center gap-2 mb-4">
+                          <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-100">
                             <div className="flex">
                               {[...Array(5)].map((_, i) => (
                                 <i
                                   key={i}
-                                  className={`ph-fill ph-star text-sm ${
+                                  className={`ph-fill ph-star text-base ${
                                     i < Math.round(favorite.formation.averageRating)
                                       ? 'text-yellow'
                                       : 'text-gray-300'
@@ -159,26 +168,27 @@ export default function FavoritesPage() {
                                 ></i>
                               ))}
                             </div>
-                            <span className="text-sm text-secondary">
+                            <span className="text-sm font-semibold text-gray-700">
                               {favorite.formation.averageRating.toFixed(1)}
                             </span>
                           </div>
                         )}
 
-                        {/* Price & Actions */}
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            {favorite.formation.priceTTC === 0 ? (
-                              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green bg-opacity-10 text-green rounded-lg font-bold">
-                                <i className="ph-bold ph-gift"></i>
-                                GRATUIT
-                              </div>
-                            ) : (
-                              <p className="text-2xl font-bold text-purple">
-                                {favorite.formation.priceTTC.toFixed(2)} €
-                              </p>
-                            )}
-                          </div>
+                        {/* Price */}
+                        <div className="mb-4">
+                          {favorite.formation.priceTTC === 0 ? (
+                            <div className="text-green font-bold text-xl flex items-center gap-2">
+                              <i className="ph-bold ph-gift text-2xl"></i>
+                              Formation Gratuite
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-3xl font-bold text-purple">
+                                {favorite.formation.priceTTC.toFixed(2)}
+                              </span>
+                              <span className="text-xl font-semibold text-gray-500">€</span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Action Buttons */}

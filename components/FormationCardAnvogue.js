@@ -250,6 +250,69 @@ export default function FormationCardAnvogue({ formation }) {
               </>
             )}
           </div>
+
+          {/* Action Buttons - Always Visible */}
+          <div className="flex items-center gap-2 mt-4">
+            {/* Favorite Button */}
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInWishlist(id)) {
+                  alert('Déjà dans les favoris !');
+                } else {
+                  const result = await addToWishlist(formation);
+                  if (result.success) {
+                    alert('Ajouté aux favoris !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
+                }
+              }}
+              className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${
+                isInWishlist(id)
+                  ? 'bg-red text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-red hover:text-white'
+              }`}
+              title={isInWishlist(id) ? 'Dans les favoris' : 'Ajouter aux favoris'}
+            >
+              <i className={`${isInWishlist(id) ? 'ph-fill' : 'ph'} ph-heart text-xl`}></i>
+            </button>
+
+            {/* Cart Button */}
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInCart(id)) {
+                  router.push('/cart');
+                } else {
+                  const result = await addToCart(formation);
+                  if (result.success) {
+                    alert('Ajouté au panier !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
+                }
+              }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-full font-semibold text-sm transition-all duration-300 ${
+                isInCart(id)
+                  ? 'bg-green bg-opacity-10 text-green hover:bg-opacity-20'
+                  : 'bg-purple text-white hover:bg-opacity-90'
+              }`}
+            >
+              <i className={`ph-bold ${isInCart(id) ? 'ph-check' : 'ph-shopping-cart'} text-lg`}></i>
+              <span>{isInCart(id) ? 'Dans le panier' : 'Ajouter au panier'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
