@@ -77,7 +77,7 @@ export default function FormationCardAnvogue({ formation }) {
           {/* Wishlist Icon */}
           <div className="list-action-icon absolute top-3 right-3 z-[2]">
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (!user) {
                   router.push('/login');
                   return;
@@ -85,8 +85,12 @@ export default function FormationCardAnvogue({ formation }) {
                 if (isInWishlist(id)) {
                   alert('Déjà dans les favoris !');
                 } else {
-                  addToWishlist(formation);
-                  alert('Ajouté aux favoris !');
+                  const result = await addToWishlist(formation);
+                  if (result.success) {
+                    alert('Ajouté aux favoris !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
                 }
               }}
               className={`add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full duration-300 relative group/wishlist ${
@@ -142,7 +146,7 @@ export default function FormationCardAnvogue({ formation }) {
               Voir détails
             </Link>
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (!user) {
                   router.push('/login');
                   return;
@@ -150,8 +154,12 @@ export default function FormationCardAnvogue({ formation }) {
                 if (isInCart(id)) {
                   alert('Déjà dans le panier !');
                 } else {
-                  addToCart(formation);
-                  alert('Ajouté au panier !');
+                  const result = await addToCart(formation);
+                  if (result.success) {
+                    alert('Ajouté au panier !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
                 }
               }}
               className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"

@@ -144,8 +144,6 @@ export default function FormationActions({
     }
   };
 
-  if (!user) return null;
-
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {/* Favorite Button */}
