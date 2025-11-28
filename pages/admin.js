@@ -378,6 +378,13 @@ export default function Admin() {
   // Stats tab
   const [stats, setStats] = useState(null);
 
+  // Messages tab
+  const [supportConversations, setSupportConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
   const ADMIN_USERNAME = 'admin';
   const ADMIN_PASSWORD = 'admin123';
 
@@ -417,9 +424,61 @@ export default function Admin() {
         if (response.ok) {
           setStats(data);
         }
+      } else if (activeTab === 'messages') {
+        const response = await fetch('/api/admin/support-conversations');
+        const data = await response.json();
+        if (response.ok) {
+          setSupportConversations(data.conversations);
+        }
       }
     } catch (error) {
       console.error('Error loading data:', error);
+    }
+  };
+
+  const loadConversationMessages = async (conversationId) => {
+    try {
+      const response = await fetch('/api/messages/support');
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages(data.messages);
+        setSelectedConversation(conversationId);
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
+
+  const sendAdminMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || sending || !selectedConversation) return;
+
+    setSending(true);
+    try {
+      const response = await fetch('/api/messages/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: selectedConversation,
+          message: newMessage.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages([...messages, data.message]);
+        setNewMessage('');
+        loadData(); // Refresh conversations list
+      } else {
+        alert(data.message || 'Erreur lors de l\'envoi');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Erreur lors de l\'envoi du message');
+    } finally {
+      setSending(false);
     }
   };
 
@@ -623,6 +682,17 @@ export default function Admin() {
               >
                 <i className="ph-bold ph-chart-line mr-2"></i>
                 Statistiques
+              </button>
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`px-6 py-3 font-medium transition ${
+                  activeTab === 'messages'
+                    ? 'border-b-2 border-purple text-purple'
+                    : 'text-secondary hover:text-main'
+                }`}
+              >
+                <i className="ph-bold ph-chats mr-2"></i>
+                Messages Support
               </button>
             </div>
           </div>
@@ -990,6 +1060,152 @@ export default function Admin() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Messages Tab */}
+          {activeTab === 'messages' && (
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="grid md:grid-cols-3 h-[700px]">
+                {/* Conversations List */}
+                <div className="border-r border-line overflow-y-auto">
+                  <div className="p-4 border-b border-line bg-surface">
+                    <h3 className="heading6">Conversations Support ({supportConversations.length})</h3>
+                  </div>
+
+                  {supportConversations.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center p-8 text-center">
+                      <i className="ph-bold ph-chat-text text-6xl text-secondary mb-4"></i>
+                      <p className="text-secondary">Aucune conversation support</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-line">
+                      {supportConversations.map((conv) => (
+                        <button
+                          key={conv.conversationId}
+                          onClick={() => loadConversationMessages(conv.conversationId)}
+                          className={`w-full p-4 text-left hover:bg-surface transition ${
+                            selectedConversation === conv.conversationId
+                              ? 'bg-purple bg-opacity-5'
+                              : ''
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-full bg-purple bg-opacity-10 flex items-center justify-center flex-shrink-0">
+                              <i className="ph-bold ph-user text-purple"></i>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="font-semibold truncate">
+                                  {conv.user.prenom} {conv.user.nom}
+                                </p>
+                                {conv.unreadCount > 0 && (
+                                  <span className="w-5 h-5 bg-red text-white text-xs rounded-full flex items-center justify-center flex-shrink-0">
+                                    {conv.unreadCount}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-secondary mb-1">@{conv.user.pseudo}</p>
+                              <p className="text-xs text-secondary truncate">{conv.lastMessage}</p>
+                              <p className="text-xs text-secondary mt-1">
+                                {new Date(conv.lastMessageAt).toLocaleDateString('fr-FR')}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Messages Area */}
+                <div className="md:col-span-2 flex flex-col">
+                  {!selectedConversation ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                      <i className="ph-bold ph-chats text-8xl text-secondary mb-4"></i>
+                      <p className="text-secondary">Sélectionnez une conversation pour répondre</p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Conversation Header */}
+                      <div className="p-4 border-b border-line bg-surface">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-purple bg-opacity-10 flex items-center justify-center">
+                            <i className="ph-bold ph-user text-purple"></i>
+                          </div>
+                          <div>
+                            <p className="font-semibold">
+                              {supportConversations.find(c => c.conversationId === selectedConversation)?.user.prenom}{' '}
+                              {supportConversations.find(c => c.conversationId === selectedConversation)?.user.nom}
+                            </p>
+                            <p className="text-xs text-secondary">
+                              {supportConversations.find(c => c.conversationId === selectedConversation)?.user.email}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Messages */}
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {messages.map((msg, index) => (
+                          <div
+                            key={msg.id || index}
+                            className={`flex ${msg.isFromUser ? 'justify-start' : 'justify-end'}`}
+                          >
+                            <div
+                              className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                                msg.isFromUser
+                                  ? 'bg-surface text-main rounded-bl-none'
+                                  : 'bg-gradient-to-r from-purple to-blue text-white rounded-br-none'
+                              }`}
+                            >
+                              <p className="text-xs opacity-80 mb-1 font-semibold">
+                                {msg.isFromUser ? 'Utilisateur' : 'Support FormationPlace'}
+                              </p>
+                              <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                              <p
+                                className={`text-xs mt-1 ${
+                                  msg.isFromUser ? 'text-secondary' : 'text-white text-opacity-70'
+                                }`}
+                              >
+                                {new Date(msg.createdAt).toLocaleTimeString('fr-FR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Message Input */}
+                      <form onSubmit={sendAdminMessage} className="p-4 border-t border-line">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            placeholder="Votre réponse..."
+                            className="flex-1 px-4 py-3 border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-purple"
+                            disabled={sending}
+                          />
+                          <button
+                            type="submit"
+                            disabled={!newMessage.trim() || sending}
+                            className="px-6 py-3 bg-purple text-white rounded-xl hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {sending ? (
+                              <i className="ph ph-circle-notch animate-spin"></i>
+                            ) : (
+                              <i className="ph-bold ph-paper-plane-right"></i>
+                            )}
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

@@ -228,6 +228,27 @@ export default function FormateurDashboard() {
                   </div>
                 </div>
 
+                {/* Bouton Messages */}
+                <Link
+                  href="/formateur/messages"
+                  className="block bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-lg bg-blue bg-opacity-10 flex items-center justify-center">
+                        <i className="ph-bold ph-chats text-blue text-2xl"></i>
+                      </div>
+                      <div>
+                        <h3 className="heading6 text-main">Messagerie</h3>
+                        <p className="text-sm text-secondary">
+                          Conversations avec vos acheteurs
+                        </p>
+                      </div>
+                    </div>
+                    <i className="ph-bold ph-arrow-right text-2xl text-secondary"></i>
+                  </div>
+                </Link>
+
                 {/* Liste des formations */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <div className="flex items-center justify-between mb-6">
