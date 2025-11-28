@@ -34,17 +34,17 @@ export default async function handler(req, res) {
         f.formation_type,
         f.price_ttc,
         f.price_net,
-        f.total_sales,
-        f.average_rating,
-        f.total_reviews,
+        f.quantity_sold,
         f.created_at,
         u.id as seller_id,
-        u.first_name as seller_first_name,
-        u.last_name as seller_last_name,
+        u.prenom as seller_prenom,
+        u.nom as seller_nom,
         u.pseudo as seller_pseudo,
-        u.avatar_url as seller_avatar
+        COALESCE(AVG(r.rating), 0) as average_rating,
+        COUNT(r.id) as total_reviews
       FROM formations f
       JOIN users u ON f.seller_id = u.id
+      LEFT JOIN reviews r ON f.id = r.formation_id
       WHERE f.is_published = TRUE AND f.is_active = TRUE
     `;
 
@@ -63,13 +63,16 @@ export default async function handler(req, res) {
       sqlQuery += ` AND f.created_at >= NOW() - INTERVAL '7 days'`;
     }
 
+    // GROUP BY pour l'agrégation
+    sqlQuery += ` GROUP BY f.id, u.id`;
+
     // Tri
     switch (sortBy) {
       case 'popular':
-        sqlQuery += ' ORDER BY f.total_sales DESC';
+        sqlQuery += ' ORDER BY f.quantity_sold DESC';
         break;
       case 'rating':
-        sqlQuery += ' ORDER BY f.average_rating DESC, f.total_reviews DESC';
+        sqlQuery += ' ORDER BY average_rating DESC, total_reviews DESC';
         break;
       case 'price_asc':
         sqlQuery += ' ORDER BY f.price_ttc ASC';
@@ -89,36 +92,30 @@ export default async function handler(req, res) {
 
     const result = await query(sqlQuery, params);
 
-    // Formater les formations
+    // Formater les formations pour le frontend (format compatible FormationCardAnvogue)
     const formations = result.rows.map(f => {
-      const category = getCategoryBySlug(f.category_slug);
+      const categoryData = getCategoryBySlug(f.category_slug);
 
       return {
         id: f.id,
         title: f.title,
         description: f.description,
-        category: {
-          slug: f.category_slug,
-          name: category?.name || f.category_slug,
-          gradient: category?.gradient || 'from-gray-500 to-gray-700',
-          icon: category?.icon || 'ph-book',
-        },
+        category_name: categoryData?.name || f.category_slug,
+        category_slug: f.category_slug,
         tags: f.tags || [],
-        type: f.formation_type,
-        priceTTC: parseFloat(f.price_ttc),
-        priceNet: parseFloat(f.price_net),
-        totalSales: f.total_sales,
-        averageRating: parseFloat(f.average_rating) || 0,
-        totalReviews: f.total_reviews,
-        createdAt: f.created_at,
-        isNew: new Date() - new Date(f.created_at) < 7 * 24 * 60 * 60 * 1000, // Moins de 7 jours
-        seller: {
-          id: f.seller_id,
-          firstName: f.seller_first_name,
-          lastName: f.seller_last_name,
-          pseudo: f.seller_pseudo,
-          avatar: f.seller_avatar,
-        },
+        formation_type: f.formation_type,
+        price: parseFloat(f.price_ttc),
+        promo_price: null,
+        is_promo_active: false,
+        total_sales: f.quantity_sold || 0,
+        total_capacity: 100,
+        average_rating: parseFloat(f.average_rating) || 0,
+        total_reviews: parseInt(f.total_reviews) || 0,
+        seller_name: f.seller_pseudo || `${f.seller_prenom} ${f.seller_nom}`,
+        seller_id: f.seller_id,
+        level: 'Tous niveaux',
+        is_new: (new Date() - new Date(f.created_at)) < 7 * 24 * 60 * 60 * 1000,
+        created_at: f.created_at,
       };
     });
 

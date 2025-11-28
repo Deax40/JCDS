@@ -6,82 +6,109 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import Link from 'next/link';
 import { getAllCategories } from '../data/categories';
+import { query } from '../lib/db';
 
-export default function HomeAnvogue() {
-  // Sample formations data
-  const formations = [
-    {
-      id: 1,
-      slug: 'formation-react-nextjs',
-      title: 'Maîtrisez React et Next.js - Formation Complète',
-      cover_image_url: '/assets/formations/react.jpg',
-      cover_image_hover: '/assets/formations/react-hover.jpg',
-      price: 89.00,
-      promo_price: 59.00,
-      is_promo_active: true,
-      average_rating: 4.5,
-      seller_name: 'Jean Dupont',
-      category_name: 'Développement Web',
-      total_sales: 45,
-      total_capacity: 100,
-      level: 'Intermédiaire',
-      is_new: false,
-    },
-    {
-      id: 2,
-      slug: 'formation-nodejs-backend',
-      title: 'Node.js et Express - Backend Complet',
-      cover_image_url: '/assets/formations/nodejs.jpg',
-      cover_image_hover: '/assets/formations/nodejs-hover.jpg',
-      price: 79.00,
-      promo_price: null,
-      is_promo_active: false,
-      average_rating: 4.8,
-      seller_name: 'Marie Martin',
-      category_name: 'Développement Web',
-      total_sales: 68,
-      total_capacity: 100,
-      level: 'Avancé',
-      is_new: true,
-    },
-    {
-      id: 3,
-      slug: 'formation-design-ui-ux',
-      title: 'Design UI/UX avec Figma - De Zéro à Expert',
-      cover_image_url: '/assets/formations/design.jpg',
-      cover_image_hover: '/assets/formations/design-hover.jpg',
-      price: 69.00,
-      promo_price: 49.00,
-      is_promo_active: true,
-      average_rating: 4.6,
-      seller_name: 'Sophie Dubois',
-      category_name: 'Design',
-      total_sales: 32,
-      total_capacity: 80,
-      level: 'Débutant',
-      is_new: false,
-    },
-    {
-      id: 4,
-      slug: 'formation-marketing-digital',
-      title: 'Marketing Digital & SEO - Stratégies Gagnantes',
-      cover_image_url: '/assets/formations/marketing.jpg',
-      cover_image_hover: '/assets/formations/marketing-hover.jpg',
-      price: 99.00,
-      promo_price: 79.00,
-      is_promo_active: true,
-      average_rating: 4.7,
-      seller_name: 'Pierre Laurent',
-      category_name: 'Business & Marketing',
-      total_sales: 54,
-      total_capacity: 100,
-      level: 'Intermédiaire',
-      is_new: false,
-    },
-  ];
+export async function getServerSideProps() {
+  try {
+    // Récupérer les formations populaires (les plus vendues)
+    const popularFormations = await query(
+      `SELECT
+        f.id,
+        f.title,
+        f.description,
+        f.category_slug,
+        f.price_ttc,
+        f.quantity_sold,
+        f.created_at,
+        f.formation_type,
+        u.id as seller_id,
+        u.pseudo as seller_name,
+        u.prenom as seller_prenom,
+        u.nom as seller_nom,
+        COALESCE(AVG(r.rating), 0) as average_rating,
+        COUNT(r.id) as total_reviews
+      FROM formations f
+      JOIN users u ON f.seller_id = u.id
+      LEFT JOIN reviews r ON f.id = r.formation_id
+      WHERE f.is_published = TRUE AND f.is_active = TRUE
+      GROUP BY f.id, u.id
+      ORDER BY f.quantity_sold DESC, f.created_at DESC
+      LIMIT 8`,
+      []
+    );
 
-  // Récupérer les vraies données de catégories
-  const categories = getAllCategories();
+    // Récupérer les formations récentes
+    const recentFormations = await query(
+      `SELECT
+        f.id,
+        f.title,
+        f.description,
+        f.category_slug,
+        f.price_ttc,
+        f.quantity_sold,
+        f.created_at,
+        f.formation_type,
+        u.id as seller_id,
+        u.pseudo as seller_name,
+        u.prenom as seller_prenom,
+        u.nom as seller_nom,
+        COALESCE(AVG(r.rating), 0) as average_rating,
+        COUNT(r.id) as total_reviews
+      FROM formations f
+      JOIN users u ON f.seller_id = u.id
+      LEFT JOIN reviews r ON f.id = r.formation_id
+      WHERE f.is_published = TRUE AND f.is_active = TRUE
+      GROUP BY f.id, u.id
+      ORDER BY f.created_at DESC
+      LIMIT 8`,
+      []
+    );
+
+    // Formater les données
+    const formatFormations = (rows) => {
+      return rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        category_name: row.category_slug,
+        price: parseFloat(row.price_ttc),
+        promo_price: null,
+        is_promo_active: false,
+        average_rating: parseFloat(row.average_rating),
+        seller_name: row.seller_name || `${row.seller_prenom} ${row.seller_nom}`,
+        seller_id: row.seller_id,
+        total_sales: row.quantity_sold || 0,
+        total_capacity: 100,
+        level: 'Tous niveaux',
+        is_new: (new Date() - new Date(row.created_at)) < 7 * 24 * 60 * 60 * 1000,
+        formation_type: row.formation_type,
+        total_reviews: parseInt(row.total_reviews) || 0,
+      }));
+    };
+
+    // Récupérer les catégories
+    const categories = getAllCategories();
+
+    return {
+      props: {
+        popularFormations: formatFormations(popularFormations.rows),
+        recentFormations: formatFormations(recentFormations.rows),
+        categories,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching homepage data:', error);
+    return {
+      props: {
+        popularFormations: [],
+        recentFormations: [],
+        categories: getAllCategories(),
+      },
+    };
+  }
+}
+
+export default function HomeAnvogue({ popularFormations, recentFormations, categories }) {
 
   return (
     <>
@@ -221,27 +248,66 @@ export default function HomeAnvogue() {
           </div>
         </div>
 
-        {/* What's New Section with Tabs */}
+        {/* Popular Formations Section */}
         <div className="what-new-block md:pt-28 pt-16 md:pb-16 pb-8">
           <div className="container">
             <div className="heading flex flex-col items-center text-center mb-12">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">Formations Populaires</h2>
-              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Découvrez les formations les plus demandées par notre communauté</p>
+              <div className="flex items-center gap-3 mb-4">
+                <i className="ph-bold ph-fire text-5xl text-orange-500"></i>
+                <h2 className="font-display text-4xl md:text-5xl font-bold">Formations Populaires</h2>
+              </div>
+              <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Les formations les plus demandées et les mieux notées par notre communauté</p>
             </div>
 
-            <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
-              {formations.map((formation) => (
-                <FormationCardAnvogue key={formation.id} formation={formation} />
-              ))}
-            </div>
+            {popularFormations.length === 0 ? (
+              <div className="text-center py-12">
+                <i className="ph-bold ph-books text-9xl text-gray-300 mb-6 block"></i>
+                <p className="text-lg text-secondary">Aucune formation disponible pour le moment</p>
+              </div>
+            ) : (
+              <>
+                <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
+                  {popularFormations.map((formation) => (
+                    <FormationCardAnvogue key={formation.id} formation={formation} />
+                  ))}
+                </div>
 
-            <div className="flex items-center justify-center mt-16">
-              <Link href="/formations" className="button-main text-base px-8 py-4">
-                Voir Toutes les Formations
-              </Link>
-            </div>
+                <div className="flex items-center justify-center mt-16">
+                  <Link href="/formations" className="button-main text-base px-8 py-4">
+                    Voir Toutes les Formations
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
+
+        {/* Recent Formations Section */}
+        {recentFormations.length > 0 && (
+          <div className="recent-block md:pt-16 pt-8 md:pb-28 pb-16 bg-surface">
+            <div className="container">
+              <div className="heading flex flex-col items-center text-center mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <i className="ph-bold ph-sparkle text-5xl text-purple"></i>
+                  <h2 className="font-display text-4xl md:text-5xl font-bold">Nouveautés</h2>
+                </div>
+                <p className="text-base md:text-lg text-secondary leading-relaxed max-w-2xl">Découvrez les dernières formations ajoutées à notre catalogue</p>
+              </div>
+
+              <div className="list-product grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
+                {recentFormations.map((formation) => (
+                  <FormationCardAnvogue key={formation.id} formation={formation} />
+                ))}
+              </div>
+
+              <div className="flex items-center justify-center mt-16">
+                <Link href="/formations" className="button-main text-base px-8 py-4">
+                  Explorer Plus de Formations
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Benefits Section */}
         <div className="benefit-block md:pt-28 pt-16 md:pb-28 pb-16 bg-surface">
