@@ -14,6 +14,7 @@ export default function FormateurDashboard() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [deletingFormation, setDeletingFormation] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -62,6 +63,39 @@ export default function FormateurDashboard() {
       console.error('Error loading data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteFormation = async (formationId, formationTitle) => {
+    const reason = prompt(`Pourquoi souhaitez-vous supprimer "${formationTitle}" ?\n\n(Cette demande sera examinée par un administrateur)`);
+
+    if (!reason || reason.trim() === '') {
+      return; // Annulé ou vide
+    }
+
+    setDeletingFormation(formationId);
+
+    try {
+      const response = await fetch('/api/formateur/request-deletion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formationId, reason }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message || 'Demande de suppression envoyée avec succès');
+        // Recharger les données
+        loadData();
+      } else {
+        alert(data.message || 'Erreur lors de la demande de suppression');
+      }
+    } catch (error) {
+      console.error('Error requesting deletion:', error);
+      alert('Erreur lors de la demande de suppression');
+    } finally {
+      setDeletingFormation(null);
     }
   };
 
@@ -221,9 +255,17 @@ export default function FormateurDashboard() {
                       {formations.map((formation) => (
                         <div
                           key={formation.id}
-                          className="p-4 border border-line rounded-xl hover:shadow-md transition"
+                          className="p-4 border border-line rounded-xl hover:shadow-md transition group relative"
                         >
-                          <div className="flex gap-4">
+                          {/* Badge de suppression en attente */}
+                          {formation.deletionRequested && (
+                            <div className="absolute top-2 right-2 px-3 py-1 bg-orange bg-opacity-10 text-orange text-xs font-bold rounded-full border border-orange border-opacity-20">
+                              <i className="ph-bold ph-hourglass mr-1"></i>
+                              Suppression en attente
+                            </div>
+                          )}
+
+                          <Link href={`/formation/${formation.id}`} className="flex gap-4 cursor-pointer">
                             <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${formation.category.gradient} flex items-center justify-center flex-shrink-0`}>
                               <i className={`ph-bold ${formation.category.icon} text-white text-2xl`}></i>
                             </div>
@@ -231,7 +273,7 @@ export default function FormateurDashboard() {
                             <div className="flex-1">
                               <div className="flex items-start justify-between mb-2">
                                 <div>
-                                  <h3 className="font-semibold mb-1">{formation.title}</h3>
+                                  <h3 className="font-semibold mb-1 group-hover:text-purple transition">{formation.title}</h3>
                                   <p className="text-xs text-secondary">{formation.category.name}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -287,7 +329,27 @@ export default function FormateurDashboard() {
                                 </div>
                               )}
                             </div>
-                          </div>
+                          </Link>
+
+                          {/* Bouton de suppression */}
+                          {!formation.deletionRequested && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleDeleteFormation(formation.id, formation.title);
+                              }}
+                              disabled={deletingFormation === formation.id}
+                              className="absolute bottom-4 right-4 p-2 bg-red bg-opacity-10 text-red rounded-lg hover:bg-opacity-20 transition disabled:opacity-50 group/delete"
+                              title="Demander la suppression"
+                            >
+                              {deletingFormation === formation.id ? (
+                                <i className="ph ph-circle-notch animate-spin text-lg"></i>
+                              ) : (
+                                <i className="ph-bold ph-trash text-lg group-hover/delete:scale-110 transition-transform"></i>
+                              )}
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>
