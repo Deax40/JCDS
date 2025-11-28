@@ -154,8 +154,9 @@ export default function CreateFormation() {
       return;
     }
 
-    if (!formData.priceTTC || formData.priceTTC <= 0) {
-      setError('Veuillez définir un prix valide');
+    // Validation du prix (permettre 0 pour gratuit, mais pas null/undefined)
+    if (formData.priceTTC === null || formData.priceTTC === undefined || formData.priceTTC < 0) {
+      setError('Veuillez définir un prix valide (0 pour gratuit)');
       return;
     }
 
