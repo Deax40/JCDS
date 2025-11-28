@@ -25,7 +25,9 @@ export default function SupportChat({ isOpen, onClose }) {
   const loadMessages = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/messages/support');
+      const response = await fetch('/api/messages/support', {
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -48,6 +50,7 @@ export default function SupportChat({ isOpen, onClose }) {
       const response = await fetch('/api/messages/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ message: newMessage.trim() }),
       });
 

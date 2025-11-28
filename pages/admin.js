@@ -425,7 +425,9 @@ export default function Admin() {
           setStats(data);
         }
       } else if (activeTab === 'messages') {
-        const response = await fetch('/api/admin/support-conversations');
+        const response = await fetch('/api/admin/support-conversations', {
+          credentials: 'include',
+        });
         const data = await response.json();
         if (response.ok) {
           setSupportConversations(data.conversations);
@@ -438,7 +440,9 @@ export default function Admin() {
 
   const loadConversationMessages = async (conversationId) => {
     try {
-      const response = await fetch('/api/messages/support');
+      const response = await fetch('/api/messages/support', {
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -459,6 +463,7 @@ export default function Admin() {
       const response = await fetch('/api/messages/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           conversationId: selectedConversation,
           message: newMessage.trim(),

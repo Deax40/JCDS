@@ -42,7 +42,9 @@ export default function FormateurMessages() {
   const loadConversations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/formateur/conversations');
+      const response = await fetch('/api/formateur/conversations', {
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -57,7 +59,9 @@ export default function FormateurMessages() {
 
   const loadMessages = async (conversationId, formationId) => {
     try {
-      const response = await fetch(`/api/messages/formation?formationId=${formationId}`);
+      const response = await fetch(`/api/messages/formation?formationId=${formationId}`, {
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -82,6 +86,7 @@ export default function FormateurMessages() {
       const response = await fetch('/api/messages/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           conversationId: selectedConversation.conversationId,
           message: newMessage.trim(),
