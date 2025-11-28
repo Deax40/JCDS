@@ -21,13 +21,19 @@ function AppContent({ Component, pageProps }) {
       {/* Bouton flottant de support (seulement si connecté et pas sur page admin) */}
       {user && !isAdminPage && (
         <>
-          <button
-            onClick={() => setIsSupportOpen(true)}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple to-blue text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center z-40"
-            title="Contacter le support"
-          >
-            <i className="ph-bold ph-headset text-2xl"></i>
-          </button>
+          <div className="fixed bottom-6 right-6 z-40">
+            <button
+              onClick={() => setIsSupportOpen(true)}
+              className="relative w-16 h-16 bg-gradient-to-r from-purple to-blue text-white rounded-full shadow-lg hover:shadow-2xl transition-all hover:scale-110 flex flex-col items-center justify-center group animate-bounce-slow"
+              title="Contacter FormationPlace"
+            >
+              <i className="ph-bold ph-headset text-2xl mb-0.5"></i>
+              <span className="text-[10px] font-semibold">Support</span>
+
+              {/* Pulse animation ring */}
+              <span className="absolute inset-0 rounded-full bg-purple animate-ping opacity-20"></span>
+            </button>
+          </div>
 
           <SupportChat isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
         </>
