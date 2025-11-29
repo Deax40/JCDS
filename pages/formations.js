@@ -3,18 +3,38 @@ import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import SearchBar from '../components/SearchBar';
 import FormationCardAnvogue from '../components/FormationCardAnvogue';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllCategories } from '../data/categories';
 import Link from 'next/link';
 
 export default function FormationsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('recent');
+  const [formations, setFormations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = getAllCategories();
 
-  // Formations d'exemple (vide pour l'instant)
-  const formations = [];
+  useEffect(() => {
+    loadFormations();
+  }, [selectedCategory, sortBy]);
+
+  const loadFormations = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/api/formations/all?category=${selectedCategory}&sortBy=${sortBy}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setFormations(data.formations || []);
+      }
+    } catch (error) {
+      console.error('Error loading formations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -91,18 +111,26 @@ export default function FormationsPage() {
         </div>
 
         {/* Liste des formations */}
-        <div className="formations-section md:py-20 py-12">
+        <div className="formations-section md:py-20 py-12 bg-surface min-h-screen">
           <div className="container">
-            {formations.length === 0 ? (
+            {loading ? (
+              // État de chargement
+              <div className="text-center py-20">
+                <i className="ph ph-circle-notch animate-spin text-purple text-6xl mb-4"></i>
+                <p className="text-secondary">Chargement des formations...</p>
+              </div>
+            ) : formations.length === 0 ? (
               // État vide
               <div className="text-center py-20">
                 <div className="max-w-lg mx-auto">
                   <i className="ph-bold ph-books text-9xl text-gray-300 mb-6 block"></i>
                   <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-                    Aucune formation disponible pour le moment
+                    Aucune formation disponible
                   </h2>
                   <p className="text-lg text-secondary mb-8">
-                    Les formations seront bientôt disponibles. Soyez le premier à publier une formation !
+                    {selectedCategory !== 'all'
+                      ? 'Aucune formation dans cette catégorie pour le moment.'
+                      : 'Les formations seront bientôt disponibles. Soyez le premier à publier une formation !'}
                   </p>
                   <div className="flex gap-4 justify-center">
                     <Link href="/devenir-formateur" className="button-main">
@@ -116,7 +144,7 @@ export default function FormationsPage() {
               </div>
             ) : (
               // Grid des formations
-              <div className="grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
+              <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
                 {formations.map((formation) => (
                   <FormationCardAnvogue key={formation.id} formation={formation} />
                 ))}

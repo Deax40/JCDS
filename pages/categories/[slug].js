@@ -1,14 +1,42 @@
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import HeaderAnvogue from '../../components/HeaderAnvogue';
 import FooterAnvogue from '../../components/FooterAnvogue';
 import SearchBar from '../../components/SearchBar';
 import CategoryBackground from '../../components/CategoryBackground';
+import FormationCardAnvogue from '../../components/FormationCardAnvogue';
 import { getCategoryBySlug, getAllCategories } from '../../data/categories';
 import Link from 'next/link';
 
 export default function CategoryPage({ category }) {
   const router = useRouter();
+  const [formations, setFormations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('recent');
+
+  useEffect(() => {
+    if (category) {
+      loadFormations();
+    }
+  }, [category, sortBy]);
+
+  const loadFormations = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/api/formations/all?category=${category.slug}&sortBy=${sortBy}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setFormations(data.formations || []);
+      }
+    } catch (error) {
+      console.error('Error loading formations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (router.isFallback) {
     return <div>Chargement...</div>;
@@ -56,7 +84,7 @@ export default function CategoryPage({ category }) {
               {category.description}
             </p>
             <p className="text-sm opacity-90">
-              <span className="font-semibold">{category.count}</span> formation{category.count > 1 ? 's' : ''} disponible{category.count > 1 ? 's' : ''}
+              <span className="font-semibold">{formations.length}</span> formation{formations.length > 1 ? 's' : ''} disponible{formations.length > 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -69,9 +97,14 @@ export default function CategoryPage({ category }) {
         </div>
 
         {/* Section des formations */}
-        <div className="formations-section md:py-20 py-12">
+        <div className="formations-section md:py-20 py-12 bg-surface">
           <div className="container">
-            {category.count === 0 ? (
+            {loading ? (
+              <div className="text-center py-20">
+                <i className="ph ph-circle-notch animate-spin text-purple text-6xl mb-4"></i>
+                <p className="text-secondary">Chargement des formations...</p>
+              </div>
+            ) : formations.length === 0 ? (
               // État vide - Aucune formation
               <div className="text-center py-20">
                 <div className="max-w-lg mx-auto">
@@ -100,19 +133,25 @@ export default function CategoryPage({ category }) {
                     Toutes les formations
                   </h2>
                   <div className="flex gap-3">
-                    <select className="px-4 py-2 border border-line rounded-lg focus:border-purple focus:outline-none">
-                      <option>Les plus récentes</option>
-                      <option>Les plus populaires</option>
-                      <option>Mieux notées</option>
-                      <option>Prix croissant</option>
-                      <option>Prix décroissant</option>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="px-4 py-2 border border-line rounded-lg focus:border-purple focus:outline-none"
+                    >
+                      <option value="recent">Les plus récentes</option>
+                      <option value="popular">Les plus populaires</option>
+                      <option value="rating">Mieux notées</option>
+                      <option value="price_asc">Prix croissant</option>
+                      <option value="price_desc">Prix décroissant</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Grid des formations - sera rempli avec FormationCardAnvogue */}
-                <div className="grid xl:grid-cols-4 sm:grid-cols-3 grid-cols-2 md:gap-8 gap-5">
-                  {/* Les formations seront affichées ici */}
+                {/* Grid des formations */}
+                <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
+                  {formations.map((formation) => (
+                    <FormationCardAnvogue key={formation.id} formation={formation} />
+                  ))}
                 </div>
               </div>
             )}

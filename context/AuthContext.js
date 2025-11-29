@@ -12,23 +12,62 @@ export function AuthProvider({ children }) {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Charger le panier depuis l'API
+  const loadCart = async () => {
+    if (!user) {
+      setCart([]);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/cart');
+      if (response.ok) {
+        const data = await response.json();
+        setCart(data.items || []);
+      }
+    } catch (error) {
+      console.error('Error loading cart:', error);
+    }
+  };
+
+  // Charger les favoris depuis l'API
+  const loadWishlist = async () => {
+    if (!user) {
+      setWishlist([]);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/favorites');
+      if (response.ok) {
+        const data = await response.json();
+        setWishlist(data.favorites || []);
+      }
+    } catch (error) {
+      console.error('Error loading wishlist:', error);
+    }
+  };
+
   // Charger les données au démarrage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedCart = localStorage.getItem('cart');
-    const storedWishlist = localStorage.getItem('wishlist');
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
-    if (storedWishlist) {
-      setWishlist(JSON.parse(storedWishlist));
-    }
     setLoading(false);
   }, []);
+
+  // Charger panier et favoris quand l'utilisateur change
+  useEffect(() => {
+    if (user) {
+      loadCart();
+      loadWishlist();
+    } else {
+      setCart([]);
+      setWishlist([]);
+    }
+  }, [user]);
 
   // Inscription
   const register = async (userData) => {
@@ -137,50 +176,112 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Ajouter au panier
-  const addToCart = (formation) => {
-    const newCart = [...cart, { ...formation, addedAt: new Date().toISOString() }];
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+  // Ajouter au panier (via API)
+  const addToCart = async (formation) => {
+    if (!user) {
+      return { success: false, message: 'Veuillez vous connecter' };
+    }
+
+    try {
+      const response = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formationId: formation.id }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Reload cart
+        loadCart();
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      return { success: false, message: 'Erreur lors de l\'ajout au panier' };
+    }
   };
 
-  // Retirer du panier
-  const removeFromCart = (formationId) => {
-    const newCart = cart.filter(item => item.id !== formationId);
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+  // Retirer du panier (via API)
+  const removeFromCart = async (formationId) => {
+    try {
+      const response = await fetch('/api/cart/remove', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formationId }),
+      });
+
+      if (response.ok) {
+        loadCart();
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      return { success: false };
+    }
   };
 
   // Vider le panier
   const clearCart = () => {
     setCart([]);
-    localStorage.removeItem('cart');
   };
 
-  // Ajouter aux favoris
-  const addToWishlist = (formation) => {
-    if (!wishlist.find(item => item.id === formation.id)) {
-      const newWishlist = [...wishlist, { ...formation, addedAt: new Date().toISOString() }];
-      setWishlist(newWishlist);
-      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+  // Ajouter aux favoris (via API)
+  const addToWishlist = async (formation) => {
+    if (!user) {
+      return { success: false, message: 'Veuillez vous connecter' };
+    }
+
+    try {
+      const response = await fetch('/api/favorites/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formationId: formation.id }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        loadWishlist();
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      return { success: false, message: 'Erreur lors de l\'ajout aux favoris' };
     }
   };
 
-  // Retirer des favoris
-  const removeFromWishlist = (formationId) => {
-    const newWishlist = wishlist.filter(item => item.id !== formationId);
-    setWishlist(newWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+  // Retirer des favoris (via API)
+  const removeFromWishlist = async (formationId) => {
+    try {
+      const response = await fetch('/api/favorites/remove', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formationId }),
+      });
+
+      if (response.ok) {
+        loadWishlist();
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      return { success: false };
+    }
   };
 
   // Vérifier si dans les favoris
   const isInWishlist = (formationId) => {
-    return wishlist.some(item => item.id === formationId);
+    return wishlist.some(item => item.formation?.id === formationId || item.id === formationId);
   };
 
   // Vérifier si dans le panier
   const isInCart = (formationId) => {
-    return cart.some(item => item.id === formationId);
+    return cart.some(item => item.formation?.id === formationId || item.id === formationId);
   };
 
   // Enregistrer un achat

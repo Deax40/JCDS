@@ -77,7 +77,7 @@ export default function FormationCardAnvogue({ formation }) {
           {/* Wishlist Icon */}
           <div className="list-action-icon absolute top-3 right-3 z-[2]">
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (!user) {
                   router.push('/login');
                   return;
@@ -85,8 +85,12 @@ export default function FormationCardAnvogue({ formation }) {
                 if (isInWishlist(id)) {
                   alert('Déjà dans les favoris !');
                 } else {
-                  addToWishlist(formation);
-                  alert('Ajouté aux favoris !');
+                  const result = await addToWishlist(formation);
+                  if (result.success) {
+                    alert('Ajouté aux favoris !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
                 }
               }}
               className={`add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full duration-300 relative group/wishlist ${
@@ -136,13 +140,13 @@ export default function FormationCardAnvogue({ formation }) {
           {/* Action Buttons */}
           <div className="list-action grid grid-cols-2 gap-3 px-5 absolute w-full bottom-5 max-lg:hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
             <Link
-              href={`/formations/${slug}`}
+              href={`/formation/${id}`}
               className="quick-view-btn w-full text-button-uppercase py-2 text-center rounded-full duration-300 bg-white hover:bg-black hover:text-white"
             >
               Voir détails
             </Link>
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (!user) {
                   router.push('/login');
                   return;
@@ -150,8 +154,12 @@ export default function FormationCardAnvogue({ formation }) {
                 if (isInCart(id)) {
                   alert('Déjà dans le panier !');
                 } else {
-                  addToCart(formation);
-                  alert('Ajouté au panier !');
+                  const result = await addToCart(formation);
+                  if (result.success) {
+                    alert('Ajouté au panier !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
                 }
               }}
               className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
@@ -186,7 +194,7 @@ export default function FormationCardAnvogue({ formation }) {
           )}
 
           {/* Formation Title */}
-          <Link href={`/formations/${slug}`}>
+          <Link href={`/formation/${id}`}>
             <div className="product-name text-title duration-300 hover:text-black line-clamp-2">
               {title}
             </div>
@@ -241,6 +249,69 @@ export default function FormationCardAnvogue({ formation }) {
                 </div>
               </>
             )}
+          </div>
+
+          {/* Action Buttons - Always Visible */}
+          <div className="flex items-center gap-2 mt-4">
+            {/* Favorite Button */}
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInWishlist(id)) {
+                  alert('Déjà dans les favoris !');
+                } else {
+                  const result = await addToWishlist(formation);
+                  if (result.success) {
+                    alert('Ajouté aux favoris !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
+                }
+              }}
+              className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${
+                isInWishlist(id)
+                  ? 'bg-red text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-red hover:text-white'
+              }`}
+              title={isInWishlist(id) ? 'Dans les favoris' : 'Ajouter aux favoris'}
+            >
+              <i className={`${isInWishlist(id) ? 'ph-fill' : 'ph'} ph-heart text-xl`}></i>
+            </button>
+
+            {/* Cart Button */}
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  router.push('/login');
+                  return;
+                }
+                if (isInCart(id)) {
+                  router.push('/cart');
+                } else {
+                  const result = await addToCart(formation);
+                  if (result.success) {
+                    alert('Ajouté au panier !');
+                  } else {
+                    alert(result.message || 'Erreur');
+                  }
+                }
+              }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-full font-semibold text-sm transition-all duration-300 ${
+                isInCart(id)
+                  ? 'bg-green bg-opacity-10 text-green hover:bg-opacity-20'
+                  : 'bg-purple text-white hover:bg-opacity-90'
+              }`}
+            >
+              <i className={`ph-bold ${isInCart(id) ? 'ph-check' : 'ph-shopping-cart'} text-lg`}></i>
+              <span>{isInCart(id) ? 'Dans le panier' : 'Ajouter au panier'}</span>
+            </button>
           </div>
         </div>
       </div>
