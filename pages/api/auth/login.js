@@ -49,28 +49,35 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    // Définir le cookie de session
-    res.setHeader('Set-Cookie', `userId=${user.id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`); // 7 jours
+    // Préparer les données utilisateur
+    const userData = {
+      id: user.id,
+      email: user.email,
+      nom: user.last_name,
+      prenom: user.first_name,
+      pseudo: user.pseudo,
+      telephone: user.phone,
+      genre: user.genre,
+      role: user.roles ? user.roles[0] : 'acheteur',
+      roles: user.roles || ['acheteur'],
+      avatar: user.avatar_url,
+      createdAt: user.created_at,
+      formateurApplicationStatus: user.formateur_application_status,
+      formateurApplicationDate: user.formateur_application_date,
+      purchases: [], // À charger depuis une table purchases si besoin
+    };
+
+    // Définir les cookies de session (userId pour compatibilité + user pour les nouvelles APIs)
+    const userCookieValue = encodeURIComponent(JSON.stringify(userData));
+    res.setHeader('Set-Cookie', [
+      `userId=${user.id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`,
+      `user=${userCookieValue}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`
+    ]);
 
     // Retourner les données complètes de l'utilisateur
     return res.status(200).json({
       message: 'Connexion réussie',
-      user: {
-        id: user.id,
-        email: user.email,
-        nom: user.last_name,
-        prenom: user.first_name,
-        pseudo: user.pseudo,
-        telephone: user.phone,
-        genre: user.genre,
-        role: user.roles ? user.roles[0] : 'acheteur',
-        roles: user.roles || ['acheteur'],
-        avatar: user.avatar_url,
-        createdAt: user.created_at,
-        formateurApplicationStatus: user.formateur_application_status,
-        formateurApplicationDate: user.formateur_application_date,
-        purchases: [], // À charger depuis une table purchases si besoin
-      },
+      user: userData,
     });
   } catch (error) {
     console.error('Login error:', error);
