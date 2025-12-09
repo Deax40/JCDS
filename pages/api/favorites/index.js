@@ -1,90 +1,106 @@
 /**
- * API Route: Get Favorites
+ * API Route: Favorites
  *
- * Récupère les formations favorites de l'utilisateur
+ * Gère les favoris de l'utilisateur
  *
- * GET /api/favorites
+ * GET /api/favorites - Liste des favoris
+ * POST /api/favorites - Ajouter aux favoris
+ * DELETE /api/favorites - Retirer des favoris
  */
 
 import { query } from '../../../lib/db';
-import { requireAuth } from '../../../lib/auth';
+import cookie from 'cookie';
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const userCookie = cookies.user;
+
+  if (!userCookie) {
+    return res.status(401).json({ message: 'Non authentifié' });
   }
 
   let user;
   try {
-    user = await requireAuth(req);
+    user = JSON.parse(userCookie);
   } catch (error) {
-    return res.status(401).json({ message: error.message });
+    return res.status(401).json({ message: 'Session invalide' });
   }
 
-  try {
-    const result = await query(
-      `SELECT
-        fav.id as favorite_id,
-        fav.added_at,
-        f.id,
-        f.title,
-        f.description,
-        f.category_slug,
-        f.price_ttc,
-        f.price_net,
-        f.formation_type,
-        f.average_rating,
-        f.total_reviews,
-        f.seller_id,
-        u.pseudo as seller_pseudo,
-        u.first_name as seller_first_name,
-        u.last_name as seller_last_name,
-        u.avatar_url as seller_avatar,
-        u.avatar_color as seller_avatar_color,
-        u.avatar_shape as seller_avatar_shape
-      FROM favorites fav
-      JOIN formations f ON fav.formation_id = f.id
-      JOIN users u ON f.seller_id = u.id
-      WHERE fav.user_id = $1 AND f.is_published = TRUE
-      ORDER BY fav.added_at DESC`,
-      [user.id]
-    );
+  if (req.method === 'GET') {
+    try {
+      const result = await query(
+        `SELECT
+          f.id as favorite_id,
+          fo.id,
+          fo.title,
+          fo.description,
+          fo.category_slug,
+          fo.price_ttc,
+          fo.price_net,
+          fo.formation_type,
+          fo.average_rating,
+          fo.total_reviews,
+          fo.total_sales,
+          fo.seller_id,
+          u.prenom as seller_prenom,
+          u.nom as seller_nom,
+          u.pseudo as seller_pseudo
+        FROM favorites f
+        JOIN formations fo ON f.formation_id = fo.id
+        JOIN users u ON fo.seller_id = u.id
+        WHERE f.user_id = $1
+        ORDER BY f.created_at DESC`,
+        [user.id]
+      );
 
-    const favorites = result.rows.map(item => ({
-      favoriteId: item.favorite_id,
-      addedAt: item.added_at,
-      formation: {
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        categorySlug: item.category_slug,
-        priceTTC: parseFloat(item.price_ttc),
-        priceNet: parseFloat(item.price_net),
-        type: item.formation_type,
-        averageRating: parseFloat(item.average_rating) || 0,
-        totalReviews: item.total_reviews,
-        seller: {
-          id: item.seller_id,
-          pseudo: item.seller_pseudo,
-          firstName: item.seller_first_name,
-          lastName: item.seller_last_name,
-          avatar: item.seller_avatar,
-          avatarColor: item.seller_avatar_color,
-          avatarShape: item.seller_avatar_shape,
-        },
-      },
-    }));
-
-    return res.status(200).json({
-      favorites,
-      count: favorites.length,
-    });
-  } catch (error) {
-    console.error('Error fetching favorites:', error);
-
-    return res.status(500).json({
-      message: 'Erreur lors de la récupération des favoris',
-      details: process.env.NODE_ENV !== 'production' ? error.message : undefined,
-    });
+      return res.status(200).json({ favorites: result.rows });
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+      return res.status(500).json({ message: 'Erreur lors de la récupération des favoris' });
+    }
   }
+
+  if (req.method === 'POST') {
+    const { formationId } = req.body;
+
+    if (!formationId) {
+      return res.status(400).json({ message: 'Formation ID requis' });
+    }
+
+    try {
+      await query(
+        `INSERT INTO favorites (user_id, formation_id)
+         VALUES ($1, $2)
+         ON CONFLICT (user_id, formation_id) DO NOTHING`,
+        [user.id, formationId]
+      );
+
+      return res.status(200).json({ message: 'Ajouté aux favoris' });
+    } catch (error) {
+      console.error('Error adding to favorites:', error);
+      return res.status(500).json({ message: 'Erreur lors de l\'ajout aux favoris' });
+    }
+  }
+
+  if (req.method === 'DELETE') {
+    const { formationId } = req.body;
+
+    if (!formationId) {
+      return res.status(400).json({ message: 'Formation ID requis' });
+    }
+
+    try {
+      await query(
+        `DELETE FROM favorites WHERE user_id = $1 AND formation_id = $2`,
+        [user.id, formationId]
+      );
+
+      return res.status(200).json({ message: 'Retiré des favoris' });
+    } catch (error) {
+      console.error('Error removing from favorites:', error);
+      return res.status(500).json({ message: 'Erreur lors de la suppression' });
+    }
+  }
+
+  return res.status(405).json({ message: 'Method not allowed' });
 }
