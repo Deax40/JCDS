@@ -1058,20 +1058,31 @@ export default function Admin() {
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="font-medium">{request.formationTitle}</p>
+                              <p className={`font-medium ${request.formationDeleted ? 'text-secondary line-through' : ''}`}>
+                                {request.formationTitle}
+                              </p>
                               <p className="text-xs text-secondary">{request.category}</p>
                               <p className="text-xs text-purple font-semibold">
                                 Formation ID: #{request.formationId}
                               </p>
+                              {request.formationDeleted && (
+                                <span className="text-xs text-red font-semibold">✗ Supprimée</span>
+                              )}
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="font-medium text-sm">
-                                {request.seller.prenom} {request.seller.nom}
-                              </p>
-                              <p className="text-xs text-secondary">@{request.seller.pseudo}</p>
-                              <p className="text-xs text-secondary">{request.seller.email}</p>
+                              {request.seller ? (
+                                <>
+                                  <p className="font-medium text-sm">
+                                    {request.seller.prenom} {request.seller.nom}
+                                  </p>
+                                  <p className="text-xs text-secondary">@{request.seller.pseudo}</p>
+                                  <p className="text-xs text-secondary">{request.seller.email}</p>
+                                </>
+                              ) : (
+                                <p className="text-xs text-secondary italic">Vendeur inconnu</p>
+                              )}
                             </div>
                           </td>
                           <td className="px-6 py-4">

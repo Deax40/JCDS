@@ -35,6 +35,7 @@ export default async function handler(req, res) {
 
   try {
     // Récupérer toutes les demandes de suppression avec détails
+    // Note: LEFT JOIN sur formations car les formations approuvées sont supprimées
     const result = await query(
       `SELECT
         fdr.id,
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
         fdr.requested_at,
         fdr.reviewed_at,
         fdr.admin_comment,
+        fdr.seller_id,
         f.title as formation_title,
         f.category_slug,
         f.price_ttc,
@@ -58,8 +60,8 @@ export default async function handler(req, res) {
         reviewer.prenom as reviewer_prenom,
         reviewer.nom as reviewer_nom
       FROM formation_deletion_requests fdr
-      JOIN formations f ON fdr.formation_id = f.id
-      JOIN users u ON f.seller_id = u.id
+      LEFT JOIN formations f ON fdr.formation_id = f.id
+      LEFT JOIN users u ON COALESCE(f.seller_id, fdr.seller_id) = u.id
       LEFT JOIN users reviewer ON fdr.reviewed_by = reviewer.id
       ORDER BY
         CASE fdr.status
@@ -74,8 +76,8 @@ export default async function handler(req, res) {
     const requests = result.rows.map(row => ({
       id: row.id,
       formationId: row.formation_id,
-      formationTitle: row.formation_title,
-      category: row.category_slug,
+      formationTitle: row.formation_title || `Formation #${row.formation_id} (supprimée)`,
+      category: row.category_slug || 'N/A',
       priceTTC: parseFloat(row.price_ttc) || 0,
       quantitySold: row.quantity_sold || 0,
       totalSales: row.total_sales || 0,
@@ -85,13 +87,14 @@ export default async function handler(req, res) {
       requestedAt: row.requested_at,
       reviewedAt: row.reviewed_at,
       adminComment: row.admin_comment,
-      seller: {
+      formationDeleted: !row.formation_title, // La formation a été supprimée
+      seller: row.seller_prenom ? {
         id: row.seller_id,
         prenom: row.seller_prenom,
         nom: row.seller_nom,
         pseudo: row.seller_pseudo,
         email: row.seller_email,
-      },
+      } : null,
       reviewer: row.reviewer_prenom ? {
         prenom: row.reviewer_prenom,
         nom: row.reviewer_nom,
