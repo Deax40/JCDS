@@ -45,14 +45,14 @@ export default async function handler(req, res) {
         fdr.requested_at,
         fdr.reviewed_at,
         fdr.admin_comment,
-        fdr.seller_id,
         f.title as formation_title,
         f.category_slug,
         f.price_ttc,
         f.quantity_sold,
         f.total_sales,
         f.total_revenue,
-        u.id as seller_id,
+        f.seller_id,
+        u.id as seller_user_id,
         u.prenom as seller_prenom,
         u.nom as seller_nom,
         u.pseudo as seller_pseudo,
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
         reviewer.nom as reviewer_nom
       FROM formation_deletion_requests fdr
       LEFT JOIN formations f ON fdr.formation_id = f.id
-      LEFT JOIN users u ON COALESCE(f.seller_id, fdr.seller_id) = u.id
+      LEFT JOIN users u ON f.seller_id = u.id
       LEFT JOIN users reviewer ON fdr.reviewed_by = reviewer.id
       ORDER BY
         CASE fdr.status
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
       adminComment: row.admin_comment,
       formationDeleted: !row.formation_title, // La formation a été supprimée
       seller: row.seller_prenom ? {
-        id: row.seller_id,
+        id: row.seller_user_id,
         prenom: row.seller_prenom,
         nom: row.seller_nom,
         pseudo: row.seller_pseudo,
