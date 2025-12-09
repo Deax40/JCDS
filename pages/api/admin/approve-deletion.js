@@ -45,9 +45,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer la demande de suppression
+    // Récupérer la demande de suppression avec les infos de la formation et du formateur
     const requestData = await query(
-      'SELECT * FROM formation_deletion_requests WHERE id = $1 AND status = $2',
+      `SELECT fdr.*, f.title, f.seller_id
+       FROM formation_deletion_requests fdr
+       JOIN formations f ON fdr.formation_id = f.id
+       WHERE fdr.id = $1 AND fdr.status = $2`,
       [requestId, 'pending']
     );
 
@@ -57,8 +60,45 @@ export default async function handler(req, res) {
 
     const deletionRequest = requestData.rows[0];
     const formationId = deletionRequest.formation_id;
+    const formationTitle = deletionRequest.title;
+    const sellerId = deletionRequest.seller_id;
 
     if (action === 'approve') {
+      // Récupérer ou créer une conversation support avec le formateur
+      let conversation = await query(
+        `SELECT id FROM conversations WHERE type = 'support' AND user_id = $1`,
+        [sellerId]
+      );
+
+      let conversationId;
+      if (conversation.rows.length === 0) {
+        const newConv = await query(
+          `INSERT INTO conversations (type, user_id) VALUES ('support', $1) RETURNING id`,
+          [sellerId]
+        );
+        conversationId = newConv.rows[0].id;
+      } else {
+        conversationId = conversation.rows[0].id;
+      }
+
+      // Envoyer un message automatique de confirmation
+      const approvalMessage = `Votre demande de suppression pour la formation "${formationTitle}" a été approuvée par l'équipe FormationPlace.
+
+La formation a été définitivement supprimée de la plateforme. La vente est maintenant annulée.
+
+${adminComment ? `Commentaire de l'administrateur: ${adminComment}` : ''}
+
+Si vous avez des questions, n'hésitez pas à nous contacter.
+
+Cordialement,
+L'équipe FormationPlace`;
+
+      await query(
+        `INSERT INTO messages (conversation_id, sender_id, message)
+         VALUES ($1, $2, $3)`,
+        [conversationId, admin.id, approvalMessage]
+      );
+
       // APPROUVER: Supprimer définitivement la formation
       await query('DELETE FROM formations WHERE id = $1', [formationId]);
 
@@ -72,9 +112,44 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        message: 'Formation supprimée avec succès',
+        message: 'Formation supprimée avec succès et notification envoyée au formateur',
       });
     } else {
+      // Récupérer ou créer une conversation support avec le formateur
+      let conversation = await query(
+        `SELECT id FROM conversations WHERE type = 'support' AND user_id = $1`,
+        [sellerId]
+      );
+
+      let conversationId;
+      if (conversation.rows.length === 0) {
+        const newConv = await query(
+          `INSERT INTO conversations (type, user_id) VALUES ('support', $1) RETURNING id`,
+          [sellerId]
+        );
+        conversationId = newConv.rows[0].id;
+      } else {
+        conversationId = conversation.rows[0].id;
+      }
+
+      // Envoyer un message automatique de rejet
+      const rejectionMessage = `Votre demande de suppression pour la formation "${formationTitle}" a été examinée par l'équipe FormationPlace.
+
+Après vérification, nous avons décidé de rejeter cette demande. Votre formation a été remise en vente sur la plateforme.
+
+${adminComment ? `Raison du rejet: ${adminComment}` : ''}
+
+Si vous souhaitez toujours supprimer cette formation, veuillez nous contacter pour en discuter.
+
+Cordialement,
+L'équipe FormationPlace`;
+
+      await query(
+        `INSERT INTO messages (conversation_id, sender_id, message)
+         VALUES ($1, $2, $3)`,
+        [conversationId, admin.id, rejectionMessage]
+      );
+
       // REJETER: Remettre la formation en vente
       await query(
         `UPDATE formations
@@ -93,7 +168,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        message: 'Demande de suppression rejetée - Formation remise en vente',
+        message: 'Demande de suppression rejetée, formation remise en vente et notification envoyée au formateur',
       });
     }
   } catch (error) {

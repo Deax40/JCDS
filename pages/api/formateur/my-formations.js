@@ -30,7 +30,8 @@ export default async function handler(req, res) {
         has_quantity_limit, quantity_limit, quantity_sold,
         price_ttc, price_net,
         total_sales, total_revenue, average_rating, total_reviews,
-        is_active, is_published, created_at, updated_at
+        is_active, is_published, created_at, updated_at,
+        deletion_requested, deletion_requested_at, deletion_reason
       FROM formations
       WHERE seller_id = $1
       ORDER BY created_at DESC`,
@@ -85,6 +86,9 @@ export default async function handler(req, res) {
         isPublished: f.is_published,
         createdAt: f.created_at,
         updatedAt: f.updated_at,
+        deletionRequested: f.deletion_requested,
+        deletionRequestedAt: f.deletion_requested_at,
+        deletionReason: f.deletion_reason,
       };
     });
 
