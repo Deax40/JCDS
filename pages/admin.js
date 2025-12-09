@@ -547,6 +547,38 @@ export default function Admin() {
     }
   };
 
+  const handleDirectDelete = async (formationId, formationTitle) => {
+    if (!confirm(`Supprimer définitivement la formation "${formationTitle}" ?\n\nUn message automatique sera envoyé au formateur.`)) {
+      return;
+    }
+
+    const reason = prompt('Raison de la suppression (sera envoyée au formateur):');
+
+    try {
+      const response = await fetch('/api/admin/delete-formation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          formationId,
+          reason: reason || 'Suppression administrative',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);
+        loadData();
+      } else {
+        alert(data.message || 'Erreur lors de la suppression');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Erreur lors de la suppression');
+    }
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (loginData.username === ADMIN_USERNAME && loginData.password === ADMIN_PASSWORD) {
@@ -917,24 +949,35 @@ export default function Admin() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            {formation.deletionRequest && (
-                              <div className="flex gap-2">
+                            <div className="flex gap-2">
+                              {formation.deletionRequest ? (
+                                <>
+                                  <button
+                                    onClick={() => handleApproveDeletion(formation.deletionRequest.id, 'approve')}
+                                    className="px-3 py-1 bg-green text-white rounded text-xs hover:bg-opacity-90"
+                                    title="Approuver la suppression"
+                                  >
+                                    Approuver
+                                  </button>
+                                  <button
+                                    onClick={() => handleApproveDeletion(formation.deletionRequest.id, 'reject')}
+                                    className="px-3 py-1 bg-orange text-white rounded text-xs hover:bg-opacity-90"
+                                    title="Rejeter la demande"
+                                  >
+                                    Rejeter
+                                  </button>
+                                </>
+                              ) : (
                                 <button
-                                  onClick={() => handleApproveDeletion(formation.deletionRequest.id, 'approve')}
-                                  className="px-3 py-1 bg-green text-white rounded text-xs hover:bg-opacity-90"
-                                  title="Approuver la suppression"
+                                  onClick={() => handleDirectDelete(formation.id, formation.title)}
+                                  className="px-3 py-1 bg-red text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1"
+                                  title="Supprimer cette formation"
                                 >
-                                  Approuver
+                                  <i className="ph-bold ph-trash"></i>
+                                  Supprimer
                                 </button>
-                                <button
-                                  onClick={() => handleApproveDeletion(formation.deletionRequest.id, 'reject')}
-                                  className="px-3 py-1 bg-orange text-white rounded text-xs hover:bg-opacity-90"
-                                  title="Rejeter la demande"
-                                >
-                                  Rejeter
-                                </button>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
