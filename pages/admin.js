@@ -452,7 +452,7 @@ export default function Admin() {
 
   const loadConversationMessages = async (conversationId) => {
     try {
-      const response = await fetch('/api/messages/support', {
+      const response = await fetch(`/api/admin/conversation-messages?conversationId=${conversationId}`, {
         credentials: 'include',
       });
       const data = await response.json();

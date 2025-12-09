@@ -116,6 +116,12 @@ export default async function handler(req, res) {
         [conversationId, user.id, message.trim()]
       );
 
+      // Mettre à jour last_message_at dans la conversation
+      await query(
+        `UPDATE conversations SET last_message_at = NOW() WHERE id = $1`,
+        [conversationId]
+      );
+
       return res.status(200).json({
         success: true,
         message: {
