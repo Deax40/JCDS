@@ -295,6 +295,13 @@ export default function HeaderAnvogue() {
                     </button>
                   )}
 
+                  {/* Messages Icon */}
+                  {user && (
+                    <Link href="/mes-messages" className="max-md:hidden flex items-center relative cursor-pointer hover:text-purple transition" title="Mes messages">
+                      <i className="ph-bold ph-envelope text-2xl"></i>
+                    </Link>
+                  )}
+
                   {/* Cart Icon */}
                   {user ? (
                     <Link href="/panier" className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
