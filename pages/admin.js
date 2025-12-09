@@ -374,6 +374,10 @@ export default function Admin() {
 
   // Formations tab
   const [formations, setFormations] = useState([]);
+  const [editingFormation, setEditingFormation] = useState(null);
+
+  // Deletion requests tab
+  const [deletionRequests, setDeletionRequests] = useState([]);
 
   // Stats tab
   const [stats, setStats] = useState(null);
@@ -417,6 +421,14 @@ export default function Admin() {
         const data = await response.json();
         if (response.ok) {
           setFormations(data.formations);
+        }
+      } else if (activeTab === 'deletions') {
+        const response = await fetch('/api/admin/deletion-requests', {
+          credentials: 'include',
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setDeletionRequests(data.requests);
         }
       } else if (activeTab === 'stats') {
         const response = await fetch('/api/admin/stats');
@@ -710,6 +722,17 @@ export default function Admin() {
                 Formations
               </button>
               <button
+                onClick={() => setActiveTab('deletions')}
+                className={`px-6 py-3 font-medium transition ${
+                  activeTab === 'deletions'
+                    ? 'border-b-2 border-purple text-purple'
+                    : 'text-secondary hover:text-main'
+                }`}
+              >
+                <i className="ph-bold ph-trash mr-2"></i>
+                Demandes de suppression
+              </button>
+              <button
                 onClick={() => setActiveTab('stats')}
                 className={`px-6 py-3 font-medium transition ${
                   activeTab === 'stats'
@@ -949,7 +972,7 @@ export default function Admin() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2">
                               {formation.deletionRequest ? (
                                 <>
                                   <button
@@ -968,16 +991,179 @@ export default function Admin() {
                                   </button>
                                 </>
                               ) : (
-                                <button
-                                  onClick={() => handleDirectDelete(formation.id, formation.title)}
-                                  className="px-3 py-1 bg-red text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1"
-                                  title="Supprimer cette formation"
-                                >
-                                  <i className="ph-bold ph-trash"></i>
-                                  Supprimer
-                                </button>
+                                <>
+                                  <Link
+                                    href={`/formation/${formation.id}`}
+                                    target="_blank"
+                                    className="px-3 py-1 bg-blue text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1"
+                                    title="Voir la formation"
+                                  >
+                                    <i className="ph-bold ph-eye"></i>
+                                    Voir
+                                  </Link>
+                                  <button
+                                    onClick={() => handleDirectDelete(formation.id, formation.title)}
+                                    className="px-3 py-1 bg-red text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1"
+                                    title="Supprimer cette formation"
+                                  >
+                                    <i className="ph-bold ph-trash"></i>
+                                    Supprimer
+                                  </button>
+                                </>
                               )}
                             </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Deletion Requests Tab */}
+          {activeTab === 'deletions' && (
+            <div className="bg-white rounded-2xl shadow">
+              <div className="p-6 border-b border-line">
+                <h2 className="heading6">Demandes de suppression ({deletionRequests.length})</h2>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-surface">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">ID</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Formation</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Vendeur</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Statistiques</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Raison</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Date demande</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Statut</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-line">
+                    {deletionRequests.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" className="px-6 py-12 text-center text-secondary">
+                          Aucune demande de suppression
+                        </td>
+                      </tr>
+                    ) : (
+                      deletionRequests.map((request) => (
+                        <tr key={request.id} className="hover:bg-surface transition">
+                          <td className="px-6 py-4">
+                            <span className="font-mono font-semibold text-purple">#{request.id}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div>
+                              <p className="font-medium">{request.formationTitle}</p>
+                              <p className="text-xs text-secondary">{request.category}</p>
+                              <p className="text-xs text-purple font-semibold">
+                                Formation ID: #{request.formationId}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div>
+                              <p className="font-medium text-sm">
+                                {request.seller.prenom} {request.seller.nom}
+                              </p>
+                              <p className="text-xs text-secondary">@{request.seller.pseudo}</p>
+                              <p className="text-xs text-secondary">{request.seller.email}</p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-xs space-y-1">
+                              <p><span className="font-semibold">{request.quantitySold}</span> ventes</p>
+                              <p className="text-green font-semibold">
+                                {request.totalRevenue.toFixed(2)} €
+                              </p>
+                              <p className="text-secondary">
+                                Prix: {request.priceTTC.toFixed(2)} €
+                              </p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="max-w-xs">
+                              <p className="text-sm text-secondary line-clamp-3">
+                                {request.reason || 'Aucune raison fournie'}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm">
+                            {new Date(request.requestedAt).toLocaleDateString('fr-FR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                            })}
+                            <p className="text-xs text-secondary">
+                              {new Date(request.requestedAt).toLocaleTimeString('fr-FR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              {request.status === 'pending' && (
+                                <span className="text-xs px-2 py-1 bg-orange bg-opacity-10 text-orange rounded font-semibold">
+                                  En attente
+                                </span>
+                              )}
+                              {request.status === 'approved' && (
+                                <span className="text-xs px-2 py-1 bg-green bg-opacity-10 text-green rounded font-semibold">
+                                  Approuvée
+                                </span>
+                              )}
+                              {request.status === 'rejected' && (
+                                <span className="text-xs px-2 py-1 bg-red bg-opacity-10 text-red rounded font-semibold">
+                                  Rejetée
+                                </span>
+                              )}
+                              {request.reviewedAt && (
+                                <p className="text-xs text-secondary">
+                                  {new Date(request.reviewedAt).toLocaleDateString('fr-FR')}
+                                </p>
+                              )}
+                              {request.reviewer && (
+                                <p className="text-xs text-secondary">
+                                  Par {request.reviewer.prenom} {request.reviewer.nom}
+                                </p>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            {request.status === 'pending' ? (
+                              <div className="flex flex-col gap-2">
+                                <button
+                                  onClick={() => handleApproveDeletion(request.id, 'approve')}
+                                  className="px-3 py-1 bg-green text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1 justify-center"
+                                  title="Approuver la suppression"
+                                >
+                                  <i className="ph-bold ph-check"></i>
+                                  Approuver
+                                </button>
+                                <button
+                                  onClick={() => handleApproveDeletion(request.id, 'reject')}
+                                  className="px-3 py-1 bg-orange text-white rounded text-xs hover:bg-opacity-90 flex items-center gap-1 justify-center"
+                                  title="Rejeter la demande"
+                                >
+                                  <i className="ph-bold ph-x"></i>
+                                  Rejeter
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="text-center">
+                                <p className="text-xs text-secondary">Traitée</p>
+                                {request.adminComment && (
+                                  <p className="text-xs text-secondary mt-1" title={request.adminComment}>
+                                    💬 Commentaire
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))
