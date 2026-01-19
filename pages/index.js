@@ -2,8 +2,6 @@ import Head from 'next/head';
 import HeaderAnvogue from '../components/HeaderAnvogue';
 import FooterAnvogue from '../components/FooterAnvogue';
 import FormationCardAnvogue from '../components/FormationCardAnvogue';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
 import Link from 'next/link';
 import { getAllCategories } from '../data/categories';
 
@@ -93,85 +91,171 @@ export default function HomeAnvogue() {
       <div className="overflow-x-hidden">
         <HeaderAnvogue />
 
-        {/* Hero Slider */}
-        <div id="header" className="relative w-full">
-          <div className="slider-block style-one bg-linear xl:h-[900px] lg:h-[840px] md:h-[640px] sm:h-[540px] h-[420px] w-full">
-            <div className="slider-main h-full w-full">
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                spaceBetween={0}
-                slidesPerView={1}
-                pagination={{ clickable: true }}
-                autoplay={{ delay: 5000, disableOnInteraction: false }}
-                loop={true}
-                className="h-full relative"
-              >
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Nouvelle Saison d'Apprentissage</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Développez Vos<br />Compétences
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Accédez à des centaines de formations créées par des experts passionnés. Commencez dès aujourd'hui!
-                        </p>
-                        <Link href="/formations" className="button-main">
-                          Découvrir les Formations
-                        </Link>
-                      </div>
-                      <div className="sub-img absolute sm:w-1/2 w-3/5 2xl:-right-[60px] -right-[16px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-green to-blue rounded-tl-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+        {/* Hero Section - Modern & Clean */}
+        <div id="header" className="relative w-full bg-gradient-to-br from-indigo-50 via-white to-purple-50 overflow-hidden">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Top right circle */}
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple/5 rounded-full blur-3xl"></div>
+            {/* Bottom left circle */}
+            <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-blue/5 rounded-full blur-3xl"></div>
+            {/* Subtle grid pattern */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:64px_64px]"></div>
+          </div>
 
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Promotions Exceptionnelles</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Jusqu'à<br />-50%
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Profitez de réductions exceptionnelles sur une sélection de formations premium.
-                        </p>
-                        <Link href="/formations?filter=promo" className="button-main">
-                          Voir les Promos
-                        </Link>
-                      </div>
-                      <div className="sub-img absolute w-1/2 2xl:-right-[60px] -right-[0] sm:-bottom-[60px] bottom-0 opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-red to-orange rounded-tl-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+          <div className="container relative z-10">
+            <div className="flex flex-col lg:flex-row items-center justify-between py-16 md:py-24 lg:py-32 gap-12 lg:gap-16">
 
-                <SwiperSlide>
-                  <div className="slider-item h-full w-full relative">
-                    <div className="container w-full h-full flex items-center relative">
-                      <div className="text-content basis-1/2 z-10">
-                        <div className="text-sm md:text-base font-medium text-secondary2 tracking-wider uppercase mb-4">Partagez Votre Expertise</div>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-                          Devenez<br />Formateur
-                        </h1>
-                        <p className="text-base md:text-lg leading-relaxed text-secondary max-w-xl mb-8">
-                          Créez et vendez vos formations. Rejoignez notre communauté de formateurs experts.
-                        </p>
-                        <Link href="/devenir-formateur" className="button-main">
-                          Commencer Maintenant
-                        </Link>
+              {/* Left Content */}
+              <div className="flex-1 text-center lg:text-left max-w-2xl">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-purple/10 mb-6">
+                  <span className="w-2 h-2 bg-green rounded-full animate-pulse"></span>
+                  <span className="text-sm font-medium text-secondary">Plateforme d'apprentissage en ligne</span>
+                </div>
+
+                {/* Main Heading */}
+                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                  Transformez votre{' '}
+                  <span className="bg-gradient-to-r from-purple to-blue bg-clip-text text-transparent">
+                    avenir
+                  </span>
+                  {' '}avec les bonnes compétences
+                </h1>
+
+                {/* Description */}
+                <p className="text-lg md:text-xl text-secondary leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                  Accédez à des formations de qualité créées par des experts.
+                  Apprenez à votre rythme, développez vos compétences et atteignez vos objectifs professionnels.
+                </p>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                  <Link
+                    href="/formations"
+                    className="button-main px-8 py-4 text-base w-full sm:w-auto text-center"
+                  >
+                    Explorer les formations
+                  </Link>
+                  <Link
+                    href="/devenir-formateur"
+                    className="px-8 py-4 text-base font-medium bg-white text-primary rounded-xl hover:shadow-lg transition-all duration-300 border border-line w-full sm:w-auto text-center"
+                  >
+                    Devenir formateur
+                  </Link>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center justify-center lg:justify-start gap-8 mt-12 pt-8 border-t border-line/50">
+                  <div>
+                    <div className="text-3xl font-bold text-primary mb-1">500+</div>
+                    <div className="text-sm text-secondary">Formations</div>
+                  </div>
+                  <div className="w-px h-12 bg-line/50"></div>
+                  <div>
+                    <div className="text-3xl font-bold text-primary mb-1">50k+</div>
+                    <div className="text-sm text-secondary">Étudiants</div>
+                  </div>
+                  <div className="w-px h-12 bg-line/50"></div>
+                  <div>
+                    <div className="text-3xl font-bold text-primary mb-1">4.8/5</div>
+                    <div className="text-sm text-secondary">Satisfaction</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Illustration */}
+              <div className="flex-1 relative w-full max-w-xl lg:max-w-none">
+                <div className="relative">
+                  {/* Main card */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-line/20">
+                    {/* Icon decorations */}
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple to-blue rounded-xl flex items-center justify-center">
+                        <i className="ph-bold ph-graduation-cap text-white text-2xl"></i>
                       </div>
-                      <div className="sub-img absolute sm:w-1/2 w-2/3 2xl:-right-[60px] -right-[36px] sm:bottom-0 -bottom-[30px] opacity-90">
-                        <div className="w-full h-full bg-gradient-to-br from-purple to-pink rounded-tl-full"></div>
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 bg-purple/20 rounded-full"></div>
+                        <div className="w-3 h-3 bg-blue/20 rounded-full"></div>
+                        <div className="w-3 h-3 bg-green/20 rounded-full"></div>
+                      </div>
+                    </div>
+
+                    {/* Course preview cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 p-4 bg-purple/5 rounded-xl">
+                        <div className="w-14 h-14 bg-gradient-to-br from-purple to-purple/80 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i className="ph-bold ph-code text-white text-xl"></i>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold mb-1 truncate">Développement Web</div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-1.5 bg-purple/20 rounded-full flex-1">
+                              <div className="h-full bg-purple rounded-full w-3/4"></div>
+                            </div>
+                            <span className="text-xs text-secondary">75%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-4 bg-blue/5 rounded-xl">
+                        <div className="w-14 h-14 bg-gradient-to-br from-blue to-blue/80 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i className="ph-bold ph-paint-brush text-white text-xl"></i>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold mb-1 truncate">Design & Créativité</div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-1.5 bg-blue/20 rounded-full flex-1">
+                              <div className="h-full bg-blue rounded-full w-1/2"></div>
+                            </div>
+                            <span className="text-xs text-secondary">50%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-4 bg-green/5 rounded-xl">
+                        <div className="w-14 h-14 bg-gradient-to-br from-green to-green/80 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i className="ph-bold ph-chart-line text-white text-xl"></i>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold mb-1 truncate">Business & Marketing</div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-1.5 bg-green/20 rounded-full flex-1">
+                              <div className="h-full bg-green rounded-full w-2/3"></div>
+                            </div>
+                            <span className="text-xs text-secondary">65%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom badge */}
+                    <div className="mt-8 pt-6 border-t border-line/20 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <i className="ph-bold ph-check-circle text-green text-xl"></i>
+                        <span className="text-sm font-medium">Certificat inclus</span>
+                      </div>
+                      <div className="flex -space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple to-blue rounded-full border-2 border-white"></div>
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue to-green rounded-full border-2 border-white"></div>
+                        <div className="w-8 h-8 bg-gradient-to-br from-green to-yellow rounded-full border-2 border-white"></div>
+                        <div className="w-8 h-8 bg-gray-200 rounded-full border-2 border-white flex items-center justify-center">
+                          <span className="text-xs font-medium">+50k</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </SwiperSlide>
-              </Swiper>
+
+                  {/* Floating elements */}
+                  <div className="hidden lg:block absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-yellow to-orange rounded-2xl shadow-xl rotate-12 flex items-center justify-center">
+                    <i className="ph-bold ph-star text-white text-4xl -rotate-12"></i>
+                  </div>
+                  <div className="hidden lg:block absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-pink to-red rounded-full shadow-xl flex items-center justify-center">
+                    <i className="ph-bold ph-heart text-white text-2xl"></i>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
